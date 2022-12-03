@@ -10,5 +10,6 @@ include(
     "core:database",
     "core:network",
     "core:rss",
+    "core:discord",
     "dale",
 )
