@@ -5,7 +5,6 @@ import network.NetworkModuleFactory
 import network.SourceNotFoundException
 import rss.parser.RssParser
 import rss.parser.RssParserFactory
-import kotlin.jvm.Throws
 
 interface RssSource {
     @Throws(RssCouldNotBeObtainedException::class)
