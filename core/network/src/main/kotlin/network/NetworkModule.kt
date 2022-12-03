@@ -1,4 +1,4 @@
-package rss.network
+package network
 
 
 import io.ktor.client.*
@@ -6,11 +6,11 @@ import io.ktor.client.engine.cio.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 
-internal interface NetworkModule {
+interface NetworkModule {
     suspend fun downloadFileAsText(uri: String): String
 }
 
-internal object NetworkModuleFactory {
+object NetworkModuleFactory {
     fun create(): NetworkModule {
         return HttpNetworkModule(
             httpClient = HttpClient(CIO),

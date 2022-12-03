@@ -7,7 +7,8 @@ dependencyResolutionManagement {
 }
 
 include(
-    "core",
-    "rss",
+    "core:database",
+    "core:network",
+    "core:rss",
     "dale",
 )

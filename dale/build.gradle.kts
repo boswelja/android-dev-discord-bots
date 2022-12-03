@@ -11,8 +11,8 @@ repositories {
 }
 
 dependencies {
-    implementation(project(":core"))
-    api(project(":rss")) // FIXME do not expose RSS
+    implementation(project(":core:database"))
+    api(project(":core:rss")) // FIXME do not expose RSS
 
     testImplementation(kotlin("test"))
 }

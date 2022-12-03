@@ -1,7 +1,7 @@
 package rss
 
-import rss.network.NetworkModule
-import rss.network.NetworkModuleFactory
+import network.NetworkModule
+import network.NetworkModuleFactory
 import rss.parser.RssParser
 import rss.parser.RssParserFactory
 
