@@ -7,10 +7,8 @@ import io.ktor.client.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
-import java.io.FileReader
-import java.io.FileWriter
+import properties.PropertiesStore
 import java.time.OffsetDateTime
-import java.util.Properties
 
 /**
  * This utility checker is used to retrieve Android Studio blog updates, compare that with local data and return new
@@ -18,7 +16,8 @@ import java.util.Properties
  * TODO Actually implement this
  */
 class AndroidStudioUpdateChecker(
-    private val httpClient: HttpClient = HttpClient(CIO)
+    private val propertiesStore: PropertiesStore,
+    private val httpClient: HttpClient = HttpClient(CIO),
 ) {
 
     private val xmlMapper = XmlMapper()
@@ -39,14 +38,10 @@ class AndroidStudioUpdateChecker(
     }
 
     private fun updateLastCheckTime(newDate: OffsetDateTime) {
-        val props = Properties()
-        props["lastCheckTime"] = newDate.toString()
-        props.store(FileWriter("dale.properties"), "")
+        propertiesStore["lastCheckTime"] = newDate.toString()
     }
 
     private fun getLastCheckTime(): OffsetDateTime? {
-        val props = Properties()
-        props.load(FileReader("dale.properties"))
-        return props["lastCheckTime"]?.let { OffsetDateTime.parse(it.toString()) }
+        return propertiesStore["lastCheckTime"]?.let { OffsetDateTime.parse(it.toString()) }
     }
 }
