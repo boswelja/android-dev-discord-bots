@@ -8,6 +8,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import org.sqlite.SQLiteException
+import java.io.File
 
 class GuildSettingsRepositoryImpl(
     fileName: String
@@ -17,6 +18,7 @@ class GuildSettingsRepositoryImpl(
 
     init {
         try {
+            File("dbs").mkdirs()
             GuildSettings.Schema.create(driver)
         } catch (e: SQLiteException) {
             // This probably means the table already exists, so ignore exceptions
