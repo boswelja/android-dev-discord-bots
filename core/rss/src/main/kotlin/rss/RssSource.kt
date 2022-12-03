@@ -2,10 +2,13 @@ package rss
 
 import network.NetworkModule
 import network.NetworkModuleFactory
+import network.SourceNotFoundException
 import rss.parser.RssParser
 import rss.parser.RssParserFactory
+import kotlin.jvm.Throws
 
 interface RssSource {
+    @Throws(RssCouldNotBeObtainedException::class)
     suspend fun obtainRss(url: String): RssFeed
 }
 
@@ -23,8 +26,17 @@ internal class NetworkRssSource constructor(
     private val parser: RssParser,
 ): RssSource {
     override suspend fun obtainRss(url: String): RssFeed {
-        // TODO error handling
-        val xml = networkModule.downloadFileAsText(url)
-        return parser.parseFeed(xml)
+        val xml = try {
+            networkModule.downloadFileAsText(url)
+        } catch (e: SourceNotFoundException) {
+            throw RssNotFoundException(url, e)
+        } catch (e: Exception) {
+            throw RssTemporaryUnavailableException(url, e)
+        }
+        return try {
+            parser.parseFeed(xml)
+        } catch (e: Exception) {
+            throw RssInvalidException("invalid feed from source: $url", e)
+        }
     }
 }
