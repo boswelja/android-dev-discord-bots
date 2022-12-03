@@ -41,5 +41,5 @@ bin/
 ### Mac OS ###
 .DS_Store
 
-### Bot runtime-related config ###
-config/
+### Bot runtime-related databases ###
+dbs/

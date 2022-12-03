@@ -12,7 +12,7 @@ import org.sqlite.SQLiteException
 class GuildSettingsRepositoryImpl(
     fileName: String
 ) : GuildSettingsRepository {
-    private val driver = JdbcSqliteDriver("jdbc:sqlite:$fileName")
+    private val driver = JdbcSqliteDriver("jdbc:sqlite:dbs/$fileName")
     private val database = GuildSettings(driver)
 
     init {
