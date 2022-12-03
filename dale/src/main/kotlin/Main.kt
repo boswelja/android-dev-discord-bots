@@ -1,3 +1,4 @@
+import properties.FilePropertiesStore
 import studio.AndroidStudioUpdateChecker
 
 suspend fun main(args: Array<String>) {
@@ -7,5 +8,7 @@ suspend fun main(args: Array<String>) {
     // Learn more about running applications: https://www.jetbrains.com/help/idea/running-applications.html.
     println("Program arguments: ${args.joinToString()}")
 
-    println(AndroidStudioUpdateChecker().getNewPosts().toString())
+    val propertiesStore = FilePropertiesStore("dale.properties")
+
+    println(AndroidStudioUpdateChecker(propertiesStore).getNewPosts().toString())
 }

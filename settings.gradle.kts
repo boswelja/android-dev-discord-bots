@@ -6,4 +6,7 @@ dependencyResolutionManagement {
     }
 }
 
-include("dale")
+include(
+    "core",
+    "dale"
+)

@@ -3,13 +3,14 @@ package studio
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement
+import java.time.OffsetDateTime
 
 @JacksonXmlRootElement(localName = "feed")
 data class StudioBlogFeed(
     @JsonProperty("id")
     val id: String,
     @JsonProperty("updated")
-    val lastUpdatedOn: String,
+    val lastUpdatedOn: OffsetDateTime,
     @JsonProperty("title")
     val title: String,
     @JsonProperty("subtitle")
@@ -45,9 +46,9 @@ data class StudioBlogEntry(
     @JsonProperty("id")
     val id: String,
     @JsonProperty("published")
-    val publishedOn: String,
+    val publishedOn: OffsetDateTime,
     @JsonProperty("updated")
-    val lastUpdatedOn: String,
+    val lastUpdatedOn: OffsetDateTime,
     @JsonProperty("title")
     val title: String,
     @JsonProperty("content")
