@@ -6,9 +6,9 @@ import io.ktor.client.engine.cio.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import kotlinx.coroutines.flow.first
-import rss.RealRssParser
 import rss.RssEntry
 import rss.RssParser
+import rss.RssParserFactory
 import java.time.OffsetDateTime
 
 /**
@@ -18,7 +18,7 @@ import java.time.OffsetDateTime
  */
 class AndroidStudioUpdateChecker(
     private val settingsRepository: GuildSettingsRepository,
-    private val parser: RssParser = RealRssParser.create(),
+    private val parser: RssParser = RssParserFactory.create(),
     private val httpClient: HttpClient = HttpClient(CIO),
 ) {
 

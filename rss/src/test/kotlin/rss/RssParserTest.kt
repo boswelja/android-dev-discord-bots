@@ -1,18 +1,20 @@
 package rss
 
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.*
 
-class RealRssParserTest {
+@OptIn(ExperimentalCoroutinesApi::class)
+class RssParserTest {
 
-    lateinit var parser: RealRssParser
+    lateinit var parser: RssParser
 
     @BeforeEach
     fun setUp() {
-        parser = RealRssParser()
+        parser = RssParserFactory.create()
     }
 
     @Test

@@ -15,17 +15,17 @@ interface RssParser {
     suspend fun parseFeed(xml: String): RssFeed
 }
 
-class RealRssParser internal constructor(
+object RssParserFactory {
+    fun create(): RssParser {
+        return RealRssParser()
+    }
+}
+
+internal class RealRssParser constructor(
     private val xmlMapper: ObjectMapper = XmlMapper()
         .registerKotlinModule()
         .registerModule(JavaTimeModule())
 ): RssParser {
-
-    companion object {
-        fun create(): RealRssParser {
-            return RealRssParser()
-        }
-    }
 
     override suspend fun parseFeed(xml: String): RssFeed {
         return withContext(Dispatchers.Default) {
