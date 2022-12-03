@@ -8,5 +8,6 @@ dependencyResolutionManagement {
 
 include(
     "core",
-    "dale"
+    "rss",
+    "dale",
 )
