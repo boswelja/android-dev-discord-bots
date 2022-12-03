@@ -1,5 +1,7 @@
 package studio
 
+import com.fasterxml.jackson.dataformat.xml.XmlMapper
+import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.request.*
@@ -14,8 +16,10 @@ class AndroidStudioUpdateChecker(
     private val httpClient: HttpClient = HttpClient(CIO)
 ) {
 
-    suspend fun getNewPosts(): List<Nothing> {
+    private val xmlMapper = XmlMapper().registerKotlinModule()
+
+    suspend fun getNewPosts(): List<StudioBlogEntry> {
         val response = httpClient.get("https://androidstudio.googleblog.com/feeds/posts/default").bodyAsText()
-        return emptyList() // TODO
+        return xmlMapper.readValue(response, StudioBlogFeed::class.java).entry
     }
 }
