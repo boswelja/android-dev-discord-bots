@@ -25,9 +25,9 @@ class AndroidStudioUpdateChecker(
         .registerKotlinModule()
         .registerModule(JavaTimeModule())
 
-    suspend fun getNewPosts(): List<StudioBlogEntry> {
+    suspend fun getNewPosts(): List<RssEntry> {
         val response = httpClient.get("https://androidstudio.googleblog.com/feeds/posts/default").bodyAsText()
-        val deserializedResponse = xmlMapper.readValue(response, StudioBlogFeed::class.java)
+        val deserializedResponse = xmlMapper.readValue(response, RssFeed::class.java)
         val lastCheckTime = getLastCheckTime()
         val newEntries = if (lastCheckTime == null) {
             deserializedResponse.entry

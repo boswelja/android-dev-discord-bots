@@ -6,7 +6,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement
 import java.time.OffsetDateTime
 
 @JacksonXmlRootElement(localName = "feed")
-data class StudioBlogFeed(
+data class RssFeed(
     @JsonProperty("id")
     val id: String,
     @JsonProperty("updated")
@@ -28,7 +28,7 @@ data class StudioBlogFeed(
     @JacksonXmlElementWrapper(localName = "link", useWrapping = false)
     val link: List<Link>,
     @JacksonXmlElementWrapper(localName = "entry", useWrapping = false)
-    val entry: List<StudioBlogEntry>
+    val entry: List<RssEntry>
 )
 
 data class Link(
@@ -42,7 +42,7 @@ data class Link(
     val title: String?
 )
 
-data class StudioBlogEntry(
+data class RssEntry(
     @JsonProperty("id")
     val id: String,
     @JsonProperty("published")
