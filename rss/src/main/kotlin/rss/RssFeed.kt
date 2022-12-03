@@ -1,82 +1,33 @@
 package rss
 
-import com.fasterxml.jackson.annotation.JsonProperty
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement
 import java.time.OffsetDateTime
 
-@JacksonXmlRootElement(localName = "feed")
-data class RssFeed(
-    @JsonProperty("id")
-    val id: String,
-    @JsonProperty("updated")
-    val lastUpdatedOn: OffsetDateTime,
-    @JsonProperty("title")
-    val title: String,
-    @JsonProperty("subtitle")
-    val subtitle: String,
-    @JsonProperty("author")
-    val author: Author,
-    @JsonProperty("generator")
-    val generator: String,
-    @JsonProperty("totalResults")
-    val totalResults: Int,
-    @JsonProperty("startIndex")
-    val startIndex: Int,
-    @JsonProperty("itemsPerPage")
-    val itemsPerPage: Int,
-    @JacksonXmlElementWrapper(localName = "link", useWrapping = false)
-    val link: List<Link>,
-    @JacksonXmlElementWrapper(localName = "entry", useWrapping = false)
-    val entry: List<RssEntry>
-)
+// FIXME this should probably be made more generic and moved in another module
+// this module should just map between RSS (or a specific RSS version?) to our generic domain objects
 
-data class Link(
-    @JsonProperty("rel")
-    val rel: String,
-    @JsonProperty("href")
-    val url: String,
-    @JsonProperty("type")
-    val type: String?,
-    @JsonProperty("title")
-    val title: String?
+data class RssFeed(
+    val id: String,
+    val title: String,
+    val subtitle: String,
+    val author: Author,
+    val entries: List<RssEntry> = emptyList(),
+    val links: List<Link> = emptyList(),
+    val lastUpdatedOn: OffsetDateTime = OffsetDateTime.now(),
 )
 
 data class RssEntry(
-    @JsonProperty("id")
     val id: String,
-    @JsonProperty("published")
-    val publishedOn: OffsetDateTime,
-    @JsonProperty("updated")
-    val lastUpdatedOn: OffsetDateTime,
-    @JsonProperty("title")
     val title: String,
-    @JsonProperty("content")
+    val author: Author,
     val content: String,
-    @JacksonXmlElementWrapper(localName = "link", useWrapping = false)
-    val link: List<Link>,
-    @JsonProperty("author")
-    val author: Author
+    val links: List<Link> = emptyList(),
+    val publishedOn: OffsetDateTime,
 )
 
 data class Author(
-    @JsonProperty("name")
     val name: String,
-    @JsonProperty("uri")
-    val uri: String,
-    @JsonProperty("email")
-    val email: String,
-    @JsonProperty("image")
-    val profileImage: ProfileImage?
-) {
-    data class ProfileImage(
-        @JsonProperty("rel")
-        val rel: String,
-        @JsonProperty("width")
-        val width: Int,
-        @JsonProperty("height")
-        val height: Int,
-        @JsonProperty("src")
-        val src: String
-    )
-}
+)
+
+data class Link(
+    val url: String,
+)

@@ -1,10 +1,10 @@
 package rss
 
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.*
-import kotlin.test.assertIs
 
 class RealRssParserTest {
 
@@ -16,7 +16,7 @@ class RealRssParserTest {
     }
 
     @Test
-    fun parseFeed() {
+    fun parseFeed() = runTest {
         val entryHtmlA = """
             &lt;p&gt;Android Studio - Flamingo | 2022.2.1 Canary 9 is now available in the Canary
             channel.&lt;/p&gt; &lt;p&gt;If you already have an Android Studio build on the&amp;nbsp;&lt;a href=&quot;https://developer.android.com/studio/intro/update.html#channels&quot;&gt;Canary
@@ -98,45 +98,22 @@ class RealRssParserTest {
         )
         val expectedAuthor = Author(
             name = "Jamal Eason",
-            uri = "http://www.blogger.com/profile/11425468413618881872",
-            email = "noreply@blogger.com",
-            profileImage = Author.ProfileImage(
-                rel = "http://schemas.google.com/g/2005#thumbnail",
-                width = 16,
-                height = 16,
-                src = "https://img1.blogblog.com/img/b16-rounded.gif"
-            )
         )
         val expectedLinks = listOf(
             Link(
-                rel = "http://schemas.google.com/g/2005#feed",
                 url = "https://androidstudio.googleblog.com/feeds/posts/default",
-                type = "application/atom+xml",
-                title = null,
             ),
             Link(
-                rel = "self",
                 url = "https://www.blogger.com/feeds/3325683420543787015/posts/default",
-                type = "application/atom+xml",
-                title = null,
             ),
             Link(
-                rel = "alternate",
                 url = "https://androidstudio.googleblog.com/",
-                type = "text/html",
-                title = null,
             ),
             Link(
-                rel = "hub",
                 url = "http://pubsubhubbub.appspot.com/",
-                type = null,
-                title = null,
             ),
             Link(
-                rel = "next",
                 url = "https://www.blogger.com/feeds/3325683420543787015/posts/default?start-index=26&max-results=25",
-                type = "application/atom+xml",
-                title = null,
             ),
         )
 
@@ -146,15 +123,12 @@ class RealRssParserTest {
         assertEquals("Android Studio Release Updates", feed.title) { "title does not match" }
         assertEquals("Provides official announcements for new versions of Android Studio and other Android developer tools.", feed.subtitle) { "subtitle does not match" }
         assertEquals(expectedAuthor, feed.author) { "author does not match" }
-        assertEquals(543, feed.totalResults) { "totalResults does not match" }
-        assertEquals(1, feed.startIndex) { "startIndex does not match" }
-        assertEquals(25, feed.itemsPerPage) { "itemsPerPage does not match" }
-        assertEquals(expectedLinks, feed.link) { "link does not match" }
-        assertEquals(2, feed.entry.size) { "entry size does not match" }
-        assertEquals("tag:blogger.com,1999:blog-3325683420543787015.post-926632259736729368", feed.entry[0].id) { "feed.entry[0].id does not match" }
-        assertEquals("tag:blogger.com,1999:blog-3325683420543787015.post-1650240193865345981", feed.entry[1].id) { "feed.entry[1].id does not match" }
-        assertEquals("Android Studio Flamingo Canary 9 now available", feed.entry[0].title) { "feed.entry[0].title does not match" }
-        assertEquals(3, feed.entry[0].link.size) { "feed.entry[0].link.size does not match" }
+        assertEquals(expectedLinks, feed.links) { "link does not match" }
+        assertEquals(2, feed.entries.size) { "entry size does not match" }
+        assertEquals("tag:blogger.com,1999:blog-3325683420543787015.post-926632259736729368", feed.entries[0].id) { "feed.entry[0].id does not match" }
+        assertEquals("tag:blogger.com,1999:blog-3325683420543787015.post-1650240193865345981", feed.entries[1].id) { "feed.entry[1].id does not match" }
+        assertEquals("Android Studio Flamingo Canary 9 now available", feed.entries[0].title) { "feed.entry[0].title does not match" }
+        assertEquals(3, feed.entries[0].links.size) { "feed.entry[0].link.size does not match" }
     }
 
     private fun String.trimHtmlIndenting(): String {
