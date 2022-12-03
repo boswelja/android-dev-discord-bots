@@ -9,6 +9,8 @@ import io.ktor.client.engine.cio.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import kotlinx.coroutines.flow.first
+import rss.RssEntry
+import rss.RssFeed
 import java.time.OffsetDateTime
 
 /**

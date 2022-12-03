@@ -1,4 +1,4 @@
-package studio
+package rss
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper
