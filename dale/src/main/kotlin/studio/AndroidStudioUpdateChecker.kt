@@ -3,11 +3,12 @@ package studio
 import com.fasterxml.jackson.dataformat.xml.XmlMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+import guildsettings.GuildSettingsRepository
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
-import properties.PropertiesStore
+import kotlinx.coroutines.flow.first
 import java.time.OffsetDateTime
 
 /**
@@ -16,7 +17,7 @@ import java.time.OffsetDateTime
  * TODO Actually implement this
  */
 class AndroidStudioUpdateChecker(
-    private val propertiesStore: PropertiesStore,
+    private val settingsRepository: GuildSettingsRepository,
     private val httpClient: HttpClient = HttpClient(CIO),
 ) {
 
@@ -37,11 +38,11 @@ class AndroidStudioUpdateChecker(
         return newEntries
     }
 
-    private fun updateLastCheckTime(newDate: OffsetDateTime) {
-        propertiesStore["lastCheckTime"] = newDate.toString()
+    private suspend fun updateLastCheckTime(newDate: OffsetDateTime) {
+        settingsRepository.setString("0", "lastCheckTime", newDate.toString())
     }
 
-    private fun getLastCheckTime(): OffsetDateTime? {
-        return propertiesStore["lastCheckTime"]?.let { OffsetDateTime.parse(it.toString()) }
+    private suspend fun getLastCheckTime(): OffsetDateTime? {
+        return settingsRepository.getString("0", "lastCheckTime").first()?.let { OffsetDateTime.parse(it) }
     }
 }
