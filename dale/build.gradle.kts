@@ -14,9 +14,6 @@ dependencies {
     implementation(project(":core"))
     api(project(":rss")) // FIXME do not expose RSS
 
-    implementation("io.ktor:ktor-client-core:2.1.0")
-    implementation("io.ktor:ktor-client-cio:2.1.0")
-
     testImplementation(kotlin("test"))
 }
 

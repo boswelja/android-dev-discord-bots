@@ -1,4 +1,4 @@
-package rss
+package rss.parser
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.xml.XmlMapper
@@ -6,25 +6,27 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import rss.internal.AuthorDto
-import rss.internal.LinkDto
-import rss.internal.RssEntryDto
-import rss.internal.RssFeedDto
+import rss.Author
+import rss.Link
+import rss.RssEntry
+import rss.RssFeed
 
-interface RssParser {
+internal interface RssParser {
     suspend fun parseFeed(xml: String): RssFeed
 }
 
-object RssParserFactory {
+internal object RssParserFactory {
     fun create(): RssParser {
-        return RealRssParser()
+        return RealRssParser(
+            xmlMapper = XmlMapper()
+                .registerKotlinModule()
+                .registerModule(JavaTimeModule())
+        )
     }
 }
 
 internal class RealRssParser constructor(
-    private val xmlMapper: ObjectMapper = XmlMapper()
-        .registerKotlinModule()
-        .registerModule(JavaTimeModule())
+    private val xmlMapper: ObjectMapper,
 ): RssParser {
 
     override suspend fun parseFeed(xml: String): RssFeed {

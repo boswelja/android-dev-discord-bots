@@ -1,16 +1,18 @@
-package rss
+package rss.parser
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import rss.Author
+import rss.Link
 import java.time.*
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class RssParserTest {
 
-    lateinit var parser: RssParser
+    private lateinit var parser: RssParser
 
     @BeforeEach
     fun setUp() {

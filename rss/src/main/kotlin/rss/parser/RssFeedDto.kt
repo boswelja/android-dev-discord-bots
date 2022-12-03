@@ -1,9 +1,8 @@
-package rss.internal
+package rss.parser
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement
-import rss.RssFeed
 import java.time.OffsetDateTime
 
 @JacksonXmlRootElement(localName = "feed")

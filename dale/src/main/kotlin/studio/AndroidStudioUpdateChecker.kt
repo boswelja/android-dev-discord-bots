@@ -1,14 +1,10 @@
 package studio
 
 import guildsettings.GuildSettingsRepository
-import io.ktor.client.*
-import io.ktor.client.engine.cio.*
-import io.ktor.client.request.*
-import io.ktor.client.statement.*
 import kotlinx.coroutines.flow.first
 import rss.RssEntry
-import rss.RssParser
-import rss.RssParserFactory
+import rss.RssSource
+import rss.RssSourceFactory
 import java.time.OffsetDateTime
 
 /**
@@ -18,13 +14,11 @@ import java.time.OffsetDateTime
  */
 class AndroidStudioUpdateChecker(
     private val settingsRepository: GuildSettingsRepository,
-    private val parser: RssParser = RssParserFactory.create(),
-    private val httpClient: HttpClient = HttpClient(CIO),
+    private val source: RssSource = RssSourceFactory.create(),
 ) {
 
     suspend fun getNewPosts(): List<RssEntry> {
-        val response = httpClient.get("https://androidstudio.googleblog.com/feeds/posts/default").bodyAsText()
-        val deserializedResponse = parser.parseFeed(response)
+        val deserializedResponse = source.obtainRss("https://androidstudio.googleblog.com/feeds/posts/default")
         val lastCheckTime = getLastCheckTime()
         val newEntries = if (lastCheckTime == null) {
             deserializedResponse.entries
