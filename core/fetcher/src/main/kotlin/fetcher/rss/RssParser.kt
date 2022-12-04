@@ -1,4 +1,4 @@
-package rss.parser
+package fetcher.rss
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.xml.XmlMapper
@@ -6,13 +6,13 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import rss.Author
-import rss.Link
-import rss.RssEntry
-import rss.RssFeed
+import fetcher.Author
+import fetcher.Link
+import fetcher.Entry
+import fetcher.Feed
 
 internal interface RssParser {
-    suspend fun parseFeed(xml: String): RssFeed
+    suspend fun parseFeed(xml: String): Feed
 }
 
 internal object RssParserFactory {
@@ -29,7 +29,7 @@ internal class RealRssParser constructor(
     private val xmlMapper: ObjectMapper,
 ): RssParser {
 
-    override suspend fun parseFeed(xml: String): RssFeed {
+    override suspend fun parseFeed(xml: String): Feed {
         return withContext(Dispatchers.Default) {
             val dto = parseFeedInternal(xml)
             dto.toRssFeed()
@@ -40,8 +40,8 @@ internal class RealRssParser constructor(
         return xmlMapper.readValue(xml, RssFeedDto::class.java)
     }
 
-    private fun RssFeedDto.toRssFeed(): RssFeed {
-        return RssFeed(
+    private fun RssFeedDto.toRssFeed(): Feed {
+        return Feed(
             id = id,
             title = title,
             subtitle = subtitle,
@@ -52,8 +52,8 @@ internal class RealRssParser constructor(
         )
     }
 
-    private fun RssEntryDto.toRssEntry(): RssEntry {
-        return RssEntry(
+    private fun RssEntryDto.toRssEntry(): Entry {
+        return Entry(
             id = id,
             title = title,
             author = author.toAuthor(),

@@ -1,12 +1,12 @@
-package rss.parser
+package fetcher.rss
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import rss.Author
-import rss.Link
+import fetcher.Author
+import fetcher.Link
 import java.time.*
 
 @OptIn(ExperimentalCoroutinesApi::class)

@@ -1,41 +1,41 @@
-package rss
+package fetcher
 
 import network.NetworkModule
 import network.NetworkModuleFactory
 import network.SourceNotFoundException
-import rss.parser.RssParser
-import rss.parser.RssParserFactory
+import fetcher.rss.RssParser
+import fetcher.rss.RssParserFactory
 
-interface RssSource {
-    @Throws(RssCouldNotBeObtainedException::class)
-    suspend fun obtainRss(url: String): RssFeed
+interface Fetcher {
+    @Throws(FeedCouldNotBeObtainedException::class)
+    suspend fun obtainFeed(url: String): Feed
 }
 
-object RssSourceFactory {
-    fun create(): RssSource {
-        return NetworkRssSource(
+object FetcherFactory {
+    fun create(): Fetcher {
+        return NetworkFetcher(
             networkModule = NetworkModuleFactory.create(),
             parser = RssParserFactory.create(),
         )
     }
 }
 
-internal class NetworkRssSource constructor(
+internal class NetworkFetcher constructor(
     private val networkModule: NetworkModule,
     private val parser: RssParser,
-): RssSource {
-    override suspend fun obtainRss(url: String): RssFeed {
+): Fetcher {
+    override suspend fun obtainFeed(url: String): Feed {
         val xml = try {
             networkModule.downloadFileAsText(url)
         } catch (e: SourceNotFoundException) {
-            throw RssNotFoundException(url, e)
+            throw FeedNotFoundException(url, e)
         } catch (e: Exception) {
-            throw RssTemporaryUnavailableException(url, e)
+            throw FeedTemporaryUnavailableException(url, e)
         }
         return try {
             parser.parseFeed(xml)
         } catch (e: Exception) {
-            throw RssInvalidException("invalid feed from source: $url", e)
+            throw FeedInvalidException("invalid feed from source: $url", e)
         }
     }
 }

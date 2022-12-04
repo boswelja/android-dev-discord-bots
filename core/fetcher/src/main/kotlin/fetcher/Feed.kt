@@ -1,21 +1,21 @@
-package rss
+package fetcher
 
 import java.time.OffsetDateTime
 
 // FIXME this should probably be made more generic and moved in another module
 // this module should just map between RSS (or a specific RSS version?) to our generic domain objects
 
-data class RssFeed(
+data class Feed(
     val id: String,
     val title: String,
     val subtitle: String,
     val author: Author,
-    val entries: List<RssEntry> = emptyList(),
+    val entries: List<Entry> = emptyList(),
     val links: List<Link> = emptyList(),
     val lastUpdatedOn: OffsetDateTime = OffsetDateTime.now(),
 )
 
-data class RssEntry(
+data class Entry(
     val id: String,
     val title: String,
     val author: Author,

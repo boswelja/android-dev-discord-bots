@@ -2,9 +2,9 @@ package studio
 
 import guildsettings.GuildSettingsRepository
 import kotlinx.coroutines.flow.first
-import rss.RssEntry
-import rss.RssSource
-import rss.RssSourceFactory
+import fetcher.Entry
+import fetcher.Fetcher
+import fetcher.FetcherFactory
 import java.time.OffsetDateTime
 
 /**
@@ -14,11 +14,11 @@ import java.time.OffsetDateTime
  */
 class AndroidStudioUpdateChecker(
     private val settingsRepository: GuildSettingsRepository,
-    private val source: RssSource = RssSourceFactory.create(),
+    private val source: Fetcher = FetcherFactory.create(),
 ) {
 
-    suspend fun getNewPosts(): List<RssEntry> {
-        val deserializedResponse = source.obtainRss("https://androidstudio.googleblog.com/feeds/posts/default")
+    suspend fun getNewPosts(): List<Entry> {
+        val deserializedResponse = source.obtainFeed("https://androidstudio.googleblog.com/feeds/posts/default")
         val lastCheckTime = getLastCheckTime()
         val newEntries = if (lastCheckTime == null) {
             deserializedResponse.entries
