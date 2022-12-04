@@ -1,5 +1,6 @@
 # TODOs
 
+- chose a licence -> setup spotless to enforce it
 - chose and use a logger
 - write wrapper to Discord
   - good source of inspiration for the API could be https://www.npmjs.com/package/eris
