@@ -10,7 +10,7 @@ repositories {
 }
 
 dependencies {
-    implementation(project(":core:network"))
+    implementation(project(":common:network"))
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.6.4")
 
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.14.1")

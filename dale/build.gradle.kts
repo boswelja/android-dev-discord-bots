@@ -12,7 +12,7 @@ repositories {
 
 dependencies {
     implementation(project(":core:database"))
-    api(project(":core:rss")) // FIXME do not expose RSS
+    implementation(project(":core:fetcher"))
 
     testImplementation(kotlin("test"))
 }
