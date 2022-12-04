@@ -10,7 +10,7 @@ import kotlinx.coroutines.withContext
 import org.sqlite.SQLiteException
 import java.io.File
 
-class GuildSettingsRepositoryImpl(
+internal class SqlDelightGuildSettingsRepository(
     fileName: String
 ) : GuildSettingsRepository {
     private val driver = JdbcSqliteDriver("jdbc:sqlite:dbs/$fileName")
