@@ -1,4 +1,4 @@
-import guildsettings.GuildSettingsRepositoryFactory
+import guildsettings.GuildSettingsDatabaseFactory
 import studio.AndroidStudioUpdateChecker
 
 suspend fun main(args: Array<String>) {
@@ -8,7 +8,7 @@ suspend fun main(args: Array<String>) {
     // Learn more about running applications: https://www.jetbrains.com/help/idea/running-applications.html.
     println("Program arguments: ${args.joinToString()}")
 
-    val propertiesStore = GuildSettingsRepositoryFactory.instance("dale")
+    val propertiesStore = GuildSettingsDatabaseFactory.instance("dale")
 
     println(AndroidStudioUpdateChecker(propertiesStore).getNewPosts().toString())
 }
