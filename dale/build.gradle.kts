@@ -11,7 +11,7 @@ repositories {
 }
 
 dependencies {
-    implementation(project(":core:database"))
+    implementation(project(":core:configuration"))
     implementation(project(":core:fetcher"))
 
     testImplementation(kotlin("test"))

@@ -8,7 +8,7 @@ dependencyResolutionManagement {
 
 include(
     "common:network",
-    "core:database",
+    "core:configuration",
     "core:fetcher",
     "core:discord",
     "dale",
