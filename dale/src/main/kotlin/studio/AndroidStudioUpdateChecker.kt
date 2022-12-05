@@ -1,10 +1,10 @@
 package studio
 
-import guildsettings.GuildSettingsDatabase
-import kotlinx.coroutines.flow.first
 import fetcher.Entry
 import fetcher.Fetcher
-import fetcher.FetcherFactory
+import fetcher.createFetcher
+import guildsettings.GuildSettingsDatabase
+import kotlinx.coroutines.flow.first
 import java.time.OffsetDateTime
 
 /**
@@ -14,7 +14,7 @@ import java.time.OffsetDateTime
  */
 class AndroidStudioUpdateChecker(
     private val settingsRepository: GuildSettingsDatabase,
-    private val source: Fetcher = FetcherFactory.create(),
+    private val source: Fetcher = createFetcher(),
 ) {
 
     suspend fun getNewPosts(): List<Entry> {

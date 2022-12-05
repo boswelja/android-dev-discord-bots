@@ -2,7 +2,9 @@ package guildsettings
 
 import sqldelight.SQLDelightDrivers
 
-object GuildSettingsDatabaseFactory {
+fun guildSettingDatabaseInstance(name: String) = GuildSettingsDatabaseFactory.instance(name)
+
+internal object GuildSettingsDatabaseFactory {
     private val instances: MutableMap<String, GuildSettingsDatabase> = mutableMapOf()
 
     fun instance(name: String): GuildSettingsDatabase {

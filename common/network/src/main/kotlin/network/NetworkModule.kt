@@ -14,7 +14,9 @@ interface NetworkModule {
     suspend fun downloadFileAsText(uri: String): String
 }
 
-object NetworkModuleFactory {
+fun createNetworkModule() = NetworkModuleFactory.create()
+
+internal object NetworkModuleFactory {
     fun create(): NetworkModule {
         return HttpNetworkModule(
             httpClient = HttpClient(CIO),
