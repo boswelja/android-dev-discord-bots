@@ -1,6 +1,7 @@
 plugins {
     kotlin("jvm")
     id("com.squareup.sqldelight")
+    id("io.gitlab.arturbosch.detekt")
 }
 
 group = "com.boswelja"
@@ -28,4 +29,9 @@ sqldelight {
     database("GuildSettings") {
         packageName = "guildsettings.database"
     }
+}
+
+detekt {
+    config.setFrom("$rootDir/config/detekt/detekt.yml")
+    parallel = true
 }

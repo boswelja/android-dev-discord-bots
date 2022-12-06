@@ -1,5 +1,6 @@
 plugins {
     kotlin("jvm")
+    id("io.gitlab.arturbosch.detekt")
 }
 
 group = "com.boswelja"
@@ -18,4 +19,9 @@ dependencies {
 
 tasks.getByName<Test>("test") {
     useJUnitPlatform()
+}
+
+detekt {
+    config.setFrom("$rootDir/config/detekt/detekt.yml")
+    parallel = true
 }
