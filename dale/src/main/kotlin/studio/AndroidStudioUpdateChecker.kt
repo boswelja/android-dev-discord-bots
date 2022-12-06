@@ -1,13 +1,9 @@
 package studio
 
-import com.fasterxml.jackson.dataformat.xml.XmlMapper
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
-import guildsettings.GuildSettingsRepository
-import io.ktor.client.*
-import io.ktor.client.engine.cio.*
-import io.ktor.client.request.*
-import io.ktor.client.statement.*
+import fetcher.Entry
+import fetcher.Fetcher
+import fetcher.createFetcher
+import guildsettings.GuildSettingsDatabase
 import kotlinx.coroutines.flow.first
 import java.time.OffsetDateTime
 
@@ -17,22 +13,17 @@ import java.time.OffsetDateTime
  * TODO Actually implement this
  */
 class AndroidStudioUpdateChecker(
-    private val settingsRepository: GuildSettingsRepository,
-    private val httpClient: HttpClient = HttpClient(CIO),
+    private val settingsRepository: GuildSettingsDatabase,
+    private val source: Fetcher = createFetcher(),
 ) {
 
-    private val xmlMapper = XmlMapper()
-        .registerKotlinModule()
-        .registerModule(JavaTimeModule())
-
-    suspend fun getNewPosts(): List<StudioBlogEntry> {
-        val response = httpClient.get("https://androidstudio.googleblog.com/feeds/posts/default").bodyAsText()
-        val deserializedResponse = xmlMapper.readValue(response, StudioBlogFeed::class.java)
+    suspend fun getNewPosts(): List<Entry> {
+        val deserializedResponse = source.obtainFeed("https://androidstudio.googleblog.com/feeds/posts/default")
         val lastCheckTime = getLastCheckTime()
         val newEntries = if (lastCheckTime == null) {
-            deserializedResponse.entry
+            deserializedResponse.entries
         } else {
-            deserializedResponse.entry.filter { it.publishedOn > lastCheckTime }
+            deserializedResponse.entries.filter { it.publishedOn > lastCheckTime }
         }
         updateLastCheckTime(deserializedResponse.lastUpdatedOn)
         return newEntries

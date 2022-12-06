@@ -1,4 +1,4 @@
-package studio
+package fetcher.rss
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper
@@ -6,7 +6,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement
 import java.time.OffsetDateTime
 
 @JacksonXmlRootElement(localName = "feed")
-data class StudioBlogFeed(
+internal data class RssFeedDto(
     @JsonProperty("id")
     val id: String,
     @JsonProperty("updated")
@@ -16,7 +16,7 @@ data class StudioBlogFeed(
     @JsonProperty("subtitle")
     val subtitle: String,
     @JsonProperty("author")
-    val author: Author,
+    val author: AuthorDto,
     @JsonProperty("generator")
     val generator: String,
     @JsonProperty("totalResults")
@@ -26,12 +26,12 @@ data class StudioBlogFeed(
     @JsonProperty("itemsPerPage")
     val itemsPerPage: Int,
     @JacksonXmlElementWrapper(localName = "link", useWrapping = false)
-    val link: List<Link>,
+    val link: List<LinkDto>,
     @JacksonXmlElementWrapper(localName = "entry", useWrapping = false)
-    val entry: List<StudioBlogEntry>
+    val entry: List<RssEntryDto>
 )
 
-data class Link(
+internal data class LinkDto(
     @JsonProperty("rel")
     val rel: String,
     @JsonProperty("href")
@@ -42,7 +42,7 @@ data class Link(
     val title: String?
 )
 
-data class StudioBlogEntry(
+internal data class RssEntryDto(
     @JsonProperty("id")
     val id: String,
     @JsonProperty("published")
@@ -54,12 +54,12 @@ data class StudioBlogEntry(
     @JsonProperty("content")
     val content: String,
     @JacksonXmlElementWrapper(localName = "link", useWrapping = false)
-    val link: List<Link>,
+    val link: List<LinkDto>,
     @JsonProperty("author")
-    val author: Author
+    val author: AuthorDto
 )
 
-data class Author(
+internal data class AuthorDto(
     @JsonProperty("name")
     val name: String,
     @JsonProperty("uri")
@@ -67,9 +67,9 @@ data class Author(
     @JsonProperty("email")
     val email: String,
     @JsonProperty("image")
-    val profileImage: ProfileImage?
+    val profileImage: ProfileImageDto?
 ) {
-    data class ProfileImage(
+    data class ProfileImageDto(
         @JsonProperty("rel")
         val rel: String,
         @JsonProperty("width")

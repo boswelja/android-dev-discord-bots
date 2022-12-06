@@ -1,6 +1,5 @@
 plugins {
     kotlin("jvm")
-    application
 }
 
 group = "com.boswelja"
@@ -11,16 +10,12 @@ repositories {
 }
 
 dependencies {
-    implementation(project(":core:configuration"))
-    implementation(project(":core:fetcher"))
+    api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+    implementation("dev.kord:kord-core:0.8.0-M17")
 
     testImplementation(kotlin("test"))
 }
 
 tasks.getByName<Test>("test") {
     useJUnitPlatform()
-}
-
-application {
-    mainClass.set("MainKt")
 }

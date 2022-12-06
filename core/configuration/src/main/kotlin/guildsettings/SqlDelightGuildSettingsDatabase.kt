@@ -1,18 +1,17 @@
 package guildsettings
 
+import com.squareup.sqldelight.db.SqlDriver
 import com.squareup.sqldelight.runtime.coroutines.asFlow
 import com.squareup.sqldelight.runtime.coroutines.mapToOneOrNull
-import com.squareup.sqldelight.sqlite.driver.JdbcSqliteDriver
 import guildsettings.database.GuildSettings
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import org.sqlite.SQLiteException
 
-class GuildSettingsRepositoryImpl(
-    fileName: String
-) : GuildSettingsRepository {
-    private val driver = JdbcSqliteDriver("jdbc:sqlite:dbs/$fileName")
+internal class SqlDelightGuildSettingsDatabase(
+    private val driver: SqlDriver,
+) : GuildSettingsDatabase {
     private val database = GuildSettings(driver)
 
     init {
