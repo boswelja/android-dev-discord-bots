@@ -17,7 +17,7 @@ internal class SqlDelightGuildSettingsDatabase(
     init {
         try {
             GuildSettings.Schema.create(driver)
-        } catch (e: SQLiteException) {
+        } catch (_: SQLiteException) {
             // This probably means the table already exists, so ignore exceptions
         }
     }

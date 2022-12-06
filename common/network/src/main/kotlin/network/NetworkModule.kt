@@ -44,5 +44,4 @@ internal class HttpNetworkModule(
             throw NetworkException("Error getting $uri", e)
         }
     }
-
 }
