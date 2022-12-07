@@ -1,6 +1,7 @@
 plugins {
     kotlin("jvm")
     application
+    id("io.gitlab.arturbosch.detekt")
 }
 
 group = "com.boswelja"
@@ -23,4 +24,9 @@ tasks.getByName<Test>("test") {
 
 application {
     mainClass.set("MainKt")
+}
+
+detekt {
+    config.setFrom("$rootDir/config/detekt/detekt.yml")
+    parallel = true
 }
