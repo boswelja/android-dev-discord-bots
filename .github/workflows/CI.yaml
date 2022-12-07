@@ -24,11 +24,6 @@ jobs:
         with:
           arguments: build
 
-      - name: Lint with Gradle
-        uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
-        with:
-          arguments: lint
-
       - name: Test with Gradle
         uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
         with:
