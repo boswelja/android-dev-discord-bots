@@ -41,6 +41,7 @@ internal class NetworkFetcher constructor(
     private val networkModule: NetworkModule,
     private val parser: RssParser,
 ) : Fetcher {
+    @Suppress("TooGenericExceptionCaught")
     override suspend fun obtainFeed(url: String): Feed {
         val xml = try {
             networkModule.downloadFileAsText(url)

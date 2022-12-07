@@ -41,6 +41,7 @@ internal object NetworkModuleFactory {
 internal class HttpNetworkModule(
     private val httpClient: HttpClient,
 ) : NetworkModule {
+    @Suppress("TooGenericExceptionCaught")
     override suspend fun downloadFileAsText(uri: String): String {
         return try {
             httpClient.get(uri) {
