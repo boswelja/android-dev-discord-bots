@@ -15,19 +15,31 @@ subprojects {
     apply(plugin = "com.diffplug.spotless")
 
     spotless {
+        encoding = Charsets.UTF_8
+        format("gradlekts") {
+            target("**/*.gradle.kts")
+
+            trimTrailingWhitespace()
+            endWithNewline()
+        }
         kotlin {
             target("**/*.kt")
             targetExclude("$buildDir/**/*.kt")
             targetExclude("bin/**/*.kt")
 
-            ktlint("0.47.1")
+            ktlint()
                 .setUseExperimental(true)
+                // spotless doesn't yet read from .editorconfig
+                // see https://github.com/diffplug/spotless/issues/142
                 .editorConfigOverride(
                     mapOf(
                         "ij_kotlin_allow_trailing_comma" to true,
                         "ij_kotlin_allow_trailing_comma_on_call_site" to true,
                     ),
                 )
+            trimTrailingWhitespace()
+            endWithNewline()
+            licenseHeaderFile(rootProject.file("spotless/copyright.kt"))
         }
     }
 }
