@@ -1,12 +1,12 @@
 package fetcher.rss
 
+import fetcher.Author
+import fetcher.Link
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import fetcher.Author
-import fetcher.Link
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.Month
@@ -102,7 +102,7 @@ class RssParserTest {
             // 2022-11-30T19:27:01.610-08:00 --> UTC 2022-12-01T03:27:01.610Z
             LocalDate.of(2022, Month.DECEMBER, 1),
             LocalTime.of(3, 27, 1, 610000000),
-            ZoneOffset.UTC
+            ZoneOffset.UTC,
         )
         val expectedAuthor = Author(
             name = "Jamal Eason",
@@ -131,22 +131,22 @@ class RssParserTest {
         assertEquals("Android Studio Release Updates", feed.title) { "title does not match" }
         assertEquals(
             "Provides official announcements for new versions of Android Studio and other Android developer tools.",
-            feed.subtitle
+            feed.subtitle,
         ) { "subtitle does not match" }
         assertEquals(expectedAuthor, feed.author) { "author does not match" }
         assertEquals(expectedLinks, feed.links) { "link does not match" }
         assertEquals(2, feed.entries.size) { "entry size does not match" }
         assertEquals(
             "tag:blogger.com,1999:blog-3325683420543787015.post-926632259736729368",
-            feed.entries[0].id
+            feed.entries[0].id,
         ) { "feed.entry[0].id does not match" }
         assertEquals(
             "tag:blogger.com,1999:blog-3325683420543787015.post-1650240193865345981",
-            feed.entries[1].id
+            feed.entries[1].id,
         ) { "feed.entry[1].id does not match" }
         assertEquals(
             "Android Studio Flamingo Canary 9 now available",
-            feed.entries[0].title
+            feed.entries[0].title,
         ) { "feed.entry[0].title does not match" }
         assertEquals(3, feed.entries[0].links.size) { "feed.entry[0].link.size does not match" }
     }
@@ -163,5 +163,4 @@ class RssParserTest {
             .filter { it.isNotBlank() }
             .joinToString(separator = "") { it.trim() }
     }
-
 }

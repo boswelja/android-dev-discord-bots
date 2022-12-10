@@ -4,12 +4,12 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.xml.XmlMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import fetcher.Author
-import fetcher.Link
 import fetcher.Entry
 import fetcher.Feed
+import fetcher.Link
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 internal interface RssParser {
     suspend fun parseFeed(xml: String): Feed
@@ -20,14 +20,14 @@ internal object RssParserFactory {
         return RealRssParser(
             xmlMapper = XmlMapper()
                 .registerKotlinModule()
-                .registerModule(JavaTimeModule())
+                .registerModule(JavaTimeModule()),
         )
     }
 }
 
 internal class RealRssParser constructor(
     private val xmlMapper: ObjectMapper,
-): RssParser {
+) : RssParser {
 
     override suspend fun parseFeed(xml: String): Feed {
         return withContext(Dispatchers.Default) {
@@ -75,5 +75,3 @@ internal class RealRssParser constructor(
         )
     }
 }
-
-

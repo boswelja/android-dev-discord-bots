@@ -25,7 +25,7 @@ internal object FetcherFactory {
 internal class NetworkFetcher constructor(
     private val networkModule: NetworkModule,
     private val parser: RssParser,
-): Fetcher {
+) : Fetcher {
     override suspend fun obtainFeed(url: String): Feed {
         val xml = try {
             networkModule.downloadFileAsText(url)

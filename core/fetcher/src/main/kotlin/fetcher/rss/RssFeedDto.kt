@@ -28,7 +28,7 @@ internal data class RssFeedDto(
     @JacksonXmlElementWrapper(localName = "link", useWrapping = false)
     val link: List<LinkDto>,
     @JacksonXmlElementWrapper(localName = "entry", useWrapping = false)
-    val entry: List<RssEntryDto>
+    val entry: List<RssEntryDto>,
 )
 
 internal data class LinkDto(
@@ -39,7 +39,7 @@ internal data class LinkDto(
     @JsonProperty("type")
     val type: String?,
     @JsonProperty("title")
-    val title: String?
+    val title: String?,
 )
 
 internal data class RssEntryDto(
@@ -56,7 +56,7 @@ internal data class RssEntryDto(
     @JacksonXmlElementWrapper(localName = "link", useWrapping = false)
     val link: List<LinkDto>,
     @JsonProperty("author")
-    val author: AuthorDto
+    val author: AuthorDto,
 )
 
 internal data class AuthorDto(
@@ -67,7 +67,7 @@ internal data class AuthorDto(
     @JsonProperty("email")
     val email: String,
     @JsonProperty("image")
-    val profileImage: ProfileImageDto?
+    val profileImage: ProfileImageDto?,
 ) {
     data class ProfileImageDto(
         @JsonProperty("rel")
@@ -77,6 +77,6 @@ internal data class AuthorDto(
         @JsonProperty("height")
         val height: Int,
         @JsonProperty("src")
-        val src: String
+        val src: String,
     )
 }

@@ -12,7 +12,7 @@ internal object SQLDelightDrivers {
             File("dbs").mkdirs()
             instances[name]
                 ?: JdbcSqliteDriver("jdbc:sqlite:dbs/$name.db")
-                    .also {instances[name] = it  }
+                    .also { instances[name] = it }
         }
     }
 }

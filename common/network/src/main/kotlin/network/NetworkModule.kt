@@ -1,6 +1,5 @@
 package network
 
-
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.ClientRequestException
@@ -26,10 +25,10 @@ internal object NetworkModuleFactory {
 
 internal class HttpNetworkModule(
     private val httpClient: HttpClient,
-): NetworkModule {
+) : NetworkModule {
     override suspend fun downloadFileAsText(uri: String): String {
         return try {
-            httpClient.get(uri)  {
+            httpClient.get(uri) {
                 expectSuccess = true // I want this to fail if the server return an error
             }.bodyAsText()
         } catch (e: ClientRequestException) {
