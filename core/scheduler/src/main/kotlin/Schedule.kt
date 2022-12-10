@@ -10,16 +10,20 @@ import java.time.temporal.ChronoField
 import kotlin.coroutines.coroutineContext
 import kotlin.time.Duration
 
-suspend fun schedule(repeating: Repeating, block: suspend () -> Unit) {
+suspend fun schedule(
+    repeating: Repeating,
+    clock: Clock = Clock.System,
+    block: suspend () -> Unit
+) {
     while (coroutineContext.isActive) {
-        delay(calculateDelayUntilNextExecution(repeating))
+        delay(calculateDelayUntilNextExecution(clock, repeating))
         block()
     }
 }
 
-private fun calculateDelayUntilNextExecution(repeating: Repeating): Duration {
+private fun calculateDelayUntilNextExecution(clock: Clock, repeating: Repeating): Duration {
     val timeZone = TimeZone.currentSystemDefault()
-    val nowDateTime = Clock.System.now().toLocalDateTime(timeZone)
+    val nowDateTime = clock.now().toLocalDateTime(timeZone)
     val nextExecutionDateTime = when (repeating) {
         is Repeating.Daily -> {
             nowDateTime.toJavaLocalDateTime()
