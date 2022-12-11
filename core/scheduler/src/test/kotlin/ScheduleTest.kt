@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test
 import java.time.DayOfWeek
 import kotlin.test.assertTrue
 import kotlin.time.Duration
-import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds

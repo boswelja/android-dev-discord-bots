@@ -7,10 +7,13 @@ import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 import kotlin.coroutines.coroutineContext
 import kotlin.time.Duration
-import kotlin.time.Duration.Companion.days
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTime
 
+/**
+ * Schedules repeating work via Coroutines. Cancelling the parent coroutine will cancel subsequent work appropriately.
+ * See [Repeating] for possible configuration options.
+ */
 @OptIn(ExperimentalTime::class)
 suspend fun schedule(
     repeating: Repeating,
