@@ -17,7 +17,7 @@ suspend fun schedule(
     clock: Clock = Clock.System,
     block: suspend () -> Unit
 ) {
-    delay(calculateDelayUntilNextExecution(clock, repeating))
+    delay(calculateInitialDelay(clock, repeating))
     while (coroutineContext.isActive) {
         val workDuration = measureTime {
             block()
@@ -26,7 +26,7 @@ suspend fun schedule(
     }
 }
 
-private fun calculateDelayUntilNextExecution(clock: Clock, repeating: Repeating): Duration {
+private fun calculateInitialDelay(clock: Clock, repeating: Repeating): Duration {
     val timeZone = TimeZone.currentSystemDefault()
     val nowDateTime = clock.now().toLocalDateTime(timeZone)
 
@@ -34,12 +34,7 @@ private fun calculateDelayUntilNextExecution(clock: Clock, repeating: Repeating)
         .atTime(repeating.hour, repeating.minute, repeating.second)
 
     val nextInstant = if (nextDateTime <= nowDateTime) {
-        val extraDuration = when (repeating) {
-            is Repeating.Daily -> 1.days
-            is Repeating.Weekly -> 7.days
-            is Repeating.Fortnightly -> 14.days
-        }
-        nextDateTime.toInstant(timeZone) + extraDuration
+        nextDateTime.toInstant(timeZone) + repeating.interval
     } else {
         nextDateTime.toInstant(timeZone)
     }
