@@ -12,7 +12,7 @@ import kotlinx.datetime.toLocalDateTime
 import org.junit.jupiter.api.Test
 import java.time.DayOfWeek
 import kotlin.test.BeforeTest
-import kotlin.test.assertContains
+import kotlin.test.assertTrue
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.hours
@@ -154,7 +154,6 @@ class ScheduleTest {
 
             // Advance the test clock by elapsed time
             testClock.advanceTimeBy(millisSinceLastRun)
-            lastRunTime = currentTime
 
             if (runCount > 5) {
                 // If we've done more than 5 runs, cancel
@@ -170,13 +169,12 @@ class ScheduleTest {
 
             // Increment run count
             runCount++
+            lastRunTime = currentTime
         }
     }
 
     private fun assertEqualsApproximately(expected: Duration, actual: Duration, tolerance: Duration) {
-        assertContains(
-            (expected - tolerance)..(expected + tolerance),
-            actual
-        )
+        val range = (expected - tolerance)..(expected + tolerance)
+        assertTrue(range.contains(actual), "Expected duration within $tolerance of $expected, but got $actual")
     }
 }
