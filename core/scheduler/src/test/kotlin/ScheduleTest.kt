@@ -12,11 +12,12 @@ import kotlinx.datetime.toLocalDateTime
 import org.junit.jupiter.api.Test
 import java.time.DayOfWeek
 import kotlin.test.BeforeTest
-import kotlin.test.assertEquals
+import kotlin.test.assertContains
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
+import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.milliseconds
-import kotlin.time.DurationUnit
+import kotlin.time.Duration.Companion.seconds
 
 class ScheduleTest {
 
@@ -50,7 +51,11 @@ class ScheduleTest {
                 repeating = Repeating.Daily(nowTime.hour + 1, nowTime.minute, nowTime.second),
                 clock = testClock
             ) {
-                assertEquals(1.0, currentTime.milliseconds.toDouble(DurationUnit.HOURS))
+                assertEqualsApproximately(
+                    1.hours,
+                    currentTime.milliseconds,
+                    1.seconds
+                )
                 cancel()
             }
         }
@@ -67,7 +72,11 @@ class ScheduleTest {
                 repeating = Repeating.Weekly(nowTime.dayOfWeek, nowTime.hour + 1, nowTime.minute, nowTime.second),
                 clock = testClock
             ) {
-                assertEquals(1.0, currentTime.milliseconds.toDouble(DurationUnit.HOURS))
+                assertEqualsApproximately(
+                    1.hours,
+                    currentTime.milliseconds,
+                    1.seconds
+                )
                 cancel()
             }
         }
@@ -84,7 +93,11 @@ class ScheduleTest {
                 repeating = Repeating.Fortnightly(nowTime.dayOfWeek, nowTime.hour + 1, nowTime.minute, nowTime.second),
                 clock = testClock
             ) {
-                assertEquals(1.0, currentTime.milliseconds.toDouble(DurationUnit.HOURS))
+                assertEqualsApproximately(
+                    1.hours,
+                    currentTime.milliseconds,
+                    1.seconds
+                )
                 cancel()
             }
         }
@@ -148,11 +161,22 @@ class ScheduleTest {
                 coroutineScope { cancel() }
             } else if (runCount > 0) {
                 // Else if we have passed one run, start asserting
-                assertEquals(expectedDurationBetweenRuns, millisSinceLastRun.milliseconds)
+                assertEqualsApproximately(
+                    expectedDurationBetweenRuns,
+                    millisSinceLastRun.milliseconds,
+                    1.seconds
+                )
             }
 
             // Increment run count
             runCount++
         }
+    }
+
+    private fun assertEqualsApproximately(expected: Duration, actual: Duration, tolerance: Duration) {
+        assertContains(
+            (expected - tolerance)..(expected + tolerance),
+            actual
+        )
     }
 }
