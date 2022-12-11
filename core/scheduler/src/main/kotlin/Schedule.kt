@@ -28,13 +28,12 @@ private fun calculateDelayUntilNextExecution(clock: Clock, repeating: Repeating)
         .atTime(repeating.hour, repeating.minute, repeating.second)
 
     val nextInstant = if (nextDateTime <= nowDateTime) {
-        val extraDays = when (repeating) {
-            is Repeating.Daily -> 1
-            is Repeating.Weekly -> 7
-            is Repeating.Fortnightly -> 14
+        val extraDuration = when (repeating) {
+            is Repeating.Daily -> 1.days
+            is Repeating.Weekly -> 7.days
+            is Repeating.Fortnightly -> 14.days
         }
-        nextDateTime.toInstant(timeZone)
-            .plus(extraDays.days)
+        nextDateTime.toInstant(timeZone) + extraDuration
     } else {
         nextDateTime.toInstant(timeZone)
     }
