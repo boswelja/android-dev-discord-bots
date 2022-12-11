@@ -6,12 +6,10 @@ import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.currentTime
 import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.junit.jupiter.api.Test
 import java.time.DayOfWeek
-import kotlin.test.BeforeTest
 import kotlin.test.assertTrue
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
@@ -21,35 +19,15 @@ import kotlin.time.Duration.Companion.seconds
 
 class ScheduleTest {
 
-    private val testClock = object : Clock {
-        private var instant = Clock.System.now()
-
-        override fun now(): Instant  = instant
-
-        fun resetClock() {
-            instant = Clock.System.now()
-        }
-
-        fun advanceTimeBy(millis: Long) {
-            instant += millis.milliseconds
-        }
-    }
-
-    @BeforeTest
-    fun setUp() {
-        testClock.resetClock()
-    }
-
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `schedule daily one hour in the future executes in one hour`() = runTest {
-        val nowTime = testClock.now().toLocalDateTime(TimeZone.currentSystemDefault())
+        val nowTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
 
         // Wrap in a Launch, so we can cancel after the first execution
         launch {
             schedule(
-                repeating = Repeating.Daily(nowTime.hour + 1, nowTime.minute, nowTime.second),
-                clock = testClock
+                repeating = Repeating.Daily(nowTime.hour + 1, nowTime.minute, nowTime.second)
             ) {
                 assertEqualsApproximately(
                     1.hours,
@@ -64,13 +42,12 @@ class ScheduleTest {
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `schedule weekly one hour in the future executes in one hour`() = runTest {
-        val nowTime = testClock.now().toLocalDateTime(TimeZone.currentSystemDefault())
+        val nowTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
 
         // Wrap in a Launch, so we can cancel after the first execution
         launch {
             schedule(
-                repeating = Repeating.Weekly(nowTime.dayOfWeek, nowTime.hour + 1, nowTime.minute, nowTime.second),
-                clock = testClock
+                repeating = Repeating.Weekly(nowTime.dayOfWeek, nowTime.hour + 1, nowTime.minute, nowTime.second)
             ) {
                 assertEqualsApproximately(
                     1.hours,
@@ -85,13 +62,12 @@ class ScheduleTest {
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `schedule fortnightly one hour in the future executes in one hour`() = runTest {
-        val nowTime = testClock.now().toLocalDateTime(TimeZone.currentSystemDefault())
+        val nowTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
 
         // Wrap in a Launch, so we can cancel after the first execution
         launch {
             schedule(
-                repeating = Repeating.Fortnightly(nowTime.dayOfWeek, nowTime.hour + 1, nowTime.minute, nowTime.second),
-                clock = testClock
+                repeating = Repeating.Fortnightly(nowTime.dayOfWeek, nowTime.hour + 1, nowTime.minute, nowTime.second)
             ) {
                 assertEqualsApproximately(
                     1.hours,
@@ -147,13 +123,9 @@ class ScheduleTest {
         var runCount = 0
         var lastRunTime = 0L
         schedule(
-            repeating = repeating,
-            clock = testClock
+            repeating = repeating
         ) {
             val millisSinceLastRun = currentTime - lastRunTime
-
-            // Advance the test clock by elapsed time
-            testClock.advanceTimeBy(millisSinceLastRun)
 
             if (runCount > 5) {
                 // If we've done more than 5 runs, cancel
