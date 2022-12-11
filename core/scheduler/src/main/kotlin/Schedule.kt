@@ -8,15 +8,21 @@ import kotlinx.datetime.toLocalDateTime
 import kotlin.coroutines.coroutineContext
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
+import kotlin.time.ExperimentalTime
+import kotlin.time.measureTime
 
+@OptIn(ExperimentalTime::class)
 suspend fun schedule(
     repeating: Repeating,
     clock: Clock = Clock.System,
     block: suspend () -> Unit
 ) {
+    delay(calculateDelayUntilNextExecution(clock, repeating))
     while (coroutineContext.isActive) {
-        delay(calculateDelayUntilNextExecution(clock, repeating))
-        block()
+        val workDuration = measureTime {
+            block()
+        }
+        delay(repeating.interval - workDuration)
     }
 }
 
