@@ -1,7 +1,8 @@
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.async
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.currentTime
 import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.Clock
@@ -11,8 +12,9 @@ import kotlinx.datetime.toLocalDateTime
 import org.junit.jupiter.api.Test
 import java.time.DayOfWeek
 import kotlin.test.BeforeTest
-import kotlin.test.assertContains
 import kotlin.test.assertEquals
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.DurationUnit
 
@@ -93,31 +95,10 @@ class ScheduleTest {
     fun `schedule daily repeats at 24 hour intervals`() = runTest {
         // Wrap in a Launch, so we can cancel without throwing exceptions in this scope
         launch {
-            var runCount = 0
-            var lastRunTime = 0L
-            schedule(
+            testScheduleRepeating(
                 repeating = Repeating.Daily(),
-                clock = testClock
-            ) {
-                val millisSinceLastRun = currentTime - lastRunTime
-
-                // Advance the test clock by elapsed time
-                testClock.advanceTimeBy(millisSinceLastRun)
-                lastRunTime = currentTime
-
-                if (runCount > 5) {
-                    // If we've done more than 5 runs, cancel
-                    cancel()
-                } else if (runCount > 0) {
-                    // Else if we have passed one run, start asserting
-                    val daysElapsed = millisSinceLastRun.milliseconds.toDouble(DurationUnit.DAYS)
-                    println(daysElapsed)
-                    assertEquals(1.0, daysElapsed)
-                }
-
-                // Increment run count
-                runCount++
-            }
+                expectedDurationBetweenRuns = 1.days
+            )
         }
     }
 
@@ -126,31 +107,10 @@ class ScheduleTest {
     fun `schedule weekly repeats at 7 day intervals`() = runTest {
         // Wrap in a Launch, so we can cancel without throwing exceptions in this scope
         launch {
-            var runCount = 0
-            var lastRunTime = 0L
-            schedule(
+            testScheduleRepeating(
                 repeating = Repeating.Weekly(DayOfWeek.MONDAY),
-                clock = testClock
-            ) {
-                val millisSinceLastRun = currentTime - lastRunTime
-
-                // Advance the test clock by elapsed time
-                testClock.advanceTimeBy(millisSinceLastRun)
-                lastRunTime = currentTime
-
-                if (runCount > 5) {
-                    // If we've done more than 5 runs, cancel
-                    cancel()
-                } else if (runCount > 0) {
-                    // Else if we have passed one run, start asserting
-                    val daysElapsed = millisSinceLastRun.milliseconds.toDouble(DurationUnit.DAYS)
-                    println(daysElapsed)
-                    assertEquals(7.0, daysElapsed)
-                }
-
-                // Increment run count
-                runCount++
-            }
+                expectedDurationBetweenRuns = 7.days
+            )
         }
     }
 
@@ -159,31 +119,40 @@ class ScheduleTest {
     fun `schedule fortnightly repeats at 14 day intervals`() = runTest {
         // Wrap in a Launch, so we can cancel without throwing exceptions in this scope
         launch {
-            var runCount = 0
-            var lastRunTime = 0L
-            schedule(
+            testScheduleRepeating(
                 repeating = Repeating.Fortnightly(DayOfWeek.MONDAY),
-                clock = testClock
-            ) {
-                val millisSinceLastRun = currentTime - lastRunTime
+                expectedDurationBetweenRuns = 14.days
+            )
+        }
+    }
 
-                // Advance the test clock by elapsed time
-                testClock.advanceTimeBy(millisSinceLastRun)
-                lastRunTime = currentTime
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private suspend fun TestScope.testScheduleRepeating(
+        repeating: Repeating,
+        expectedDurationBetweenRuns: Duration
+    ) {
+        var runCount = 0
+        var lastRunTime = 0L
+        schedule(
+            repeating = repeating,
+            clock = testClock
+        ) {
+            val millisSinceLastRun = currentTime - lastRunTime
 
-                if (runCount > 5) {
-                    // If we've done more than 5 runs, cancel
-                    cancel()
-                } else if (runCount > 0) {
-                    // Else if we have passed one run, start asserting
-                    val daysElapsed = millisSinceLastRun.milliseconds.toDouble(DurationUnit.DAYS)
-                    println(daysElapsed)
-                    assertEquals(14.0, daysElapsed)
-                }
+            // Advance the test clock by elapsed time
+            testClock.advanceTimeBy(millisSinceLastRun)
+            lastRunTime = currentTime
 
-                // Increment run count
-                runCount++
+            if (runCount > 5) {
+                // If we've done more than 5 runs, cancel
+                coroutineScope { cancel() }
+            } else if (runCount > 0) {
+                // Else if we have passed one run, start asserting
+                assertEquals(expectedDurationBetweenRuns, millisSinceLastRun.milliseconds)
             }
+
+            // Increment run count
+            runCount++
         }
     }
 }
