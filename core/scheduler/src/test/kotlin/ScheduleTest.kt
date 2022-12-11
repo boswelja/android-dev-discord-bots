@@ -85,8 +85,7 @@ class ScheduleTest {
         // Wrap in a Launch, so we can cancel without throwing exceptions in this scope
         launch {
             testScheduleRepeating(
-                repeating = Repeating.Daily(),
-                expectedDurationBetweenRuns = 1.days
+                repeating = Repeating.Daily()
             )
         }
     }
@@ -97,8 +96,7 @@ class ScheduleTest {
         // Wrap in a Launch, so we can cancel without throwing exceptions in this scope
         launch {
             testScheduleRepeating(
-                repeating = Repeating.Weekly(DayOfWeek.MONDAY),
-                expectedDurationBetweenRuns = 7.days
+                repeating = Repeating.Weekly(DayOfWeek.MONDAY)
             )
         }
     }
@@ -109,16 +107,14 @@ class ScheduleTest {
         // Wrap in a Launch, so we can cancel without throwing exceptions in this scope
         launch {
             testScheduleRepeating(
-                repeating = Repeating.Fortnightly(DayOfWeek.MONDAY),
-                expectedDurationBetweenRuns = 14.days
+                repeating = Repeating.Fortnightly(DayOfWeek.MONDAY)
             )
         }
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private suspend fun TestScope.testScheduleRepeating(
-        repeating: Repeating,
-        expectedDurationBetweenRuns: Duration
+        repeating: Repeating
     ) {
         var runCount = 0
         var lastRunTime = 0L
@@ -133,7 +129,7 @@ class ScheduleTest {
             } else if (runCount > 0) {
                 // Else if we have passed one run, start asserting
                 assertEqualsApproximately(
-                    expectedDurationBetweenRuns,
+                    repeating.interval,
                     millisSinceLastRun.milliseconds,
                     1.seconds
                 )
