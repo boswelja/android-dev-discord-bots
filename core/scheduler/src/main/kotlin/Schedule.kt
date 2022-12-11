@@ -24,32 +24,42 @@ suspend fun schedule(
 private fun calculateDelayUntilNextExecution(clock: Clock, repeating: Repeating): Duration {
     val timeZone = TimeZone.currentSystemDefault()
     val nowDateTime = clock.now().toLocalDateTime(timeZone)
+
+    // TODO Don't convert to java LocalDateTime
+    val nextDateTime = nowDateTime.toJavaLocalDateTime()
+        .withHour(repeating.hour)
+        .withMinute(repeating.minute)
+        .withSecond(repeating.second)
+        .toKotlinLocalDateTime()
+
+    // Add any required offset
     val nextExecutionDateTime = when (repeating) {
         is Repeating.Daily -> {
-            nowDateTime.toJavaLocalDateTime()
-                .plusDays(1)
-                .withHour(repeating.hour)
-                .withMinute(repeating.minute)
-                .withMinute(repeating.second)
-                .toKotlinLocalDateTime()
+            if (nextDateTime <= nowDateTime) {
+                nextDateTime.toJavaLocalDateTime()
+                    .plusDays(1)
+                    .toKotlinLocalDateTime()
+            } else {
+                nextDateTime
+            }
         }
         is Repeating.Weekly -> {
-            nowDateTime.toJavaLocalDateTime()
-                .plusWeeks(1)
-                .with(ChronoField.DAY_OF_WEEK, repeating.weekday.value.toLong())
-                .withHour(repeating.hour)
-                .withMinute(repeating.minute)
-                .withMinute(repeating.second)
-                .toKotlinLocalDateTime()
+            if (nextDateTime <= nowDateTime) {
+                nextDateTime.toJavaLocalDateTime()
+                    .plusDays(7)
+                    .toKotlinLocalDateTime()
+            } else {
+                nextDateTime
+            }
         }
         is Repeating.Fortnightly -> {
-            nowDateTime.toJavaLocalDateTime()
-                .plusWeeks(2)
-                .with(ChronoField.DAY_OF_WEEK, repeating.weekday.value.toLong())
-                .withHour(repeating.hour)
-                .withMinute(repeating.minute)
-                .withMinute(repeating.second)
-                .toKotlinLocalDateTime()
+            if (nextDateTime <= nowDateTime) {
+                nextDateTime.toJavaLocalDateTime()
+                    .plusDays(14)
+                    .toKotlinLocalDateTime()
+            } else {
+                nextDateTime
+            }
         }
     }
     return nextExecutionDateTime.toInstant(timeZone) - nowDateTime.toInstant(timeZone)
