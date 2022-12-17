@@ -3,6 +3,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.currentTime
 import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.Clock
@@ -10,6 +11,7 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.junit.jupiter.api.Test
 import java.time.DayOfWeek
+import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.hours
@@ -24,18 +26,18 @@ class ScheduleTest {
         val nowTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
 
         // Wrap in a Launch, so we can cancel after the first execution
-        launch {
+        var executions = 0
+        val scheduleJob = launch {
             schedule(
                 repeating = Repeating.Daily(nowTime.hour + 1, nowTime.minute, nowTime.second)
             ) {
-                assertEqualsApproximately(
-                    1.hours,
-                    currentTime.milliseconds,
-                    1.seconds
-                )
-                cancel()
+                executions++
             }
         }
+
+        advanceTimeBy(1.hours.inWholeMilliseconds)
+        assertEquals(1, executions)
+        scheduleJob.cancel()
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -44,18 +46,18 @@ class ScheduleTest {
         val nowTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
 
         // Wrap in a Launch, so we can cancel after the first execution
-        launch {
+        var executions = 0
+        val scheduleJob = launch {
             schedule(
                 repeating = Repeating.Weekly(nowTime.dayOfWeek, nowTime.hour + 1, nowTime.minute, nowTime.second)
             ) {
-                assertEqualsApproximately(
-                    1.hours,
-                    currentTime.milliseconds,
-                    1.seconds
-                )
-                cancel()
+                executions++
             }
         }
+
+        advanceTimeBy(1.hours.inWholeMilliseconds)
+        assertEquals(1, executions)
+        scheduleJob.cancel()
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -64,18 +66,18 @@ class ScheduleTest {
         val nowTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
 
         // Wrap in a Launch, so we can cancel after the first execution
-        launch {
+        var executions = 0
+        val scheduleJob = launch {
             schedule(
                 repeating = Repeating.Fortnightly(nowTime.dayOfWeek, nowTime.hour + 1, nowTime.minute, nowTime.second)
             ) {
-                assertEqualsApproximately(
-                    1.hours,
-                    currentTime.milliseconds,
-                    1.seconds
-                )
-                cancel()
+                executions++
             }
         }
+
+        advanceTimeBy(1.hours.inWholeMilliseconds)
+        assertEquals(1, executions)
+        scheduleJob.cancel()
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
