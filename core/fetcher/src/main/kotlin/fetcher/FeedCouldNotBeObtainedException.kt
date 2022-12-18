@@ -1,9 +1,24 @@
+/*
+ * Copyright 2022 AndroidDev Discord Dev Team
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package fetcher
 
-open class FeedCouldNotBeObtainedException (
+open class FeedCouldNotBeObtainedException(
     message: String? = null,
-    cause: Throwable? = null
-): Exception(message) {
+    cause: Throwable? = null,
+) : Exception(message) {
     init {
         if (cause != null) initCause(cause)
     }
@@ -13,13 +28,11 @@ open class FeedCouldNotBeObtainedException (
     }
 }
 
-class FeedNotFoundException(source: String, cause: Throwable? = null):
+class FeedNotFoundException(source: String, cause: Throwable? = null) :
     FeedCouldNotBeObtainedException("Not found at source: $source", cause)
 
-
-class FeedInvalidException(message: String, cause: Throwable? = null):
+class FeedInvalidException(message: String, cause: Throwable? = null) :
     FeedCouldNotBeObtainedException(message, cause)
 
-
-class FeedTemporaryUnavailableException(source: String, cause: Throwable? = null):
+class FeedTemporaryUnavailableException(source: String, cause: Throwable? = null) :
     FeedCouldNotBeObtainedException("Temporary unavailable resource: $source", cause)

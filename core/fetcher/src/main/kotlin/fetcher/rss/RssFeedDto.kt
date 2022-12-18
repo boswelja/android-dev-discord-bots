@@ -1,3 +1,18 @@
+/*
+ * Copyright 2022 AndroidDev Discord Dev Team
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package fetcher.rss
 
 import com.fasterxml.jackson.annotation.JsonProperty
@@ -28,7 +43,7 @@ internal data class RssFeedDto(
     @JacksonXmlElementWrapper(localName = "link", useWrapping = false)
     val link: List<LinkDto>,
     @JacksonXmlElementWrapper(localName = "entry", useWrapping = false)
-    val entry: List<RssEntryDto>
+    val entry: List<RssEntryDto>,
 )
 
 internal data class LinkDto(
@@ -39,7 +54,7 @@ internal data class LinkDto(
     @JsonProperty("type")
     val type: String?,
     @JsonProperty("title")
-    val title: String?
+    val title: String?,
 )
 
 internal data class RssEntryDto(
@@ -56,7 +71,7 @@ internal data class RssEntryDto(
     @JacksonXmlElementWrapper(localName = "link", useWrapping = false)
     val link: List<LinkDto>,
     @JsonProperty("author")
-    val author: AuthorDto
+    val author: AuthorDto,
 )
 
 internal data class AuthorDto(
@@ -67,7 +82,7 @@ internal data class AuthorDto(
     @JsonProperty("email")
     val email: String,
     @JsonProperty("image")
-    val profileImage: ProfileImageDto?
+    val profileImage: ProfileImageDto?,
 ) {
     data class ProfileImageDto(
         @JsonProperty("rel")
@@ -77,6 +92,6 @@ internal data class AuthorDto(
         @JsonProperty("height")
         val height: Int,
         @JsonProperty("src")
-        val src: String
+        val src: String,
     )
 }
