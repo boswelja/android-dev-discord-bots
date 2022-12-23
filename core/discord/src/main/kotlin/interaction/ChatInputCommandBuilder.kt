@@ -4,7 +4,7 @@ interface ChatInputCommandBuilder : CommandBuilder {
 
     fun subCommand(name: String, description: String, builder: SubCommandBuilder.() -> Unit)
 
-    fun subCommandGroup(name: String, description: String, builder : SubCommandGroupBuilder.() -> Unit)
+    fun subCommandGroup(name: String, description: String, builder: SubCommandGroupBuilder.() -> Unit)
 }
 
 interface CommandBuilder {
