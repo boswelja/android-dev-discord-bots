@@ -15,6 +15,8 @@
  */
 package kord.interaction
 
+import dev.kord.gateway.Gateway
+import dev.kord.gateway.InteractionCreate
 import dev.kord.rest.builder.interaction.GlobalChatInputCreateBuilder
 import dev.kord.rest.builder.interaction.GroupCommandBuilder
 import dev.kord.rest.builder.interaction.boolean
@@ -32,9 +34,14 @@ import interaction.ChatInputCommandBuilder
 import interaction.InteractionScope
 import interaction.SubCommandBuilder
 import interaction.SubCommandGroupBuilder
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.coroutines.launch
 
 internal class KordApplicationCommandScope(
-    private val restClient: RestClient
+    private val restClient: RestClient,
+    private val gateway: Gateway
 ) : ApplicationCommandScope {
     override suspend fun registerGlobalChatInputCommand(
         name: String,
@@ -47,6 +54,16 @@ internal class KordApplicationCommandScope(
             name,
             description
         ) { KordChatInputCommandBuilder(this).apply(builder) }
+
+        // Using GlobalScope so we don't block anything here
+        GlobalScope.launch {
+            gateway.events
+                .filterIsInstance<InteractionCreate>()
+                .collectLatest {
+                    // TODO Set up InteractionScope and call onCommandInvoked
+                    println(it)
+                }
+        }
     }
 }
 

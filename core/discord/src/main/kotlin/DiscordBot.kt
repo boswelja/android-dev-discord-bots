@@ -14,10 +14,14 @@
  * limitations under the License.
  */
 import channel.MessageScope
+import dev.kord.common.entity.PresenceStatus
+import dev.kord.gateway.DefaultGateway
+import dev.kord.gateway.start
 import dev.kord.rest.service.RestClient
 import interaction.ApplicationCommandScope
 import kord.channel.KordMessageScope
 import kord.interaction.KordApplicationCommandScope
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
 import kotlin.contracts.ExperimentalContracts
@@ -47,11 +51,20 @@ class DiscordBotScope(
     private val messageScope: MessageScope,
 ) : ApplicationCommandScope by applicationCommandScope, MessageScope by messageScope
 
-fun createKordDiscordBot(token: String): DiscordBotScope {
+suspend fun createKordDiscordBot(token: String): DiscordBotScope {
     val restClient = RestClient(token)
+    val gateway = DefaultGateway()
 
+    // Using GlobalScope so we don't block anything here
+    GlobalScope.launch {
+        gateway.start(token) {
+            presence {
+                status = PresenceStatus.Online
+            }
+        }
+    }
     return DiscordBotScope(
-        KordApplicationCommandScope(restClient),
+        KordApplicationCommandScope(restClient, gateway),
         KordMessageScope(restClient)
     )
 }
