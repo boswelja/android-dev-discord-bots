@@ -29,6 +29,12 @@ import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
+/**
+ * Starts a new Discord bot using the given token.
+ * @param token The bot token.
+ * @param block A configuration block for the bot. This is used to interact with Discord, so your application logic will
+ * likely be contained here.
+ */
 @OptIn(ExperimentalContracts::class)
 suspend inline fun discordBot(
     token: String,
@@ -47,6 +53,9 @@ suspend inline fun discordBot(
     }
 }
 
+/**
+ * A simple class to combine bot-related scopes into a single scope.
+ */
 class DiscordBotScope(
     private val applicationCommandScope: ApplicationCommandScope,
     private val messageScope: MessageScope,
