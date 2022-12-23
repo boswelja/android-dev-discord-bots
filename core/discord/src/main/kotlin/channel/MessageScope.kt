@@ -16,5 +16,5 @@
 package channel
 
 interface MessageScope {
-    fun createEmbed(targetChannelId: String, builder: EmbedBuilder.() -> Unit)
+    suspend fun createEmbed(targetChannelId: String, builder: EmbedBuilder.() -> Unit)
 }
