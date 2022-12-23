@@ -1,0 +1,3 @@
+import interaction.ApplicationCommandScope
+
+interface DiscordBot : ApplicationCommandScope
