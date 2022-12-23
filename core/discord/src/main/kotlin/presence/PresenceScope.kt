@@ -15,7 +15,16 @@
  */
 package presence
 
+/**
+ * A scope interface for managing bot presence. Presence includes things like online status, now playing details etc.
+ */
 interface PresenceScope {
+
+    /**
+     * Updates the bots presence to match the given state.
+     * @param afk Whether the bot should be displayed as AFK.
+     * @param status The status that should be displayed for the bot.
+     */
     fun updatePresence(afk: Boolean, status: PresenceStatus)
 }
 
