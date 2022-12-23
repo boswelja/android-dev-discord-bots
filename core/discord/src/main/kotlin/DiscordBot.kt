@@ -15,5 +15,19 @@
  */
 import channel.MessageScope
 import interaction.ApplicationCommandScope
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
 
-interface DiscordBot : ApplicationCommandScope, MessageScope
+@OptIn(ExperimentalContracts::class)
+suspend inline fun discordBot(
+    token: String,
+    block: DiscordBotScope.() -> Unit
+) {
+    contract {
+        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
+    }
+    // TODO
+}
+
+interface DiscordBotScope : ApplicationCommandScope, MessageScope
