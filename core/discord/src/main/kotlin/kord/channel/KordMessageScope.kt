@@ -24,7 +24,7 @@ import dev.kord.rest.service.RestClient
 import kotlinx.datetime.Instant
 
 internal class KordMessageScope(
-    private val restClient: RestClient
+    private val restClient: RestClient,
 ) : MessageScope {
     override suspend fun createEmbed(targetChannelId: String, builder: EmbedBuilder.() -> Unit) {
         restClient.channel.createMessage(Snowflake(targetChannelId)) {
@@ -38,7 +38,7 @@ internal class KordMessageScope(
                     override var image: String? by this@embed::image
                     override var color: Int?
                         get() = this@embed.color?.rgb
-                        set(value) {this@embed.color = value?.let { Color(it) } }
+                        set(value) { this@embed.color = value?.let { Color(it) } }
 
                     override fun footer(text: String, iconUrl: String?) = footer {
                         this.text = text

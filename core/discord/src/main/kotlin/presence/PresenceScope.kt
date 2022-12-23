@@ -23,5 +23,5 @@ enum class PresenceStatus {
     INVISIBLE,
     DO_NOT_DISTURB,
     IDLE,
-    ONLINE
+    ONLINE,
 }

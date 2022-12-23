@@ -31,7 +31,7 @@ import interaction.SubCommandBuilder
 import interaction.SubCommandGroupBuilder
 
 internal class KordChatInputCommandBuilder(
-    private val kordBuilder: GlobalChatInputCreateBuilder
+    private val kordBuilder: GlobalChatInputCreateBuilder,
 ) : ChatInputCommandBuilder {
 
     override fun int(name: String, description: String, required: Boolean) =
@@ -81,7 +81,7 @@ internal class KordChatInputCommandBuilder(
 }
 
 internal class KordSubCommandBuilder(
-    private val kordBuilder: dev.kord.rest.builder.interaction.SubCommandBuilder
+    private val kordBuilder: dev.kord.rest.builder.interaction.SubCommandBuilder,
 ) : SubCommandBuilder {
 
     override fun int(name: String, description: String, required: Boolean) =
@@ -121,7 +121,7 @@ internal class KordSubCommandBuilder(
 }
 
 internal class KordSubCommandGroupBuilder(
-    private val kordBuilder: GroupCommandBuilder
+    private val kordBuilder: GroupCommandBuilder,
 ) : SubCommandGroupBuilder {
     override fun subCommand(name: String, description: String, builder: SubCommandBuilder.() -> Unit) =
         kordBuilder.subCommand(name, description) {

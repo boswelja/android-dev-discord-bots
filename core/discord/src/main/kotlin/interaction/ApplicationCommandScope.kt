@@ -20,6 +20,6 @@ interface ApplicationCommandScope {
         name: String,
         description: String,
         onCommandInvoked: suspend InteractionScope.() -> Unit,
-        builder: ChatInputCommandBuilder.() -> Unit
+        builder: ChatInputCommandBuilder.() -> Unit,
     )
 }

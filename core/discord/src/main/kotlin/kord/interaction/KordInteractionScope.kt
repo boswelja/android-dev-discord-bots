@@ -21,13 +21,13 @@ import interaction.InteractionScope
 
 internal class KordInteractionScope(
     private val restClient: RestClient,
-    private val interaction: InteractionCreate
+    private val interaction: InteractionCreate,
 ) : InteractionScope {
     override suspend fun createResponseMessage(targetChannelId: String, ephemeral: Boolean, content: String) {
         restClient.interaction.createInteractionResponse(
             interaction.interaction.id,
             interaction.interaction.token,
-            ephemeral
+            ephemeral,
         ) {
             this.content = content
         }

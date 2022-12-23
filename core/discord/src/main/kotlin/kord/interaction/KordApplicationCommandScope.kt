@@ -17,20 +17,10 @@ package kord.interaction
 
 import dev.kord.gateway.Gateway
 import dev.kord.gateway.InteractionCreate
-import dev.kord.rest.builder.interaction.GroupCommandBuilder
-import dev.kord.rest.builder.interaction.boolean
-import dev.kord.rest.builder.interaction.channel
-import dev.kord.rest.builder.interaction.int
-import dev.kord.rest.builder.interaction.mentionable
-import dev.kord.rest.builder.interaction.number
-import dev.kord.rest.builder.interaction.string
-import dev.kord.rest.builder.interaction.user
 import dev.kord.rest.service.RestClient
 import interaction.ApplicationCommandScope
 import interaction.ChatInputCommandBuilder
 import interaction.InteractionScope
-import interaction.SubCommandBuilder
-import interaction.SubCommandGroupBuilder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.filterIsInstance
@@ -39,7 +29,7 @@ import kotlinx.coroutines.launch
 internal class KordApplicationCommandScope(
     private val restClient: RestClient,
     private val gateway: Gateway,
-    private val scope: CoroutineScope
+    private val scope: CoroutineScope,
 ) : ApplicationCommandScope {
     override suspend fun registerGlobalChatInputCommand(
         name: String,
@@ -50,7 +40,7 @@ internal class KordApplicationCommandScope(
         restClient.interaction.createGlobalChatInputApplicationCommand(
             restClient.application.getCurrentApplicationInfo().id,
             name,
-            description
+            description,
         ) { KordChatInputCommandBuilder(this).apply(builder) }
 
         scope.launch {

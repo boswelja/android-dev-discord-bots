@@ -25,7 +25,7 @@ import presence.PresenceStatus
 class KordPresenceScope(
     private val token: String,
     private val gateway: Gateway,
-    private val scope: CoroutineScope
+    private val scope: CoroutineScope,
 ) : PresenceScope {
     override fun updatePresence(afk: Boolean, status: PresenceStatus) {
         scope.launch {

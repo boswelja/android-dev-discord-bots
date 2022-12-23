@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import channel.MessageScope
-import dev.kord.common.entity.PresenceStatus
 import dev.kord.gateway.DefaultGateway
 import dev.kord.gateway.start
 import dev.kord.rest.service.RestClient
@@ -33,7 +32,7 @@ import kotlin.contracts.contract
 @OptIn(ExperimentalContracts::class)
 suspend inline fun discordBot(
     token: String,
-    crossinline block: suspend DiscordBotScope.() -> Unit
+    crossinline block: suspend DiscordBotScope.() -> Unit,
 ) {
     contract {
         callsInPlace(block, InvocationKind.EXACTLY_ONCE)
@@ -51,7 +50,7 @@ suspend inline fun discordBot(
 class DiscordBotScope(
     private val applicationCommandScope: ApplicationCommandScope,
     private val messageScope: MessageScope,
-    private val presenceScope: PresenceScope
+    private val presenceScope: PresenceScope,
 ) : ApplicationCommandScope by applicationCommandScope,
     MessageScope by messageScope,
     PresenceScope by presenceScope
@@ -66,6 +65,6 @@ fun CoroutineScope.createKordDiscordBot(token: String): DiscordBotScope {
     return DiscordBotScope(
         KordApplicationCommandScope(restClient, gateway, this),
         KordMessageScope(restClient),
-        KordPresenceScope(token, gateway, this)
+        KordPresenceScope(token, gateway, this),
     )
 }
