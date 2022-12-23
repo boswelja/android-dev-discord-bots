@@ -21,9 +21,11 @@ import dev.kord.rest.service.RestClient
 import interaction.ApplicationCommandScope
 import kord.channel.KordMessageScope
 import kord.interaction.KordApplicationCommandScope
-import kotlinx.coroutines.GlobalScope
+import kord.presence.KordPresenceScope
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
+import presence.PresenceScope
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
@@ -49,14 +51,17 @@ suspend inline fun discordBot(
 class DiscordBotScope(
     private val applicationCommandScope: ApplicationCommandScope,
     private val messageScope: MessageScope,
-) : ApplicationCommandScope by applicationCommandScope, MessageScope by messageScope
+    private val presenceScope: PresenceScope
+) : ApplicationCommandScope by applicationCommandScope,
+    MessageScope by messageScope,
+    PresenceScope by presenceScope
 
-suspend fun createKordDiscordBot(token: String): DiscordBotScope {
+fun CoroutineScope.createKordDiscordBot(token: String): DiscordBotScope {
     val restClient = RestClient(token)
     val gateway = DefaultGateway()
 
     // Using GlobalScope so we don't block anything here
-    GlobalScope.launch {
+    launch {
         gateway.start(token) {
             presence {
                 status = PresenceStatus.Online
@@ -65,6 +70,7 @@ suspend fun createKordDiscordBot(token: String): DiscordBotScope {
     }
     return DiscordBotScope(
         KordApplicationCommandScope(restClient, gateway),
-        KordMessageScope(restClient)
+        KordMessageScope(restClient),
+        KordPresenceScope(token, gateway, this)
     )
 }
