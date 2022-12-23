@@ -16,4 +16,6 @@
 package interaction
 
 interface InteractionScope {
+
+    fun createFollowupMessage(targetChannelId: String, ephemeral: Boolean, content: String)
 }
