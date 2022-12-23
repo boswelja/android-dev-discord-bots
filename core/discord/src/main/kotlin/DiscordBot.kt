@@ -14,7 +14,12 @@
  * limitations under the License.
  */
 import channel.MessageScope
+import dev.kord.rest.service.RestClient
 import interaction.ApplicationCommandScope
+import kord.channel.KordMessageScope
+import kord.interaction.KordApplicationCommandScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.supervisorScope
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
@@ -22,12 +27,31 @@ import kotlin.contracts.contract
 @OptIn(ExperimentalContracts::class)
 suspend inline fun discordBot(
     token: String,
-    block: DiscordBotScope.() -> Unit
+    crossinline block: suspend DiscordBotScope.() -> Unit
 ) {
     contract {
         callsInPlace(block, InvocationKind.EXACTLY_ONCE)
     }
-    // TODO
+
+    supervisorScope {
+        val bot = createKordDiscordBot(token)
+
+        launch {
+            block(bot)
+        }
+    }
 }
 
-interface DiscordBotScope : ApplicationCommandScope, MessageScope
+class DiscordBotScope(
+    private val applicationCommandScope: ApplicationCommandScope,
+    private val messageScope: MessageScope,
+) : ApplicationCommandScope by applicationCommandScope, MessageScope by messageScope
+
+fun createKordDiscordBot(token: String): DiscordBotScope {
+    val restClient = RestClient(token)
+
+    return DiscordBotScope(
+        KordApplicationCommandScope(restClient),
+        KordMessageScope(restClient)
+    )
+}
