@@ -11,7 +11,7 @@ repositories {
 }
 
 dependencies {
-    implementation(project(":common:network"))
+    implementation(projects.common.network)
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
 
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.14.1")

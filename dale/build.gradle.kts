@@ -12,8 +12,9 @@ repositories {
 }
 
 dependencies {
-    implementation(project(":core:configuration"))
-    implementation(project(":core:fetcher"))
+    implementation(projects.core.configuration)
+    implementation(projects.core.fetcher)
+    implementation(projects.core.discord)
 
     testImplementation(kotlin("test"))
 }
