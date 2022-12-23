@@ -60,16 +60,11 @@ fun CoroutineScope.createKordDiscordBot(token: String): DiscordBotScope {
     val restClient = RestClient(token)
     val gateway = DefaultGateway()
 
-    // Using GlobalScope so we don't block anything here
     launch {
-        gateway.start(token) {
-            presence {
-                status = PresenceStatus.Online
-            }
-        }
+        gateway.start(token)
     }
     return DiscordBotScope(
-        KordApplicationCommandScope(restClient, gateway),
+        KordApplicationCommandScope(restClient, gateway, this),
         KordMessageScope(restClient),
         KordPresenceScope(token, gateway, this)
     )

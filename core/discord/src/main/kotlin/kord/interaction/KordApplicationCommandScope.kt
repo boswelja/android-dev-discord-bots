@@ -34,14 +34,15 @@ import interaction.ChatInputCommandBuilder
 import interaction.InteractionScope
 import interaction.SubCommandBuilder
 import interaction.SubCommandGroupBuilder
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.launch
 
 internal class KordApplicationCommandScope(
     private val restClient: RestClient,
-    private val gateway: Gateway
+    private val gateway: Gateway,
+    private val scope: CoroutineScope
 ) : ApplicationCommandScope {
     override suspend fun registerGlobalChatInputCommand(
         name: String,
@@ -55,8 +56,7 @@ internal class KordApplicationCommandScope(
             description
         ) { KordChatInputCommandBuilder(this).apply(builder) }
 
-        // Using GlobalScope so we don't block anything here
-        GlobalScope.launch {
+        scope.launch {
             gateway.events
                 .filterIsInstance<InteractionCreate>()
                 .collectLatest {
