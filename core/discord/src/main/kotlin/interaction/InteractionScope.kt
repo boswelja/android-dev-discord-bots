@@ -15,9 +15,5 @@
  */
 package interaction
 
-interface ApplicationCommandScope {
-    fun registerGlobalChatInputCommand(
-        onCommandInvoked: InteractionScope.() -> Unit,
-        builder: ChatInputCommandBuilder.() -> Unit
-    )
+interface InteractionScope {
 }
