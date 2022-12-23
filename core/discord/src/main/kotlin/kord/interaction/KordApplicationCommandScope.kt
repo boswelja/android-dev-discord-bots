@@ -47,7 +47,7 @@ internal class KordApplicationCommandScope(
     override suspend fun registerGlobalChatInputCommand(
         name: String,
         description: String,
-        onCommandInvoked: InteractionScope.() -> Unit,
+        onCommandInvoked: suspend InteractionScope.() -> Unit,
         builder: ChatInputCommandBuilder.() -> Unit,
     ) {
         restClient.interaction.createGlobalChatInputApplicationCommand(
@@ -60,9 +60,25 @@ internal class KordApplicationCommandScope(
             gateway.events
                 .filterIsInstance<InteractionCreate>()
                 .collectLatest {
-                    // TODO Set up InteractionScope and call onCommandInvoked
                     println(it)
+                    val interactionScope = KordInteractionScope(restClient, it)
+                    interactionScope.onCommandInvoked()
                 }
+        }
+    }
+}
+
+internal class KordInteractionScope(
+    private val restClient: RestClient,
+    private val interaction: InteractionCreate
+) : InteractionScope {
+    override suspend fun createResponseMessage(targetChannelId: String, ephemeral: Boolean, content: String) {
+        restClient.interaction.createInteractionResponse(
+            interaction.interaction.id,
+            interaction.interaction.token,
+            ephemeral
+        ) {
+            this.content = content
         }
     }
 }

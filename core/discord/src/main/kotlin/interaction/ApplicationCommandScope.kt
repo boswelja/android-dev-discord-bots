@@ -19,7 +19,7 @@ interface ApplicationCommandScope {
     suspend fun registerGlobalChatInputCommand(
         name: String,
         description: String,
-        onCommandInvoked: InteractionScope.() -> Unit,
+        onCommandInvoked: suspend InteractionScope.() -> Unit,
         builder: ChatInputCommandBuilder.() -> Unit
     )
 }
