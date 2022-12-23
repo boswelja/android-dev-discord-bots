@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 AndroidDev Discord Dev Team
+ * Copyright $YEAR AndroidDev Discord Dev Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,13 +13,3 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package guildsettings
-
-import kotlinx.coroutines.flow.Flow
-
-// TODO write higher level functions to alter the DB and expose those
-interface GuildSettingsDatabase {
-    fun getString(guildId: String, key: String): Flow<String?>
-
-    suspend fun setString(guildId: String, key: String, value: String)
-}
