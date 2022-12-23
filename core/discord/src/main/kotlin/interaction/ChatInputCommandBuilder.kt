@@ -103,6 +103,7 @@ interface CommandBuilder {
      */
     fun number(name: String, description: String, required: Boolean)
 }
+
 /**
  * A builder for chat input subcommands.
  */
