@@ -15,6 +15,9 @@
  */
 package interaction
 
+import DiscordBotScopeMarker
+
+@ChatInputCommandBuilderMarker
 interface ChatInputCommandBuilder : CommandBuilder {
 
     fun subCommand(name: String, description: String, builder: SubCommandBuilder.() -> Unit)
@@ -22,6 +25,7 @@ interface ChatInputCommandBuilder : CommandBuilder {
     fun subCommandGroup(name: String, description: String, builder: SubCommandGroupBuilder.() -> Unit)
 }
 
+@ChatInputCommandBuilderMarker
 interface CommandBuilder {
     fun int(name: String, description: String, required: Boolean)
 
@@ -38,8 +42,13 @@ interface CommandBuilder {
     fun number(name: String, description: String, required: Boolean)
 }
 
+@ChatInputCommandBuilderMarker
 interface SubCommandBuilder : CommandBuilder
 
+@ChatInputCommandBuilderMarker
 interface SubCommandGroupBuilder {
     fun subCommand(name: String, description: String, builder: SubCommandBuilder.() -> Unit)
 }
+
+@DslMarker
+annotation class ChatInputCommandBuilderMarker
