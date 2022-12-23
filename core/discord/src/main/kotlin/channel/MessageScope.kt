@@ -15,6 +15,15 @@
  */
 package channel
 
+/**
+ * A scope interface for managing messages.
+ */
 interface MessageScope {
+
+    /**
+     * Creates a new embed message.
+     * @param targetChannelId The ID of the channel to write the message to.
+     * @param builder The embed builder. See [EmbedBuilder].
+     */
     suspend fun createEmbed(targetChannelId: String, builder: EmbedBuilder.() -> Unit)
 }

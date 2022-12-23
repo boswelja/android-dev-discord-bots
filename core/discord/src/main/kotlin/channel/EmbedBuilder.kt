@@ -17,15 +17,59 @@ package channel
 
 import kotlinx.datetime.Instant
 
+/**
+ * A builder for Discord message embeds.
+ */
 interface EmbedBuilder {
-    var title: String?
-    var description: String?
-    var url: String?
-    var timestamp: Instant?
-    var color: Int?
-    var image: String?
 
+    /**
+     * The title to display in the embed.
+     */
+    var title: String?
+
+    /**
+     * The description to display in the embed.
+     */
+    var description: String?
+
+    /**
+     * The content URL to display in the embed.
+     */
+    var url: String?
+
+    /**
+     * The timestamp to display in the embed.
+     */
+    var timestamp: Instant?
+
+    /**
+     * The optional RGB color to display the embed.
+     */
+    var color: Int?
+
+    /**
+     * An optional image URL to display in the embed.
+     */
+    var imageUrl: String?
+
+    /**
+     * Adds a footer to the embed. Only one footer can exist at a time.
+     * @param text The text to display in the footer.
+     * @param iconUrl An optional URL for an icon.
+     */
     fun footer(text: String, iconUrl: String?)
-    fun thumbnail(url: String, proxyUrl: String?, height: Int?, width: Int?)
+
+    /**
+     * Adds a thumbnail image to the embed.
+     * @param url The URL of the thumbnail.
+     */
+    fun thumbnail(url: String)
+
+    /**
+     * Adds author information to the embed. Only one author block can exist at a time.
+     * @param name The name of the author.
+     * @param url An optional URL that may link to the author's bio or similar.
+     * @param iconUrl An optional URL of an image representing the author.
+     */
     fun author(name: String, url: String?, iconUrl: String?)
 }

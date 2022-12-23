@@ -35,7 +35,7 @@ internal class KordMessageScope(
                     override var description: String? by this@embed::description
                     override var url: String? by this@embed::url
                     override var timestamp: Instant? by this@embed::timestamp
-                    override var image: String? by this@embed::image
+                    override var imageUrl: String? by this@embed::image
                     override var color: Int?
                         get() = this@embed.color?.rgb
                         set(value) { this@embed.color = value?.let { Color(it) } }
@@ -45,7 +45,7 @@ internal class KordMessageScope(
                         this.icon = iconUrl
                     }
 
-                    override fun thumbnail(url: String, proxyUrl: String?, height: Int?, width: Int?) = thumbnail {
+                    override fun thumbnail(url: String) = thumbnail {
                         this.url = url
                     }
 
