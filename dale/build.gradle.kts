@@ -15,6 +15,7 @@ dependencies {
     implementation(projects.core.configuration)
     implementation(projects.core.fetcher)
     implementation(projects.core.discord)
+    implementation(projects.core.scheduler)
 
     testImplementation(kotlin("test"))
 }

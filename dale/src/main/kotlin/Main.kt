@@ -15,6 +15,7 @@
  */
 import guildsettings.guildSettingDatabaseInstance
 import studio.AndroidStudioUpdateChecker
+import studio.AndroidStudioUpdateFeature
 
 suspend fun main(args: Array<String>) = discordBot(args.first()) {
     println("Hello World!")
@@ -23,7 +24,7 @@ suspend fun main(args: Array<String>) = discordBot(args.first()) {
     // Learn more about running applications: https://www.jetbrains.com/help/idea/running-applications.html.
     println("Program arguments: ${args.joinToString()}")
 
-    val propertiesStore = guildSettingDatabaseInstance("dale")
+    val settingsRepository = guildSettingDatabaseInstance("dale")
 
-    println(AndroidStudioUpdateChecker(propertiesStore).getNewPosts().toString())
+    AndroidStudioUpdateFeature(this, settingsRepository).init()
 }

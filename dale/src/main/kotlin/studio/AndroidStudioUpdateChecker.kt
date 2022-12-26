@@ -25,7 +25,6 @@ import java.time.OffsetDateTime
 /**
  * This utility checker is used to retrieve Android Studio blog updates, compare that with local data and return new
  * posts. Local data is updated automatically. See [getNewPosts] for more details.
- * TODO Actually implement this
  */
 class AndroidStudioUpdateChecker(
     private val settingsRepository: GuildSettingsDatabase,
