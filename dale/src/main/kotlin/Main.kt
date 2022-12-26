@@ -13,18 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import features.initFeatures
 import guildsettings.guildSettingDatabaseInstance
 import studio.AndroidStudioUpdateChecker
 import studio.AndroidStudioUpdateFeature
 
 suspend fun main(args: Array<String>) = discordBot(args.first()) {
-    println("Hello World!")
-
-    // Try adding program arguments via Run/Debug configuration.
-    // Learn more about running applications: https://www.jetbrains.com/help/idea/running-applications.html.
-    println("Program arguments: ${args.joinToString()}")
-
     val settingsRepository = guildSettingDatabaseInstance("dale")
 
-    AndroidStudioUpdateFeature(this, settingsRepository).init()
+    initFeatures(
+        AndroidStudioUpdateFeature(this, settingsRepository)
+    )
 }

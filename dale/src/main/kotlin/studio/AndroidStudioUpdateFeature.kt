@@ -16,6 +16,7 @@
 package studio
 
 import DiscordBotScope
+import features.Feature
 import guildsettings.GuildSettingsDatabase
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
@@ -28,7 +29,7 @@ class AndroidStudioUpdateFeature(
     private val discordBotScope: DiscordBotScope,
     private val settings: GuildSettingsDatabase,
     private val updateChecker: AndroidStudioUpdateChecker = AndroidStudioUpdateChecker(settings)
-) {
+) : Feature {
 
     private var updateCheckerJob: Job? = null
 
@@ -81,7 +82,7 @@ class AndroidStudioUpdateFeature(
         }
     }
 
-    suspend fun init() {
+    override suspend fun init() {
         registerCommands()
         // If update check notifications are already enabled, try start the scheduler
         if (settings.getAll(TARGET_CHANNEL_KEY).first().isNotEmpty()) {
