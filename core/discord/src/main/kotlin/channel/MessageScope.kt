@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import guildsettings.guildSettingDatabaseInstance
-import studio.AndroidStudioUpdateChecker
+package channel
 
-suspend fun main(args: Array<String>) = discordBot(args.first()) {
-    println("Hello World!")
+/**
+ * A scope interface for managing messages.
+ */
+interface MessageScope {
 
-    // Try adding program arguments via Run/Debug configuration.
-    // Learn more about running applications: https://www.jetbrains.com/help/idea/running-applications.html.
-    println("Program arguments: ${args.joinToString()}")
-
-    val propertiesStore = guildSettingDatabaseInstance("dale")
-
-    println(AndroidStudioUpdateChecker(propertiesStore).getNewPosts().toString())
+    /**
+     * Creates a new embed message.
+     * @param targetChannelId The ID of the channel to write the message to.
+     * @param builder The embed builder. See [EmbedBuilder].
+     */
+    suspend fun createEmbed(targetChannelId: String, builder: EmbedBuilder.() -> Unit)
 }

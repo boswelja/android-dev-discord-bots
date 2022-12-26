@@ -13,17 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import guildsettings.guildSettingDatabaseInstance
-import studio.AndroidStudioUpdateChecker
+package presence
 
-suspend fun main(args: Array<String>) = discordBot(args.first()) {
-    println("Hello World!")
+/**
+ * A scope interface for managing bot presence. Presence includes things like online status, now playing details etc.
+ */
+interface PresenceScope {
 
-    // Try adding program arguments via Run/Debug configuration.
-    // Learn more about running applications: https://www.jetbrains.com/help/idea/running-applications.html.
-    println("Program arguments: ${args.joinToString()}")
+    /**
+     * Updates the bots presence to match the given state.
+     * @param afk Whether the bot should be displayed as AFK.
+     * @param status The status that should be displayed for the bot.
+     */
+    fun updatePresence(afk: Boolean, status: PresenceStatus)
+}
 
-    val propertiesStore = guildSettingDatabaseInstance("dale")
-
-    println(AndroidStudioUpdateChecker(propertiesStore).getNewPosts().toString())
+enum class PresenceStatus {
+    INVISIBLE,
+    DO_NOT_DISTURB,
+    IDLE,
+    ONLINE,
 }

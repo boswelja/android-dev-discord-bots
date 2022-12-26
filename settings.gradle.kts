@@ -14,3 +14,5 @@ include(
     "core:scheduler",
     "dale",
 )
+
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")

@@ -56,6 +56,9 @@ sealed interface Repeating {
     /**
      * Configuration for weekly repeating work.
      * @property weekday The day of the week this work should run on.
+     * @property hour The hour of the day this work should run on.
+     * @property minute The minute of the day this work should run on.
+     * @property second The second of the day this work should run on.
      */
     data class Weekly(
         val weekday: DayOfWeek,
@@ -69,6 +72,9 @@ sealed interface Repeating {
     /**
      * Configuration for fortnightly repeating work.
      * @property weekday The day of the week this work should run on.
+     * @property hour The hour of the day this work should run on.
+     * @property minute The minute of the day this work should run on.
+     * @property second The second of the day this work should run on.
      */
     data class Fortnightly(
         val weekday: DayOfWeek,

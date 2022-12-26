@@ -12,7 +12,8 @@ repositories {
 
 dependencies {
     api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
-    implementation("dev.kord:kord-core:0.8.0-M17")
+    implementation("dev.kord:kord-rest:0.8.0-M17")
+    implementation("dev.kord:kord-gateway:0.8.0-M17")
 
     testImplementation(kotlin("test"))
 }
