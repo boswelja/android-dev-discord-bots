@@ -19,7 +19,8 @@ import dev.kord.gateway.Gateway
 import dev.kord.gateway.InteractionCreate
 import dev.kord.rest.service.RestClient
 import interaction.ApplicationCommandScope
-import interaction.ChatInputCommandBuilder
+import interaction.CommandBuilder
+import interaction.CommandGroupBuilder
 import interaction.InteractionScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collectLatest
@@ -35,13 +36,13 @@ internal class KordApplicationCommandScope(
         name: String,
         description: String,
         onCommandInvoked: suspend InteractionScope.() -> Unit,
-        builder: ChatInputCommandBuilder.() -> Unit,
+        builder: CommandBuilder.() -> Unit,
     ) {
         restClient.interaction.createGlobalChatInputApplicationCommand(
             restClient.application.getCurrentApplicationInfo().id,
             name,
             description,
-        ) { KordChatInputCommandBuilder(this).apply(builder) }
+        ) { KordCommandBuilder(this).apply(builder) }
 
         scope.launch {
             gateway.events
@@ -52,5 +53,17 @@ internal class KordApplicationCommandScope(
                     interactionScope.onCommandInvoked()
                 }
         }
+    }
+
+    override suspend fun registerGlobalChatInputCommandGroup(
+        name: String,
+        description: String,
+        builder: CommandGroupBuilder.() -> Unit
+    ) {
+        restClient.interaction.createGlobalChatInputApplicationCommand(
+            restClient.application.getCurrentApplicationInfo().id,
+            name,
+            description,
+        ) { KordCommandGroupBuilder(this).apply(builder) }
     }
 }

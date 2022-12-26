@@ -15,13 +15,8 @@
  */
 package interaction
 
-/**
- * A builder for chat input commands. Supports all [CommandBuilder] options, as well as configuring subcommands and
- * subcommand groups.
- */
 @ChatInputCommandBuilderMarker
-interface ChatInputCommandBuilder : CommandBuilder {
-
+interface CommandGroupBuilder {
     /**
      * Configures a new subcommand under this command.
      * @param name The name of the subcommand. This will be what users type to invoke the command.

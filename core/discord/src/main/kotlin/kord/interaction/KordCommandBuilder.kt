@@ -26,13 +26,14 @@ import dev.kord.rest.builder.interaction.number
 import dev.kord.rest.builder.interaction.string
 import dev.kord.rest.builder.interaction.subCommand
 import dev.kord.rest.builder.interaction.user
-import interaction.ChatInputCommandBuilder
+import interaction.CommandBuilder
+import interaction.CommandGroupBuilder
 import interaction.SubCommandBuilder
 import interaction.SubCommandGroupBuilder
 
-internal class KordChatInputCommandBuilder(
+internal class KordCommandBuilder(
     private val kordBuilder: GlobalChatInputCreateBuilder,
-) : ChatInputCommandBuilder {
+) : CommandBuilder {
 
     override fun int(name: String, description: String, required: Boolean) =
         kordBuilder.int(name, description) {
@@ -69,6 +70,11 @@ internal class KordChatInputCommandBuilder(
             this.required = required
         }
 
+}
+
+internal class KordCommandGroupBuilder(
+    private val kordBuilder: GlobalChatInputCreateBuilder
+) : CommandGroupBuilder {
     override fun subCommand(name: String, description: String, builder: SubCommandBuilder.() -> Unit) =
         kordBuilder.subCommand(name, description) {
             KordSubCommandBuilder(this).apply(builder)
