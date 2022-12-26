@@ -15,11 +15,18 @@
  */
 package guildsettings
 
-import kotlinx.coroutines.flow.Flow
+import sqldelight.SQLDelightDrivers
 
-// TODO write higher level functions to alter the DB and expose those
-interface GuildSettingsDatabase {
-    fun getString(guildId: String, key: String): Flow<String?>
+fun guildSettingRepositoryInstance(name: String) = GuildSettingsRepositoryFactory.instance(name)
 
-    suspend fun setString(guildId: String, key: String, value: String)
+internal object GuildSettingsRepositoryFactory {
+    private val instances: MutableMap<String, GuildSettingsRepository> = mutableMapOf()
+
+    fun instance(name: String): GuildSettingsRepository {
+        return instances[name] ?: synchronized(this) {
+            instances[name]
+                ?: SqlDelightGuildSettingsRepository(SQLDelightDrivers.instance(name))
+                    .also { instances[name] = it }
+        }
+    }
 }

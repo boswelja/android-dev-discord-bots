@@ -17,6 +17,7 @@ package guildsettings
 
 import com.squareup.sqldelight.db.SqlDriver
 import com.squareup.sqldelight.runtime.coroutines.asFlow
+import com.squareup.sqldelight.runtime.coroutines.mapToList
 import com.squareup.sqldelight.runtime.coroutines.mapToOneOrNull
 import guildsettings.database.GuildSettings
 import kotlinx.coroutines.Dispatchers
@@ -24,9 +25,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import org.sqlite.SQLiteException
 
-internal class SqlDelightGuildSettingsDatabase(
+internal class SqlDelightGuildSettingsRepository(
     private val driver: SqlDriver,
-) : GuildSettingsDatabase {
+) : GuildSettingsRepository {
     private val database = GuildSettings(driver)
 
     init {
@@ -45,5 +46,9 @@ internal class SqlDelightGuildSettingsDatabase(
         withContext(Dispatchers.IO) {
             database.guildSettingsQueries.set(guildId, key, value)
         }
+    }
+
+    override fun getAll(key: String): Flow<List<String>> {
+        return database.guildSettingsQueries.getAll(key).asFlow().mapToList()
     }
 }

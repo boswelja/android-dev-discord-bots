@@ -18,7 +18,7 @@ package studio
 import fetcher.Entry
 import fetcher.Fetcher
 import fetcher.createFetcher
-import guildsettings.GuildSettingsDatabase
+import guildsettings.GuildSettingsRepository
 import kotlinx.coroutines.flow.first
 import java.time.OffsetDateTime
 
@@ -28,7 +28,7 @@ import java.time.OffsetDateTime
  * TODO Actually implement this
  */
 class AndroidStudioUpdateChecker(
-    private val settingsRepository: GuildSettingsDatabase,
+    private val settingsRepository: GuildSettingsRepository,
     private val source: Fetcher = createFetcher(),
 ) {
 

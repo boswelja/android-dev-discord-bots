@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import guildsettings.guildSettingDatabaseInstance
+import guildsettings.guildSettingRepositoryInstance
 import studio.AndroidStudioUpdateChecker
 
 suspend fun main(args: Array<String>) = discordBot(args.first()) {
@@ -23,7 +23,7 @@ suspend fun main(args: Array<String>) = discordBot(args.first()) {
     // Learn more about running applications: https://www.jetbrains.com/help/idea/running-applications.html.
     println("Program arguments: ${args.joinToString()}")
 
-    val propertiesStore = guildSettingDatabaseInstance("dale")
+    val propertiesStore = guildSettingRepositoryInstance("dale")
 
     println(AndroidStudioUpdateChecker(propertiesStore).getNewPosts().toString())
 }
