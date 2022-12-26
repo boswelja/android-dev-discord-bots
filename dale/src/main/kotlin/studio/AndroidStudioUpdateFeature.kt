@@ -23,6 +23,7 @@ import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.datetime.toKotlinInstant
 import schedule
 
 class AndroidStudioUpdateFeature(
@@ -72,7 +73,7 @@ class AndroidStudioUpdateFeature(
                     discordBotScope.createEmbed(targetChannelId) {
                         title = newUpdate.title
                         description = newUpdate.content
-                        // timestamp = newUpdate.publishedOn.toInstant()
+                        timestamp = newUpdate.publishedOn.toInstant().toKotlinInstant()
                         url = newUpdate.links.firstOrNull()?.url
                         author(newUpdate.author.name, null, null)
                     }
