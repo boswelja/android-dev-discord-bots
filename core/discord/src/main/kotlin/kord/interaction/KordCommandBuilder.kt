@@ -28,6 +28,7 @@ import dev.kord.rest.builder.interaction.subCommand
 import dev.kord.rest.builder.interaction.user
 import interaction.CommandBuilder
 import interaction.CommandGroupBuilder
+import interaction.InteractionScope
 import interaction.SubCommandBuilder
 import interaction.SubCommandGroupBuilder
 
@@ -75,7 +76,12 @@ internal class KordCommandBuilder(
 internal class KordCommandGroupBuilder(
     private val kordBuilder: GlobalChatInputCreateBuilder
 ) : CommandGroupBuilder {
-    override fun subCommand(name: String, description: String, builder: SubCommandBuilder.() -> Unit) =
+    override fun subCommand(
+        name: String,
+        description: String,
+        onCommandInvoked: suspend InteractionScope.() -> Unit,
+        builder: SubCommandBuilder.() -> Unit
+    ) =
         kordBuilder.subCommand(name, description) {
             KordSubCommandBuilder(this).apply(builder)
         }
@@ -129,7 +135,12 @@ internal class KordSubCommandBuilder(
 internal class KordSubCommandGroupBuilder(
     private val kordBuilder: GroupCommandBuilder,
 ) : SubCommandGroupBuilder {
-    override fun subCommand(name: String, description: String, builder: SubCommandBuilder.() -> Unit) =
+    override fun subCommand(
+        name: String,
+        description: String,
+        onCommandInvoked: suspend InteractionScope.() -> Unit,
+        builder: SubCommandBuilder.() -> Unit
+    ) =
         kordBuilder.subCommand(name, description) {
             KordSubCommandBuilder(this).apply(builder)
         }
