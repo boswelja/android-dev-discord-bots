@@ -17,15 +17,15 @@ package guildsettings
 
 import sqldelight.SQLDelightDrivers
 
-fun guildSettingRepositoryInstance(name: String) = GuildSettingsRepositoryFactory.instance(name)
+fun guildSettingDatabaseInstance(name: String) = GuildSettingsDatabaseFactory.instance(name)
 
-internal object GuildSettingsRepositoryFactory {
-    private val instances: MutableMap<String, GuildSettingsRepository> = mutableMapOf()
+internal object GuildSettingsDatabaseFactory {
+    private val instances: MutableMap<String, GuildSettingsDatabase> = mutableMapOf()
 
-    fun instance(name: String): GuildSettingsRepository {
+    fun instance(name: String): GuildSettingsDatabase {
         return instances[name] ?: synchronized(this) {
             instances[name]
-                ?: SqlDelightGuildSettingsRepository(SQLDelightDrivers.instance(name))
+                ?: SqlDelightGuildSettingsDatabase(SQLDelightDrivers.instance(name))
                     .also { instances[name] = it }
         }
     }
