@@ -8,6 +8,9 @@ CREATE TABLE guildSettings (
 get:
 SELECT (value) FROM guildSettings WHERE guild_id = ? AND key = ? LIMIT 1;
 
+getAll:
+SELECT (value) FROM guildSettings WHERE key = ?;
+
 set:
 INSERT OR REPLACE INTO guildSettings VALUES (?, ?, ?);
 

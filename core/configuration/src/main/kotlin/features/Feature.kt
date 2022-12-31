@@ -13,15 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package guildsettings
+package features
 
-import kotlinx.coroutines.flow.Flow
+/**
+ * A basic interface for defining a "feature". Features must have an entrypoint [init] configured.
+ */
+interface Feature {
 
-// TODO write higher level functions to alter the DB and expose those
-interface GuildSettingsDatabase {
-    fun getString(guildId: String, key: String): Flow<String?>
-
-    fun getAll(key: String): Flow<List<String>>
-
-    suspend fun setString(guildId: String, key: String, value: String)
+    /**
+     * Initialises the feature. This is a good place to do things like register commands, initialise state based on
+     * settings etc.
+     */
+    suspend fun init()
 }
