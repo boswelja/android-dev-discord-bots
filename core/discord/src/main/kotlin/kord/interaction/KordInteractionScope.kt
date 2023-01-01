@@ -17,7 +17,6 @@ package kord.interaction
 
 import dev.kord.common.entity.CommandArgument
 import dev.kord.common.entity.CommandGroup
-import dev.kord.common.entity.Option
 import dev.kord.common.entity.SubCommand
 import dev.kord.gateway.InteractionCreate
 import dev.kord.rest.service.RestClient

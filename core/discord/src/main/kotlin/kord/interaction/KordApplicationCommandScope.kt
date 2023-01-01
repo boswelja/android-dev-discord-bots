@@ -61,7 +61,7 @@ internal class KordApplicationCommandScope(
     override suspend fun registerGlobalChatInputCommandGroup(
         name: String,
         description: String,
-        builder: CommandGroupBuilder.() -> Unit
+        builder: CommandGroupBuilder.() -> Unit,
     ) {
         var commandInvokeCallbacks: Map<String, suspend InteractionScope.() -> Unit>
         restClient.interaction.createGlobalChatInputApplicationCommand(

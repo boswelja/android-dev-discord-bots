@@ -31,7 +31,6 @@ import interaction.CommandGroupBuilder
 import interaction.InteractionScope
 import interaction.SubCommandBuilder
 import interaction.SubCommandGroupBuilder
-import kotlinx.coroutines.CoroutineScope
 
 internal class KordCommandBuilder(
     private val kordBuilder: GlobalChatInputCreateBuilder,
@@ -71,11 +70,10 @@ internal class KordCommandBuilder(
         kordBuilder.number(name, description) {
             this.required = required
         }
-
 }
 
 internal class KordCommandGroupBuilder(
-    private val kordBuilder: GlobalChatInputCreateBuilder
+    private val kordBuilder: GlobalChatInputCreateBuilder,
 ) : CommandGroupBuilder {
 
     val commandInvokeCallbacks = mutableMapOf<String, suspend InteractionScope.() -> Unit>()
@@ -84,7 +82,7 @@ internal class KordCommandGroupBuilder(
         name: String,
         description: String,
         onCommandInvoked: suspend InteractionScope.() -> Unit,
-        builder: SubCommandBuilder.() -> Unit
+        builder: SubCommandBuilder.() -> Unit,
     ) {
         kordBuilder.subCommand(name, description) {
             KordSubCommandBuilder(this).apply(builder)
@@ -98,7 +96,7 @@ internal class KordCommandGroupBuilder(
                 commandInvokeCallbacks.putAll(
                     it.commandInvokeCallbacks.mapKeys {
                         "$name ${it.key}"
-                    }
+                    },
                 )
             }
         }
@@ -155,7 +153,7 @@ internal class KordSubCommandGroupBuilder(
         name: String,
         description: String,
         onCommandInvoked: suspend InteractionScope.() -> Unit,
-        builder: SubCommandBuilder.() -> Unit
+        builder: SubCommandBuilder.() -> Unit,
     ) {
         kordBuilder.subCommand(name, description) {
             KordSubCommandBuilder(this).apply(builder)

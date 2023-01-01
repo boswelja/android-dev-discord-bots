@@ -29,7 +29,7 @@ interface CommandGroupBuilder {
         name: String,
         description: String,
         onCommandInvoked: suspend InteractionScope.() -> Unit,
-        builder: SubCommandBuilder.() -> Unit
+        builder: SubCommandBuilder.() -> Unit,
     )
 
     /**
@@ -130,7 +130,7 @@ interface SubCommandGroupBuilder {
         name: String,
         description: String,
         onCommandInvoked: suspend InteractionScope.() -> Unit,
-        builder: SubCommandBuilder.() -> Unit
+        builder: SubCommandBuilder.() -> Unit,
     )
 }
 
