@@ -79,7 +79,6 @@ internal class KordApplicationCommandScope(
                 .filterIsInstance<InteractionCreate>()
                 .collectLatest {
                     if (it.interaction.data.name.value == name) {
-                        // Command group
                         val commandGroup = it.interaction.data.options.value?.filterIsInstance<CommandGroup>()?.firstOrNull()
                         var fullCommandName = ""
                         val command = if (commandGroup != null) {
@@ -89,7 +88,7 @@ internal class KordApplicationCommandScope(
                             it.interaction.data.options.value?.first() as SubCommand
                         }
                         fullCommandName += " ${command.name}"
-                        fullCommandName = fullCommandName.trimStart()
+                        fullCommandName = fullCommandName.trim()
 
                         println(fullCommandName)
                         println(commandInvokeCallbacks.keys)
