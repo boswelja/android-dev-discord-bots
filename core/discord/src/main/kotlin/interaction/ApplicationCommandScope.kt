@@ -27,12 +27,25 @@ interface ApplicationCommandScope {
      * @param description A short description of the command. This will be displayed to users next to the name.
      * @param onCommandInvoked Called when the command was invoked by the user. That is, when a new interaction is
      * initiated. See [InteractionScope].
-     * @param builder The command builder. See [ChatInputCommandBuilder].
+     * @param builder The command builder. See [CommandBuilder].
      */
     suspend fun registerGlobalChatInputCommand(
         name: String,
         description: String,
         onCommandInvoked: suspend InteractionScope.() -> Unit,
-        builder: ChatInputCommandBuilder.() -> Unit,
+        builder: CommandBuilder.() -> Unit,
+    )
+
+    /**
+     * Registers a new global chat input command. A "global chat input command" is a slash command that can be used
+     * anywhere.
+     * @param name The name of the command. This will be what users type to invoke the command.
+     * @param description A short description of the command. This will be displayed to users next to the name.
+     * @param builder The command builder. See [CommandBuilder].
+     */
+    suspend fun registerGlobalChatInputCommandGroup(
+        name: String,
+        description: String,
+        builder: CommandGroupBuilder.() -> Unit,
     )
 }

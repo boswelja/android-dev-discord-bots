@@ -26,13 +26,16 @@ import dev.kord.rest.builder.interaction.number
 import dev.kord.rest.builder.interaction.string
 import dev.kord.rest.builder.interaction.subCommand
 import dev.kord.rest.builder.interaction.user
-import interaction.ChatInputCommandBuilder
+import interaction.CommandBuilder
+import interaction.CommandGroupBuilder
+import interaction.InteractionScope
 import interaction.SubCommandBuilder
 import interaction.SubCommandGroupBuilder
+import kotlinx.coroutines.CoroutineScope
 
-internal class KordChatInputCommandBuilder(
+internal class KordCommandBuilder(
     private val kordBuilder: GlobalChatInputCreateBuilder,
-) : ChatInputCommandBuilder {
+) : CommandBuilder {
 
     override fun int(name: String, description: String, required: Boolean) =
         kordBuilder.int(name, description) {
@@ -69,15 +72,37 @@ internal class KordChatInputCommandBuilder(
             this.required = required
         }
 
-    override fun subCommand(name: String, description: String, builder: SubCommandBuilder.() -> Unit) =
+}
+
+internal class KordCommandGroupBuilder(
+    private val kordBuilder: GlobalChatInputCreateBuilder
+) : CommandGroupBuilder {
+
+    val commandInvokeCallbacks = mutableMapOf<String, suspend InteractionScope.() -> Unit>()
+
+    override fun subCommand(
+        name: String,
+        description: String,
+        onCommandInvoked: suspend InteractionScope.() -> Unit,
+        builder: SubCommandBuilder.() -> Unit
+    ) {
         kordBuilder.subCommand(name, description) {
             KordSubCommandBuilder(this).apply(builder)
         }
+        commandInvokeCallbacks[name] = onCommandInvoked
+    }
 
-    override fun subCommandGroup(name: String, description: String, builder: SubCommandGroupBuilder.() -> Unit) =
+    override fun subCommandGroup(name: String, description: String, builder: SubCommandGroupBuilder.() -> Unit) {
         kordBuilder.group(name, description) {
-            KordSubCommandGroupBuilder(this).apply(builder)
+            KordSubCommandGroupBuilder(this).apply(builder).also {
+                commandInvokeCallbacks.putAll(
+                    it.commandInvokeCallbacks.mapKeys {
+                        "$name ${it.key}"
+                    }
+                )
+            }
         }
+    }
 }
 
 internal class KordSubCommandBuilder(
@@ -123,8 +148,18 @@ internal class KordSubCommandBuilder(
 internal class KordSubCommandGroupBuilder(
     private val kordBuilder: GroupCommandBuilder,
 ) : SubCommandGroupBuilder {
-    override fun subCommand(name: String, description: String, builder: SubCommandBuilder.() -> Unit) =
+
+    val commandInvokeCallbacks = mutableMapOf<String, suspend InteractionScope.() -> Unit>()
+
+    override fun subCommand(
+        name: String,
+        description: String,
+        onCommandInvoked: suspend InteractionScope.() -> Unit,
+        builder: SubCommandBuilder.() -> Unit
+    ) {
         kordBuilder.subCommand(name, description) {
             KordSubCommandBuilder(this).apply(builder)
         }
+        commandInvokeCallbacks[name] = onCommandInvoked
+    }
 }

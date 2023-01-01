@@ -19,7 +19,8 @@ import dev.kord.gateway.Gateway
 import dev.kord.gateway.InteractionCreate
 import dev.kord.rest.service.RestClient
 import interaction.ApplicationCommandScope
-import interaction.ChatInputCommandBuilder
+import interaction.CommandBuilder
+import interaction.CommandGroupBuilder
 import interaction.InteractionScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collectLatest
@@ -35,13 +36,13 @@ internal class KordApplicationCommandScope(
         name: String,
         description: String,
         onCommandInvoked: suspend InteractionScope.() -> Unit,
-        builder: ChatInputCommandBuilder.() -> Unit,
+        builder: CommandBuilder.() -> Unit,
     ) {
         restClient.interaction.createGlobalChatInputApplicationCommand(
             restClient.application.getCurrentApplicationInfo().id,
             name,
             description,
-        ) { KordChatInputCommandBuilder(this).apply(builder) }
+        ) { KordCommandBuilder(this).apply(builder) }
 
         scope.launch {
             gateway.events
@@ -50,6 +51,33 @@ internal class KordApplicationCommandScope(
                     println(it)
                     val interactionScope = KordInteractionScope(restClient, it)
                     interactionScope.onCommandInvoked()
+                }
+        }
+    }
+
+    override suspend fun registerGlobalChatInputCommandGroup(
+        name: String,
+        description: String,
+        builder: CommandGroupBuilder.() -> Unit
+    ) {
+        var commandInvokeCallbacks = mapOf<String, suspend InteractionScope.() -> Unit>()
+        restClient.interaction.createGlobalChatInputApplicationCommand(
+            restClient.application.getCurrentApplicationInfo().id,
+            name,
+            description,
+        ) {
+            KordCommandGroupBuilder(this).apply(builder).also {
+                commandInvokeCallbacks = it.commandInvokeCallbacks
+            }
+        }
+
+        scope.launch {
+            gateway.events
+                .filterIsInstance<InteractionCreate>()
+                .collectLatest {
+                    println(it)
+                    val interactionScope = KordInteractionScope(restClient, it)
+                    // TODO find and invoke the correct callback
                 }
         }
     }
