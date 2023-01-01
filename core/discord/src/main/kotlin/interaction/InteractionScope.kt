@@ -21,6 +21,16 @@ package interaction
 interface InteractionScope {
 
     /**
+     * The ID of the guild the interaction originated from. This will be null if the interaction originated from DMs.
+     */
+    val sourceGuildId: String?
+
+    /**
+     * The ID of the channel the interaction originated from.
+     */
+    val sourceChannelId: String
+
+    /**
      * Writes a basic message in response to an interaction.
      * @param targetChannelId The ID of the channel to write the message to.
      * @param ephemeral Whether the message is "ephemeral". An ephemeral message is a message only the user who

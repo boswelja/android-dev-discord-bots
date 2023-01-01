@@ -26,6 +26,11 @@ internal class KordInteractionScope(
     private val restClient: RestClient,
     private val interaction: InteractionCreate,
 ) : InteractionScope {
+
+    override val sourceGuildId: String? = interaction.interaction.guildId.value?.toString()
+
+    override val sourceChannelId: String = interaction.interaction.channelId.toString()
+
     override suspend fun createResponseMessage(targetChannelId: String, ephemeral: Boolean, content: String) {
         restClient.interaction.createInteractionResponse(
             interaction.interaction.id,

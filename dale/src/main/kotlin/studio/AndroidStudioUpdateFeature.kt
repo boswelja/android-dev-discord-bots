@@ -47,28 +47,35 @@ class AndroidStudioUpdateFeature(
 
     private suspend fun registerCommands() {
         discordBotScope.registerGlobalChatInputCommandGroup(
-            "updates",
-            "Configure various update messages"
+            name = "updates",
+            description = "Configure various update messages",
         ) {
-            subCommandGroup("android-studio", "Configure update messages for Android Studio releases") {
+            subCommandGroup(
+                name = "android-studio",
+                description = "Configure update messages for Android Studio releases",
+            ) {
                 subCommand(
                     name = "enable",
                     description = "Enable update messages for Android Studio releases",
                     onCommandInvoked = {
                         val targetChannelId = getChannelId("target")
-                        enableStudioUpdateNotifications("TODO", targetChannelId)
-                        createResponseMessage(getChannelId("target"), true, "Enabled Android Studio update messages for #${targetChannelId}")
-                    }
+                        enableStudioUpdateNotifications(sourceGuildId!!, targetChannelId)
+                        createResponseMessage(sourceChannelId, true, "Enabled Android Studio update messages for #${targetChannelId}")
+                    },
                 ) {
-                    channel("target", "The channel to post update messages to", true)
+                    channel(
+                        name = "target",
+                        description = "The channel to post update messages to",
+                        required = true,
+                    )
                 }
                 subCommand(
                     name = "disable",
                     description = "Disable update messages for Android Studio releases",
                     onCommandInvoked = {
-                        disableStudioUpdateMessages("")
-                        createResponseMessage("", true, "Disabled Android Studio update messages for this server")
-                    }
+                        disableStudioUpdateMessages(sourceGuildId!!)
+                        createResponseMessage(sourceChannelId, true, "Disabled Android Studio update messages for this server")
+                    },
                 ) {
                     // No options here
                 }
@@ -100,7 +107,6 @@ class AndroidStudioUpdateFeature(
                     }
                 }
             }
-
         }
     }
 
