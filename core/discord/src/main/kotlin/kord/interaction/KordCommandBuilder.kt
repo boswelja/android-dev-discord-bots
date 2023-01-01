@@ -31,6 +31,7 @@ import interaction.CommandGroupBuilder
 import interaction.InteractionScope
 import interaction.SubCommandBuilder
 import interaction.SubCommandGroupBuilder
+import kotlinx.coroutines.CoroutineScope
 
 internal class KordCommandBuilder(
     private val kordBuilder: GlobalChatInputCreateBuilder,
@@ -76,20 +77,32 @@ internal class KordCommandBuilder(
 internal class KordCommandGroupBuilder(
     private val kordBuilder: GlobalChatInputCreateBuilder
 ) : CommandGroupBuilder {
+
+    val commandInvokeCallbacks = mutableMapOf<String, suspend InteractionScope.() -> Unit>()
+
     override fun subCommand(
         name: String,
         description: String,
         onCommandInvoked: suspend InteractionScope.() -> Unit,
         builder: SubCommandBuilder.() -> Unit
-    ) =
+    ) {
         kordBuilder.subCommand(name, description) {
             KordSubCommandBuilder(this).apply(builder)
         }
+        commandInvokeCallbacks[name] = onCommandInvoked
+    }
 
-    override fun subCommandGroup(name: String, description: String, builder: SubCommandGroupBuilder.() -> Unit) =
+    override fun subCommandGroup(name: String, description: String, builder: SubCommandGroupBuilder.() -> Unit) {
         kordBuilder.group(name, description) {
-            KordSubCommandGroupBuilder(this).apply(builder)
+            KordSubCommandGroupBuilder(this).apply(builder).also {
+                commandInvokeCallbacks.putAll(
+                    it.commandInvokeCallbacks.mapKeys {
+                        "$name ${it.key}"
+                    }
+                )
+            }
         }
+    }
 }
 
 internal class KordSubCommandBuilder(
@@ -135,13 +148,18 @@ internal class KordSubCommandBuilder(
 internal class KordSubCommandGroupBuilder(
     private val kordBuilder: GroupCommandBuilder,
 ) : SubCommandGroupBuilder {
+
+    val commandInvokeCallbacks = mutableMapOf<String, suspend InteractionScope.() -> Unit>()
+
     override fun subCommand(
         name: String,
         description: String,
         onCommandInvoked: suspend InteractionScope.() -> Unit,
         builder: SubCommandBuilder.() -> Unit
-    ) =
+    ) {
         kordBuilder.subCommand(name, description) {
             KordSubCommandBuilder(this).apply(builder)
         }
+        commandInvokeCallbacks[name] = onCommandInvoked
+    }
 }

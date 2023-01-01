@@ -60,10 +60,25 @@ internal class KordApplicationCommandScope(
         description: String,
         builder: CommandGroupBuilder.() -> Unit
     ) {
+        var commandInvokeCallbacks = mapOf<String, suspend InteractionScope.() -> Unit>()
         restClient.interaction.createGlobalChatInputApplicationCommand(
             restClient.application.getCurrentApplicationInfo().id,
             name,
             description,
-        ) { KordCommandGroupBuilder(this).apply(builder) }
+        ) {
+            KordCommandGroupBuilder(this).apply(builder).also {
+                commandInvokeCallbacks = it.commandInvokeCallbacks
+            }
+        }
+
+        scope.launch {
+            gateway.events
+                .filterIsInstance<InteractionCreate>()
+                .collectLatest {
+                    println(it)
+                    val interactionScope = KordInteractionScope(restClient, it)
+                    // TODO find and invoke the correct callback
+                }
+        }
     }
 }
