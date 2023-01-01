@@ -46,18 +46,30 @@ class AndroidStudioUpdateFeature(
     }
 
     private suspend fun registerCommands() {
-        discordBotScope.registerGlobalChatInputCommand(
+        discordBotScope.registerGlobalChatInputCommand("test", "Test command", {
+            this.createResponseMessage("1048810566170456066", false, "Test")
+        }) {}
+        discordBotScope.registerGlobalChatInputCommandGroup(
             "updates",
-            "Configure various update messages",
-            {
-                // TODO
-            }
+            "Configure various update messages"
         ) {
             subCommandGroup("android-studio", "Configure update messages for Android Studio releases") {
-                subCommand("enable", "Enable update messages for Android Studio releases") {
+                subCommand(
+                    "enable",
+                    "Enable update messages for Android Studio releases",
+                    {
+                        createResponseMessage("1048810566170456066", true, "Enabled update messages")
+                    }
+                ) {
                     channel("target", "The channel to post update messages to", true)
                 }
-                subCommand("disable", "Disable update messages for Android Studio releases") {
+                subCommand(
+                    "disable",
+                    "Disable update messages for Android Studio releases",
+                    {
+                        // TODO
+                    }
+                ) {
                     // No options here
                 }
             }
