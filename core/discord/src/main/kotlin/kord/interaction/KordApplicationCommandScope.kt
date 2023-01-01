@@ -15,6 +15,8 @@
  */
 package kord.interaction
 
+import dev.kord.common.entity.CommandGroup
+import dev.kord.common.entity.SubCommand
 import dev.kord.gateway.Gateway
 import dev.kord.gateway.InteractionCreate
 import dev.kord.rest.service.RestClient
@@ -48,9 +50,10 @@ internal class KordApplicationCommandScope(
             gateway.events
                 .filterIsInstance<InteractionCreate>()
                 .collectLatest {
-                    println(it)
-                    val interactionScope = KordInteractionScope(restClient, it)
-                    interactionScope.onCommandInvoked()
+                    if (it.interaction.data.name.value == name) {
+                        val interactionScope = KordInteractionScope(restClient, it)
+                        interactionScope.onCommandInvoked()
+                    }
                 }
         }
     }
@@ -60,7 +63,7 @@ internal class KordApplicationCommandScope(
         description: String,
         builder: CommandGroupBuilder.() -> Unit
     ) {
-        var commandInvokeCallbacks = mapOf<String, suspend InteractionScope.() -> Unit>()
+        var commandInvokeCallbacks: Map<String, suspend InteractionScope.() -> Unit>
         restClient.interaction.createGlobalChatInputApplicationCommand(
             restClient.application.getCurrentApplicationInfo().id,
             name,
@@ -75,9 +78,24 @@ internal class KordApplicationCommandScope(
             gateway.events
                 .filterIsInstance<InteractionCreate>()
                 .collectLatest {
-                    println(it)
-                    val interactionScope = KordInteractionScope(restClient, it)
-                    // TODO find and invoke the correct callback
+                    if (it.interaction.data.name.value == name) {
+                        // Command group
+                        val commandGroup = it.interaction.data.options.value?.filterIsInstance<CommandGroup>()?.firstOrNull()
+                        var fullCommandName = ""
+                        val command = if (commandGroup != null) {
+                            fullCommandName += commandGroup.name
+                            commandGroup.options.value?.first() as SubCommand
+                        } else {
+                            it.interaction.data.options.value?.first() as SubCommand
+                        }
+                        fullCommandName += " ${command.name}"
+                        fullCommandName = fullCommandName.trimStart()
+
+                        println(fullCommandName)
+                        println(commandInvokeCallbacks.keys)
+                        val interactionScope = KordInteractionScope(restClient, it)
+                        commandInvokeCallbacks.getValue(fullCommandName).invoke(interactionScope)
+                    }
                 }
         }
     }
