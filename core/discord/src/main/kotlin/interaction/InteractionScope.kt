@@ -30,4 +30,9 @@ interface InteractionScope {
      * @param content The text content for the message.
      */
     suspend fun createResponseMessage(targetChannelId: String, ephemeral: Boolean, content: String)
+
+    /**
+     * Retrieves the channel ID of a channel option with the given name.
+     */
+    fun getChannelId(optionName: String): String
 }
