@@ -24,4 +24,8 @@ interface GuildSettingsDatabase {
     fun getAll(key: String): Flow<List<String>>
 
     suspend fun setString(guildId: String, key: String, value: String)
+
+    suspend fun delete(guildId: String, key: String)
+
+    suspend fun deleteAllForGuild(guildId: String)
 }

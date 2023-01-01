@@ -46,34 +46,43 @@ class AndroidStudioUpdateFeature(
     }
 
     private suspend fun registerCommands() {
-        discordBotScope.registerGlobalChatInputCommand("test", "Test command", {
-            this.createResponseMessage("1048810566170456066", false, "Test")
-        }) {}
         discordBotScope.registerGlobalChatInputCommandGroup(
             "updates",
             "Configure various update messages"
         ) {
             subCommandGroup("android-studio", "Configure update messages for Android Studio releases") {
                 subCommand(
-                    "enable",
-                    "Enable update messages for Android Studio releases",
-                    {
-                        createResponseMessage("1048810566170456066", true, "Enabled update messages")
+                    name = "enable",
+                    description = "Enable update messages for Android Studio releases",
+                    onCommandInvoked = {
+                        val targetChannelId = getChannelId("target")
+                        enableStudioUpdateNotifications("TODO", targetChannelId)
+                        createResponseMessage(getChannelId("target"), true, "Enabled Android Studio update messages for #${targetChannelId}")
                     }
                 ) {
                     channel("target", "The channel to post update messages to", true)
                 }
                 subCommand(
-                    "disable",
-                    "Disable update messages for Android Studio releases",
-                    {
-                        // TODO
+                    name = "disable",
+                    description = "Disable update messages for Android Studio releases",
+                    onCommandInvoked = {
+                        disableStudioUpdateMessages("")
+                        createResponseMessage("", true, "Disabled Android Studio update messages for this server")
                     }
                 ) {
                     // No options here
                 }
             }
         }
+    }
+
+    private suspend fun enableStudioUpdateNotifications(guildId: String, targetChannelId: String) {
+        settings.setString(guildId, TARGET_CHANNEL_KEY, targetChannelId)
+        tryScheduleUpdateCheck()
+    }
+
+    private suspend fun disableStudioUpdateMessages(guildId: String) {
+        settings.delete(guildId, TARGET_CHANNEL_KEY)
     }
 
     private suspend fun postNewUpdatesIfAny() {

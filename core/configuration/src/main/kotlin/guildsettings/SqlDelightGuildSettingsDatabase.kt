@@ -51,4 +51,16 @@ internal class SqlDelightGuildSettingsDatabase(
     override fun getAll(key: String): Flow<List<String>> {
         return database.guildSettingsQueries.getAll(key).asFlow().mapToList()
     }
+
+    override suspend fun delete(guildId: String, key: String) {
+        withContext(Dispatchers.IO) {
+            database.guildSettingsQueries.delete(guildId, key)
+        }
+    }
+
+    override suspend fun deleteAllForGuild(guildId: String) {
+        withContext(Dispatchers.IO) {
+            database.guildSettingsQueries.deleteAllForGuild(guildId)
+        }
+    }
 }
