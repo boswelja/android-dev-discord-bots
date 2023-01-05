@@ -79,7 +79,9 @@ internal class KordApplicationCommandScope(
                 .filterIsInstance<InteractionCreate>()
                 .collectLatest {
                     if (it.interaction.data.name.value == name) {
-                        val commandGroup = it.interaction.data.options.value?.filterIsInstance<CommandGroup>()?.firstOrNull()
+                        val commandGroup = it.interaction.data.options.value
+                            ?.filterIsInstance<CommandGroup>()
+                            ?.firstOrNull()
                         var fullCommandName = ""
                         val command = if (commandGroup != null) {
                             fullCommandName += commandGroup.name
