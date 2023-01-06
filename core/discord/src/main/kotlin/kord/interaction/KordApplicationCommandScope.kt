@@ -15,11 +15,14 @@
  */
 package kord.interaction
 
+import dev.kord.common.entity.CommandGroup
+import dev.kord.common.entity.SubCommand
 import dev.kord.gateway.Gateway
 import dev.kord.gateway.InteractionCreate
 import dev.kord.rest.service.RestClient
 import interaction.ApplicationCommandScope
-import interaction.ChatInputCommandBuilder
+import interaction.CommandBuilder
+import interaction.CommandGroupBuilder
 import interaction.InteractionScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collectLatest
@@ -35,21 +38,65 @@ internal class KordApplicationCommandScope(
         name: String,
         description: String,
         onCommandInvoked: suspend InteractionScope.() -> Unit,
-        builder: ChatInputCommandBuilder.() -> Unit,
+        builder: CommandBuilder.() -> Unit,
     ) {
         restClient.interaction.createGlobalChatInputApplicationCommand(
             restClient.application.getCurrentApplicationInfo().id,
             name,
             description,
-        ) { KordChatInputCommandBuilder(this).apply(builder) }
+        ) { KordCommandBuilder(this).apply(builder) }
 
         scope.launch {
             gateway.events
                 .filterIsInstance<InteractionCreate>()
                 .collectLatest {
-                    println(it)
-                    val interactionScope = KordInteractionScope(restClient, it)
-                    interactionScope.onCommandInvoked()
+                    if (it.interaction.data.name.value == name) {
+                        val interactionScope = KordInteractionScope(restClient, it)
+                        interactionScope.onCommandInvoked()
+                    }
+                }
+        }
+    }
+
+    override suspend fun registerGlobalChatInputCommandGroup(
+        name: String,
+        description: String,
+        builder: CommandGroupBuilder.() -> Unit,
+    ) {
+        var commandInvokeCallbacks: Map<String, suspend InteractionScope.() -> Unit>
+        restClient.interaction.createGlobalChatInputApplicationCommand(
+            restClient.application.getCurrentApplicationInfo().id,
+            name,
+            description,
+        ) {
+            KordCommandGroupBuilder(this).apply(builder).also {
+                commandInvokeCallbacks = it.commandInvokeCallbacks
+            }
+        }
+
+        scope.launch {
+            gateway.events
+                .filterIsInstance<InteractionCreate>()
+                .collectLatest {
+                    if (it.interaction.data.name.value == name) {
+                        val commandGroup = it.interaction.data.options.value
+                            ?.filterIsInstance<CommandGroup>()
+                            ?.firstOrNull()
+                        var fullCommandName = ""
+                        val command = if (commandGroup != null) {
+                            fullCommandName += commandGroup.name
+                            commandGroup.options.value?.first() as SubCommand
+                        } else {
+                            it.interaction.data.options.value?.first() as SubCommand
+                        }
+                        fullCommandName += " ${command.name}"
+                        fullCommandName = fullCommandName.trim()
+
+                        println(fullCommandName)
+                        println(commandInvokeCallbacks.keys)
+                        val interactionScope = KordInteractionScope(restClient, it)
+                        commandInvokeCallbacks.getValue(fullCommandName).invoke(interactionScope)
+                    }
                 }
         }
     }

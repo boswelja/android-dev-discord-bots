@@ -15,20 +15,22 @@
  */
 package interaction
 
-/**
- * A builder for chat input commands. Supports all [CommandBuilder] options, as well as configuring subcommands and
- * subcommand groups.
- */
 @ChatInputCommandBuilderMarker
-interface ChatInputCommandBuilder : CommandBuilder {
-
+interface CommandGroupBuilder {
     /**
      * Configures a new subcommand under this command.
      * @param name The name of the subcommand. This will be what users type to invoke the command.
      * @param description A short description of the subcommand. This will be displayed to users next to the name.
+     * @param onCommandInvoked Called when the command was invoked by the user. That is, when a new interaction is
+     * initiated. See [InteractionScope].
      * @param builder The command builder. See [SubCommandBuilder].
      */
-    fun subCommand(name: String, description: String, builder: SubCommandBuilder.() -> Unit)
+    fun subCommand(
+        name: String,
+        description: String,
+        onCommandInvoked: suspend InteractionScope.() -> Unit,
+        builder: SubCommandBuilder.() -> Unit,
+    )
 
     /**
      * Configures a new subcommand group under this command.
@@ -120,9 +122,16 @@ interface SubCommandGroupBuilder {
      * Configures a new subcommand under this command.
      * @param name The name of the subcommand. This will be what users type to invoke the command.
      * @param description A short description of the subcommand. This will be displayed to users next to the name.
+     * @param onCommandInvoked Called when the command was invoked by the user. That is, when a new interaction is
+     * initiated. See [InteractionScope].
      * @param builder The command builder. See [SubCommandBuilder].
      */
-    fun subCommand(name: String, description: String, builder: SubCommandBuilder.() -> Unit)
+    fun subCommand(
+        name: String,
+        description: String,
+        onCommandInvoked: suspend InteractionScope.() -> Unit,
+        builder: SubCommandBuilder.() -> Unit,
+    )
 }
 
 @DslMarker
