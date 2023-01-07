@@ -26,4 +26,18 @@ interface MessageScope {
      * @param builder The embed builder. See [EmbedBuilder].
      */
     suspend fun createEmbed(targetChannelId: String, builder: EmbedBuilder.() -> Unit)
+
+    /**
+     * Creates a new post in a forum channel.
+     * @param targetChannelId The channel to create the thread in.
+     * @param name 1-100 character channel name.
+     * @param appliedTags The IDs of the set of tags to be applied to the new thread.
+     * @param builder The embed builder. See [EmbedBuilder].
+     */
+    suspend fun createForumPost(
+        targetChannelId: String,
+        name: String,
+        appliedTags: Set<String>? = null,
+        builder: EmbedBuilder.() -> Unit,
+    )
 }

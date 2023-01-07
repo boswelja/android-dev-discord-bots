@@ -47,7 +47,7 @@ internal class KordChannelScope(
             name = kordChannel.name.value,
             topic = kordChannel.topic.value,
             lastMessageId = kordChannel.lastMessageId.value?.toString(),
-            nsfw = kordChannel.nsfw.value == true
+            nsfw = kordChannel.nsfw.value == true,
         )
     }
 }

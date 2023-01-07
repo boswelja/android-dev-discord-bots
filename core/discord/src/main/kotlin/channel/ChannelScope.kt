@@ -55,6 +55,6 @@ data class Channel(
         PRIVATE_THREAD,
         GUILD_STAGE_VOICE,
         GUILD_DIRECTORY,
-        GUILD_FORUM
+        GUILD_FORUM,
     }
 }
