@@ -18,6 +18,8 @@ package kord.channel
 import channel.EmbedBuilder
 import channel.MessageScope
 import dev.kord.common.Color
+import dev.kord.common.entity.ArchiveDuration
+import dev.kord.common.entity.ChannelType
 import dev.kord.common.entity.Snowflake
 import dev.kord.rest.builder.message.create.embed
 import dev.kord.rest.service.RestClient
@@ -59,5 +61,20 @@ internal class KordMessageScope(
                 embedBuilder.apply(builder)
             }
         }
+    }
+
+    override suspend fun createForumPost(
+        targetChannelId: String,
+        name: String,
+        appliedTags: Set<String>?,
+        builder: EmbedBuilder.() -> Unit,
+    ) {
+        val newThread = restClient.channel.startThread(
+            channelId = Snowflake(targetChannelId),
+            name = name,
+            archiveDuration = ArchiveDuration.Week,
+            type = ChannelType.GuildForum,
+        )
+        createEmbed(newThread.id.toString(), builder)
     }
 }
