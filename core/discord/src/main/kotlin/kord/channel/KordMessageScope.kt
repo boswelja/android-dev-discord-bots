@@ -22,6 +22,7 @@ import dev.kord.common.entity.ArchiveDuration
 import dev.kord.common.entity.ChannelType
 import dev.kord.common.entity.Snowflake
 import dev.kord.rest.builder.message.create.embed
+import dev.kord.rest.json.request.StartThreadRequest
 import dev.kord.rest.service.RestClient
 import kotlinx.datetime.Instant
 
@@ -71,9 +72,10 @@ internal class KordMessageScope(
     ) {
         val newThread = restClient.channel.startThread(
             channelId = Snowflake(targetChannelId),
-            name = name,
-            archiveDuration = ArchiveDuration.Week,
-            type = ChannelType.GuildForum,
+            request = StartThreadRequest(
+                name = name,
+                autoArchiveDuration = ArchiveDuration.Week,
+            )
         )
         createEmbed(newThread.id.toString(), builder)
     }
