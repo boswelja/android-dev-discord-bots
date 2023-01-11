@@ -34,8 +34,10 @@ class AndroidStudioUpdateFeature(
 
     private var updateCheckerJob: Job? = null
 
-    private suspend fun tryScheduleUpdateCheck() {
-        updateCheckerJob?.cancelAndJoin()
+    override suspend fun init() {
+        registerCommands()
+
+        // Start the update checker loop
         updateCheckerJob = coroutineScope {
             launch {
                 schedule(Repeating.Daily()) {
@@ -85,7 +87,6 @@ class AndroidStudioUpdateFeature(
 
     private suspend fun enableStudioUpdateNotifications(guildId: String, targetChannelId: String) {
         settings.setString(guildId, TARGET_CHANNEL_KEY, targetChannelId)
-        tryScheduleUpdateCheck()
     }
 
     private suspend fun disableStudioUpdateMessages(guildId: String) {
@@ -107,14 +108,6 @@ class AndroidStudioUpdateFeature(
                     }
                 }
             }
-        }
-    }
-
-    override suspend fun init() {
-        registerCommands()
-        // If update check notifications are already enabled, try start the scheduler
-        if (settings.getAll(TARGET_CHANNEL_KEY).first().isNotEmpty()) {
-            tryScheduleUpdateCheck()
         }
     }
 
