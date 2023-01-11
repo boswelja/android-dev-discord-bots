@@ -44,10 +44,12 @@ class AndroidStudioUpdateChecker(
     }
 
     private suspend fun updateLastCheckTime(newDate: OffsetDateTime) {
+        // TODO Guild ID
         settingsRepository.setString("0", "lastCheckTime", newDate.toString())
     }
 
     private suspend fun getLastCheckTime(): OffsetDateTime? {
+        // TODO Guild ID
         return settingsRepository.getString("0", "lastCheckTime").first()?.let { OffsetDateTime.parse(it) }
     }
 }
