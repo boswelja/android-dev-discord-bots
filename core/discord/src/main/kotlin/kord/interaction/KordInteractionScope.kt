@@ -43,7 +43,7 @@ internal class KordInteractionScope(
 
     override fun getChannelId(optionName: String): String {
         // Try to get the value from the first command segment
-        interaction.interaction.data.options.value?.first { it.name == optionName }?.also {
+        interaction.interaction.data.options.value?.firstOrNull { it.name == optionName }?.also {
             if (it is CommandArgument.ChannelArgument) {
                 return it.value.toString()
             }
