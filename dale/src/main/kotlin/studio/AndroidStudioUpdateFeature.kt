@@ -108,7 +108,7 @@ class AndroidStudioUpdateFeature(
                         Channel.Type.GUILD_ANNOUNCEMENT -> {
                             discordBotScope.createEmbed(targetChannelId) {
                                 title = newUpdate.title
-                                description = newUpdate.content
+                                //description = newUpdate.content
                                 timestamp = newUpdate.publishedOn.toInstant().toKotlinInstant()
                                 url = newUpdate.links.firstOrNull()?.url
                                 author(newUpdate.author.name, null, null)
@@ -117,7 +117,7 @@ class AndroidStudioUpdateFeature(
                         Channel.Type.GUILD_FORUM -> {
                             discordBotScope.createForumPost(targetChannelId, newUpdate.title) {
                                 title = newUpdate.title
-                                description = newUpdate.content
+                                //description = newUpdate.content
                                 timestamp = newUpdate.publishedOn.toInstant().toKotlinInstant()
                                 url = newUpdate.links.firstOrNull()?.url
                                 author(newUpdate.author.name, null, null)
@@ -130,17 +130,6 @@ class AndroidStudioUpdateFeature(
                         Channel.Type.GUILD_CATEGORY,
                         Channel.Type.GUILD_STAGE_VOICE,
                         Channel.Type.GUILD_DIRECTORY -> error("Unsupported channel type $channelType")
-                    }
-                }
-            }
-            newUpdates.forEach { newUpdate ->
-                allTargets.forEach { targetChannelId ->
-                    discordBotScope.createEmbed(targetChannelId) {
-                        title = newUpdate.title
-                        description = newUpdate.content
-                        timestamp = newUpdate.publishedOn.toInstant().toKotlinInstant()
-                        url = newUpdate.links.firstOrNull()?.url
-                        author(newUpdate.author.name, null, null)
                     }
                 }
             }
