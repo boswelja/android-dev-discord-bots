@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import channel.ChannelScope
 import channel.MessageScope
 import dev.kord.gateway.DefaultGateway
 import dev.kord.gateway.start
 import dev.kord.rest.service.RestClient
 import interaction.ApplicationCommandScope
+import kord.channel.KordChannelScope
 import kord.channel.KordMessageScope
 import kord.interaction.KordApplicationCommandScope
 import kord.presence.KordPresenceScope
@@ -60,9 +62,11 @@ class DiscordBotScope(
     private val applicationCommandScope: ApplicationCommandScope,
     private val messageScope: MessageScope,
     private val presenceScope: PresenceScope,
+    private val channelScope: ChannelScope,
 ) : ApplicationCommandScope by applicationCommandScope,
     MessageScope by messageScope,
-    PresenceScope by presenceScope
+    PresenceScope by presenceScope,
+    ChannelScope by channelScope
 
 fun CoroutineScope.createKordDiscordBot(token: String): DiscordBotScope {
     val restClient = RestClient(token)
@@ -75,5 +79,6 @@ fun CoroutineScope.createKordDiscordBot(token: String): DiscordBotScope {
         KordApplicationCommandScope(restClient, gateway, this),
         KordMessageScope(restClient),
         KordPresenceScope(token, gateway, this),
+        KordChannelScope(restClient),
     )
 }

@@ -6,10 +6,6 @@ plugins {
 group = "com.boswelja"
 version = "1.0-SNAPSHOT"
 
-repositories {
-    mavenCentral()
-}
-
 dependencies {
     api(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.datetime)
