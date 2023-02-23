@@ -12,14 +12,12 @@ repositories {
 
 dependencies {
     implementation(projects.common.network)
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+    implementation(libs.kotlinx.coroutines.core)
 
-    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.14.1")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.14.1")
-    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.14.1")
+    implementation(libs.bundles.jackson.xml)
 
     testImplementation(kotlin("test"))
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4")
+    testImplementation(libs.kotlinx.coroutines.test)
 }
 
 tasks.getByName<Test>("test") {
