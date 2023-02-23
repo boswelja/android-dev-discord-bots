@@ -7,7 +7,7 @@ ktor-client = "2.2.3"
 sqldelight = "1.5.4"
 sqlite-jdbc = "3.40.0.0"
 
-kord = "0.8.0-M17"
+kord = "forums-SNAPSHOT"
 
 jackson = "2.14.1"
 
