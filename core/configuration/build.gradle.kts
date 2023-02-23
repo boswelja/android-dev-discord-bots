@@ -8,12 +8,8 @@ group = "com.boswelja"
 version = "1.0-SNAPSHOT"
 
 dependencies {
-    api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
-
-    implementation("org.xerial:sqlite-jdbc:3.40.0.0")
-    implementation("com.squareup.sqldelight:sqlite-driver:1.5.4")
-    implementation("com.squareup.sqldelight:coroutines-extensions-jvm:1.5.4")
-
+    api(libs.kotlinx.coroutines.core)
+    implementation(libs.bundles.sqldelight)
     testImplementation(kotlin("test"))
 }
 
