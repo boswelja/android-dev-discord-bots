@@ -11,13 +11,12 @@ repositories {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+    implementation(libs.kotlinx.coroutines.core)
 
-    implementation("io.ktor:ktor-client-core:2.1.0")
-    implementation("io.ktor:ktor-client-cio:2.1.0")
+    implementation(libs.bundles.ktor)
 
     testImplementation(kotlin("test"))
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4")
+    testImplementation(libs.kotlinx.coroutines.test)
 }
 
 tasks.getByName<Test>("test") {

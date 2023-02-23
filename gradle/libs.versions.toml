@@ -1,0 +1,52 @@
+[versions]
+kotlinx-coroutines = "1.6.4"
+kotlinx-datetime = "0.4.0"
+
+ktor-client = "2.2.3"
+
+sqldelight = "1.5.4"
+sqlite-jdbc = "3.40.0.0"
+
+kord = "0.8.0-M17"
+
+jackson = "2.14.1"
+
+[libraries]
+kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
+kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
+kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinx-datetime" }
+
+ktor-client-core = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor-client" }
+ktor-client-cio = { group = "io.ktor", name = "ktor-client-cio", version.ref = "ktor-client" }
+
+jackson-kotlin = { group = "com.fasterxml.jackson.module", name = "jackson-module-kotlin", version.ref = "jackson" }
+jackson-jsr310 = { group = "com.fasterxml.jackson.datatype", name = "jackson-datatype-jsr310", version.ref = "jackson" }
+jackson-xml = { group = "com.fasterxml.jackson.dataformat", name = "jackson-dataformat-xml", version.ref = "jackson" }
+
+kord-rest = { group = "dev.kord", name = "kord-rest", version.ref = "kord" }
+kord-gateway = { group = "dev.kord", name = "kord-gateway", version.ref = "kord" }
+
+sqldelight-driver-sqlite = { group = "com.squareup.sqldelight", name = "sqlite-driver", version.ref = "sqldelight" }
+sqldelight-ext-coroutines = { group = "com.squareup.sqldelight", name = "coroutines-extensions-jvm", version.ref = "sqldelight" }
+
+sqlite-jdbc = { group = "org.xerial", name = "sqlite-jdbc", version.ref = "sqlite-jdbc" }
+
+[bundles]
+sqldelight = [
+    "sqldelight-driver-sqlite",
+    "sqldelight-ext-coroutines",
+    "sqlite-jdbc",
+]
+ktor = [
+    "ktor-client-core",
+    "ktor-client-cio",
+]
+kord = [
+    "kord-rest",
+    "kord-gateway",
+]
+jackson-xml = [
+    "jackson-kotlin",
+    "jackson-jsr310",
+    "jackson-xml"
+]
