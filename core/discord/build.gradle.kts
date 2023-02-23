@@ -6,14 +6,10 @@ plugins {
 group = "com.boswelja"
 version = "1.0-SNAPSHOT"
 
-repositories {
-    mavenCentral()
-}
-
 dependencies {
     api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
-    implementation("dev.kord:kord-rest:0.8.0-M17")
-    implementation("dev.kord:kord-gateway:0.8.0-M17")
+    implementation("dev.kord:kord-rest:forums-SNAPSHOT")
+    implementation("dev.kord:kord-gateway:forums-SNAPSHOT")
 
     testImplementation(kotlin("test"))
 }

@@ -6,10 +6,6 @@ plugins {
 group = "com.boswelja"
 version = "1.0-SNAPSHOT"
 
-repositories {
-    mavenCentral()
-}
-
 dependencies {
     implementation(projects.common.network)
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
