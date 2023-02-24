@@ -23,7 +23,7 @@ import net.dv8tion.jda.api.entities.channel.concrete.TextChannel
 import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel
 
-class JdaChannelScope(
+internal class JdaChannelScope(
     private val jda: JDA
 ) : ChannelScope {
     override suspend fun getChannel(channelId: String): Channel {

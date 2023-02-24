@@ -24,7 +24,7 @@ import net.dv8tion.jda.api.entities.MessageEmbed
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel
 import java.time.ZoneOffset
 
-class JdaMessageScope(private val jda: JDA): MessageScope {
+internal class JdaMessageScope(private val jda: JDA): MessageScope {
     override suspend fun createEmbed(targetChannelId: String, builder: EmbedBuilder.() -> Unit) {
         val channel = jda.getChannelById(MessageChannel::class.java, targetChannelId)
         requireNotNull(channel) { "Channel with ID $targetChannelId is not a valid message channel" }
