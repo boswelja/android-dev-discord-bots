@@ -8,6 +8,7 @@ sqldelight = "1.5.4"
 sqlite-jdbc = "3.40.0.0"
 
 kord = "forums-SNAPSHOT"
+jda = "5.0.0-beta.4"
 
 jackson = "2.14.1"
 
@@ -25,6 +26,7 @@ jackson-xml = { group = "com.fasterxml.jackson.dataformat", name = "jackson-data
 
 kord-rest = { group = "dev.kord", name = "kord-rest", version.ref = "kord" }
 kord-gateway = { group = "dev.kord", name = "kord-gateway", version.ref = "kord" }
+jda = { group = "net.dv8tion", name = "JDA", version.ref = "jda" }
 
 sqldelight-driver-sqlite = { group = "com.squareup.sqldelight", name = "sqlite-driver", version.ref = "sqldelight" }
 sqldelight-ext-coroutines = { group = "com.squareup.sqldelight", name = "coroutines-extensions-jvm", version.ref = "sqldelight" }
