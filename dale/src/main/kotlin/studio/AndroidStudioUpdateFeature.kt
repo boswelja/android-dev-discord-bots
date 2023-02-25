@@ -21,7 +21,6 @@ import features.Feature
 import guild.MemberPermission
 import guildsettings.GuildSettingsDatabase
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -116,40 +115,40 @@ class AndroidStudioUpdateFeature(
 
     private suspend fun postNewUpdatesIfAny() {
         val newUpdates = updateChecker.getNewPosts()
-        if (newUpdates.isNotEmpty()) {
-            val allTargets = settings.getAll(TARGET_CHANNEL_KEY).first()
-            allTargets.forEach { targetChannelId ->
-                val channelType = discordBotScope.getChannel(targetChannelId).type
-                newUpdates.forEach { newUpdate ->
-                    when (channelType) {
-                        Channel.Type.GUILD_TEXT,
-                        Channel.Type.DM,
-                        Channel.Type.GROUP_DM,
-                        Channel.Type.GUILD_ANNOUNCEMENT -> {
-                            discordBotScope.createEmbed(targetChannelId) {
-                                title = newUpdate.title
-                                //description = newUpdate.content
-                                timestamp = newUpdate.publishedOn.toInstant().toKotlinInstant()
-                                url = newUpdate.links.firstOrNull()?.url
-                                author(newUpdate.author.name, null, null)
-                            }
+        if (newUpdates.isEmpty()) return
+
+        val allTargets = settings.getAll(TARGET_CHANNEL_KEY).first()
+        allTargets.forEach { targetChannelId ->
+            val channelType = discordBotScope.getChannel(targetChannelId).type
+            newUpdates.forEach { newUpdate ->
+                when (channelType) {
+                    Channel.Type.GUILD_TEXT,
+                    Channel.Type.DM,
+                    Channel.Type.GROUP_DM,
+                    Channel.Type.GUILD_ANNOUNCEMENT -> {
+                        discordBotScope.createEmbed(targetChannelId) {
+                            title = newUpdate.title
+                            //description = newUpdate.content
+                            timestamp = newUpdate.publishedOn.toInstant().toKotlinInstant()
+                            url = newUpdate.links.firstOrNull()?.url
+                            author(newUpdate.author.name, null, null)
                         }
-                        Channel.Type.GUILD_FORUM -> {
-                            discordBotScope.createForumPost(targetChannelId, newUpdate.title) {
-                                title = newUpdate.title
-                                //description = newUpdate.content
-                                timestamp = newUpdate.publishedOn.toInstant().toKotlinInstant()
-                                url = newUpdate.links.firstOrNull()?.url
-                                author(newUpdate.author.name, null, null)
-                            }
-                        }
-                        Channel.Type.ANNOUNCEMENT_THREAD,
-                        Channel.Type.PUBLIC_THREAD,
-                        Channel.Type.PRIVATE_THREAD -> error("Threads are unsupported (for now)")
-                        Channel.Type.GUILD_VOICE,
-                        Channel.Type.GUILD_CATEGORY,
-                        Channel.Type.GUILD_STAGE_VOICE -> error("Unsupported channel type $channelType")
                     }
+                    Channel.Type.GUILD_FORUM -> {
+                        discordBotScope.createForumPost(targetChannelId, newUpdate.title) {
+                            title = newUpdate.title
+                            //description = newUpdate.content
+                            timestamp = newUpdate.publishedOn.toInstant().toKotlinInstant()
+                            url = newUpdate.links.firstOrNull()?.url
+                            author(newUpdate.author.name, null, null)
+                        }
+                    }
+                    Channel.Type.ANNOUNCEMENT_THREAD,
+                    Channel.Type.PUBLIC_THREAD,
+                    Channel.Type.PRIVATE_THREAD -> error("Threads are unsupported (for now)")
+                    Channel.Type.GUILD_VOICE,
+                    Channel.Type.GUILD_CATEGORY,
+                    Channel.Type.GUILD_STAGE_VOICE -> error("Unsupported channel type $channelType")
                 }
             }
         }
