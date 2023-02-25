@@ -19,6 +19,10 @@ import dev.kord.gateway.DefaultGateway
 import dev.kord.gateway.start
 import dev.kord.rest.service.RestClient
 import interaction.ApplicationCommandScope
+import jda.channel.JdaChannelScope
+import jda.channel.JdaMessageScope
+import jda.interaction.JdaApplicationCommandScope
+import jda.presence.JdaPresenceScope
 import kord.channel.KordChannelScope
 import kord.channel.KordMessageScope
 import kord.interaction.KordApplicationCommandScope
@@ -26,6 +30,7 @@ import kord.presence.KordPresenceScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
+import net.dv8tion.jda.api.JDABuilder
 import presence.PresenceScope
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
@@ -47,7 +52,7 @@ suspend inline fun discordBot(
     }
 
     supervisorScope {
-        val bot = createKordDiscordBot(token)
+        val bot = createJdaDiscordBot(token)
 
         launch {
             block(bot)
@@ -80,5 +85,15 @@ fun CoroutineScope.createKordDiscordBot(token: String): DiscordBotScope {
         KordMessageScope(restClient),
         KordPresenceScope(token, gateway, this),
         KordChannelScope(restClient),
+    )
+}
+
+fun CoroutineScope.createJdaDiscordBot(token: String): DiscordBotScope {
+    val jda = JDABuilder.createDefault(token).build()
+    return DiscordBotScope(
+        JdaApplicationCommandScope(this, jda),
+        JdaMessageScope(jda),
+        JdaPresenceScope(jda),
+        JdaChannelScope(jda),
     )
 }
