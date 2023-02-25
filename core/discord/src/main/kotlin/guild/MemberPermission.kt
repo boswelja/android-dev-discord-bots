@@ -18,6 +18,7 @@ package guild
 enum class MemberPermission {
     // General Server / Channel Permissions
     MANAGE_CHANNEL,
+    MANAGE_SERVER,
     VIEW_AUDIT_LOGS,
     VIEW_CHANNEL,
     VIEW_GUILD_INSIGHTS,
