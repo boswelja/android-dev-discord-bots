@@ -15,6 +15,8 @@
  */
 package interaction
 
+import guild.GuildMember
+
 /**
  * A scope interface that allows responding to user interactions with the bot, usually from application commands.
  */
@@ -29,6 +31,11 @@ interface InteractionScope {
      * The ID of the channel the interaction originated from.
      */
     val sourceChannelId: String?
+
+    /**
+     * The [GuildMember] this interaction originated from, or null if it did not come from a guild.
+     */
+    val sourceGuildMember: GuildMember?
 
     /**
      * Writes a basic message in response to an interaction.
