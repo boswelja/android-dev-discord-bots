@@ -29,7 +29,7 @@ class JdaPresenceScope(private val jda: JDA) : PresenceScope {
                 PresenceStatus.IDLE -> OnlineStatus.IDLE
                 PresenceStatus.ONLINE -> OnlineStatus.ONLINE
             },
-            afk
+            afk,
         )
     }
 }

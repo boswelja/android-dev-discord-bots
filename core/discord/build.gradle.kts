@@ -8,6 +8,7 @@ version = "1.0-SNAPSHOT"
 
 dependencies {
     api(libs.kotlinx.coroutines.core)
+    api(libs.kotlinx.datetime)
     implementation(libs.jda) {
         exclude(module = "opus-java") // We don't need audio components (yet)
     }

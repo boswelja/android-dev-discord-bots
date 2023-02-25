@@ -21,11 +21,10 @@ import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.entities.channel.ChannelType
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel
 import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel
-import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel
 
 internal class JdaChannelScope(
-    private val jda: JDA
+    private val jda: JDA,
 ) : ChannelScope {
     override suspend fun getChannel(channelId: String): Channel {
         val channel = jda.getChannelById(GuildChannel::class.java, channelId)
@@ -48,7 +47,7 @@ internal class JdaChannelScope(
             name = channel.name,
             topic = (channel as? TextChannel)?.topic,
             nsfw = (channel as? TextChannel)?.isNSFW ?: false,
-            lastMessageId = (channel as? MessageChannel)?.latestMessageId
+            lastMessageId = (channel as? MessageChannel)?.latestMessageId,
         )
     }
 }

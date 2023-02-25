@@ -27,11 +27,10 @@ import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.events.GenericEvent
 import net.dv8tion.jda.api.events.interaction.command.GenericCommandInteractionEvent
 import net.dv8tion.jda.api.hooks.EventListener
-import net.dv8tion.jda.api.interactions.commands.OptionType
 
 internal class JdaApplicationCommandScope(
     private val coroutineScope: CoroutineScope,
-    private val jda: JDA
+    private val jda: JDA,
 ) : ApplicationCommandScope {
     override suspend fun registerGlobalChatInputCommand(
         name: String,
@@ -54,7 +53,7 @@ internal class JdaApplicationCommandScope(
             val command = JdaCommandGroupBuilder(
                 name,
                 description,
-                ::registerCommandInvokedListener
+                ::registerCommandInvokedListener,
             ).apply(builder).build()
             jda.upsertCommand(command).complete()
         }
