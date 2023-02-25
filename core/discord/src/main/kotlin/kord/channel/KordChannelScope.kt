@@ -33,7 +33,6 @@ internal class KordChannelScope(
                 ChannelType.GroupDM -> Channel.Type.GROUP_DM
                 ChannelType.GuildCategory -> Channel.Type.GUILD_CATEGORY
                 ChannelType.GuildDirectory -> Channel.Type.GUILD_DIRECTORY
-                ChannelType.GuildForum -> Channel.Type.GUILD_FORUM
                 ChannelType.GuildNews -> Channel.Type.GUILD_ANNOUNCEMENT
                 ChannelType.GuildStageVoice -> Channel.Type.GUILD_STAGE_VOICE
                 ChannelType.GuildText -> Channel.Type.GUILD_TEXT
@@ -41,6 +40,7 @@ internal class KordChannelScope(
                 ChannelType.PrivateThread -> Channel.Type.PRIVATE_THREAD
                 ChannelType.PublicGuildThread -> Channel.Type.PUBLIC_THREAD
                 ChannelType.PublicNewsThread -> Channel.Type.ANNOUNCEMENT_THREAD
+                ChannelType.GuildForum -> Channel.Type.GUILD_FORUM
                 is ChannelType.Unknown -> error("Unknown channel type for channel with ID $channelId")
             },
             position = kordChannel.position.value,

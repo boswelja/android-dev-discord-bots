@@ -7,9 +7,11 @@ group = "com.boswelja"
 version = "1.0-SNAPSHOT"
 
 dependencies {
-    api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
-    implementation("dev.kord:kord-rest:forums-SNAPSHOT")
-    implementation("dev.kord:kord-gateway:forums-SNAPSHOT")
+    api(libs.kotlinx.coroutines.core)
+    implementation(libs.bundles.kord)
+    implementation(libs.jda) {
+        exclude(module = "opus-java") // We don't need audio components (yet)
+    }
 
     testImplementation(kotlin("test"))
 }
