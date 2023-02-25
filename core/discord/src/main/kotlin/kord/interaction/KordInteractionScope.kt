@@ -31,7 +31,7 @@ internal class KordInteractionScope(
 
     override val sourceChannelId: String = interaction.interaction.channelId.toString()
 
-    override suspend fun createResponseMessage(targetChannelId: String, ephemeral: Boolean, content: String) {
+    override suspend fun createResponseMessage(ephemeral: Boolean, content: String) {
         restClient.interaction.createInteractionResponse(
             interaction.interaction.id,
             interaction.interaction.token,
