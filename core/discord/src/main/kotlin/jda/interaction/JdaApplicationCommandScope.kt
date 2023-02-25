@@ -35,7 +35,7 @@ internal class JdaApplicationCommandScope(
     private val commandInvocationMap = mutableMapOf<String, suspend InteractionScope.() -> Unit>()
 
     init {
-        jda.registeredListeners.add(CommandEventListener())
+        jda.addEventListener(CommandEventListener())
     }
 
     override suspend fun registerGlobalChatInputCommand(
