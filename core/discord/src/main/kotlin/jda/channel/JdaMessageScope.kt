@@ -17,22 +17,47 @@ package jda.channel
 
 import channel.EmbedBuilder
 import channel.MessageScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import kotlinx.datetime.Instant
 import kotlinx.datetime.toJavaInstant
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.entities.MessageEmbed
+import net.dv8tion.jda.api.entities.channel.concrete.ForumChannel
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel
+import net.dv8tion.jda.api.utils.messages.MessageCreateData
 import java.time.ZoneOffset
 
 internal class JdaMessageScope(private val jda: JDA): MessageScope {
     override suspend fun createEmbed(targetChannelId: String, builder: EmbedBuilder.() -> Unit) {
-        val channel = jda.getChannelById(MessageChannel::class.java, targetChannelId)
-        requireNotNull(channel) { "Channel with ID $targetChannelId is not a valid message channel" }
-        channel.sendMessageEmbeds(
-            listOf(
-                JdaEmbedBuilder().apply(builder).build()
-            )
-        )
+        withContext(Dispatchers.IO) {
+            val channel = jda.getChannelById(MessageChannel::class.java, targetChannelId)
+            requireNotNull(channel) { "Channel with ID $targetChannelId is not a valid message channel" }
+            channel.sendMessageEmbeds(
+                listOf(
+                    JdaEmbedBuilder().apply(builder).build()
+                )
+            ).complete()
+        }
+    }
+
+    override suspend fun createForumPost(
+        targetChannelId: String,
+        name: String,
+        appliedTags: Set<String>?,
+        builder: EmbedBuilder.() -> Unit
+    ) {
+        withContext(Dispatchers.IO) {
+            // TODO support tags
+            val channel = jda.getChannelById(ForumChannel::class.java, targetChannelId)
+            requireNotNull(channel) { "The channel with ID $targetChannelId is not a valid forum channel" }
+            channel.createForumPost(
+                name,
+                MessageCreateData.fromEmbeds(
+                    JdaEmbedBuilder().apply(builder).build()
+                )
+            ).complete()
+        }
     }
 }
 
