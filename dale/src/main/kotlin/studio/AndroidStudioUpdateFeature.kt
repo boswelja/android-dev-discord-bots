@@ -18,6 +18,7 @@ package studio
 import DiscordBotScope
 import channel.Channel
 import features.Feature
+import guild.MemberPermission
 import guildsettings.GuildSettingsDatabase
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
@@ -61,9 +62,20 @@ class AndroidStudioUpdateFeature(
                     name = "enable",
                     description = "Enable update messages for Android Studio releases",
                     onCommandInvoked = {
-                        val targetChannelId = getChannelId("target")
-                        createResponseMessage(true, "Enabled Android Studio update messages for <#${targetChannelId}>")
-                        enableStudioUpdateNotifications(sourceGuildId!!, targetChannelId)
+                        // If the guild member has permission, or is not a guild member (i.e. the command was triggered
+                        // from DMs)
+                        if (sourceGuildMember?.permissions?.contains(MemberPermission.MANAGE_SERVER) == true ||
+                            sourceGuildMember == null) {
+                            val targetChannelId = getChannelId("target")
+                            createResponseMessage(
+                                true,
+                                "Enabled Android Studio update messages for <#${targetChannelId}>"
+                            )
+                            enableStudioUpdateNotifications(sourceGuildId!!, targetChannelId)
+                        } else {
+                            // Else the user is a guild member and does not have permission
+                            createResponseMessage(true, "You do not have permission to do that here")
+                        }
                     },
                 ) {
                     channel(
@@ -76,8 +88,16 @@ class AndroidStudioUpdateFeature(
                     name = "disable",
                     description = "Disable update messages for Android Studio releases",
                     onCommandInvoked = {
-                        disableStudioUpdateMessages(sourceGuildId!!)
-                        createResponseMessage(true, "Disabled Android Studio update messages for this server")
+                        // If the guild member has permission, or is not a guild member (i.e. the command was triggered
+                        // from DMs)
+                        if (sourceGuildMember?.permissions?.contains(MemberPermission.MANAGE_SERVER) == true ||
+                            sourceGuildMember == null) {
+                            disableStudioUpdateMessages(sourceGuildId!!)
+                            createResponseMessage(true, "Disabled Android Studio update messages for this server")
+                        } else {
+                            // Else the user is a guild member and does not have permission
+                            createResponseMessage(true, "You do not have permission to do that here")
+                        }
                     },
                 ) {
                     // No options here
@@ -128,8 +148,7 @@ class AndroidStudioUpdateFeature(
                         Channel.Type.PRIVATE_THREAD -> error("Threads are unsupported (for now)")
                         Channel.Type.GUILD_VOICE,
                         Channel.Type.GUILD_CATEGORY,
-                        Channel.Type.GUILD_STAGE_VOICE,
-                        Channel.Type.GUILD_DIRECTORY -> error("Unsupported channel type $channelType")
+                        Channel.Type.GUILD_STAGE_VOICE -> error("Unsupported channel type $channelType")
                     }
                 }
             }
