@@ -21,6 +21,7 @@ import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.entities.channel.ChannelType
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel
 import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel
+import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel
 
 internal class JdaChannelScope(
@@ -44,7 +45,6 @@ internal class JdaChannelScope(
                 ChannelType.FORUM -> Channel.Type.GUILD_FORUM
                 ChannelType.UNKNOWN -> error("Unknown channel type for channel with ID $channelId")
             },
-            position = null, // TODO
             name = channel.name,
             topic = (channel as? TextChannel)?.topic,
             nsfw = (channel as? TextChannel)?.isNSFW ?: false,
