@@ -7,7 +7,6 @@ ktor-client = "2.2.3"
 sqldelight = "1.5.4"
 sqlite-jdbc = "3.40.0.0"
 
-kord = "forums-SNAPSHOT"
 jda = "5.0.0-beta.4"
 
 jackson = "2.14.1"
@@ -24,8 +23,6 @@ jackson-kotlin = { group = "com.fasterxml.jackson.module", name = "jackson-modul
 jackson-jsr310 = { group = "com.fasterxml.jackson.datatype", name = "jackson-datatype-jsr310", version.ref = "jackson" }
 jackson-xml = { group = "com.fasterxml.jackson.dataformat", name = "jackson-dataformat-xml", version.ref = "jackson" }
 
-kord-rest = { group = "dev.kord", name = "kord-rest", version.ref = "kord" }
-kord-gateway = { group = "dev.kord", name = "kord-gateway", version.ref = "kord" }
 jda = { group = "net.dv8tion", name = "JDA", version.ref = "jda" }
 
 sqldelight-driver-sqlite = { group = "com.squareup.sqldelight", name = "sqlite-driver", version.ref = "sqldelight" }
@@ -42,10 +39,6 @@ sqldelight = [
 ktor = [
     "ktor-client-core",
     "ktor-client-cio",
-]
-kord = [
-    "kord-rest",
-    "kord-gateway",
 ]
 jackson-xml = [
     "jackson-kotlin",

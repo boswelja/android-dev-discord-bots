@@ -28,15 +28,15 @@ import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel
 import net.dv8tion.jda.api.utils.messages.MessageCreateData
 import java.time.ZoneOffset
 
-internal class JdaMessageScope(private val jda: JDA): MessageScope {
+internal class JdaMessageScope(private val jda: JDA) : MessageScope {
     override suspend fun createEmbed(targetChannelId: String, builder: EmbedBuilder.() -> Unit) {
         withContext(Dispatchers.IO) {
             val channel = jda.getChannelById(MessageChannel::class.java, targetChannelId)
             requireNotNull(channel) { "Channel with ID $targetChannelId is not a valid message channel" }
             channel.sendMessageEmbeds(
                 listOf(
-                    JdaEmbedBuilder().apply(builder).build()
-                )
+                    JdaEmbedBuilder().apply(builder).build(),
+                ),
             ).complete()
         }
     }
@@ -45,7 +45,7 @@ internal class JdaMessageScope(private val jda: JDA): MessageScope {
         targetChannelId: String,
         name: String,
         appliedTags: Set<String>?,
-        builder: EmbedBuilder.() -> Unit
+        builder: EmbedBuilder.() -> Unit,
     ) {
         withContext(Dispatchers.IO) {
             // TODO support tags
@@ -54,8 +54,8 @@ internal class JdaMessageScope(private val jda: JDA): MessageScope {
             channel.createForumPost(
                 name,
                 MessageCreateData.fromEmbeds(
-                    JdaEmbedBuilder().apply(builder).build()
-                )
+                    JdaEmbedBuilder().apply(builder).build(),
+                ),
             ).complete()
         }
     }
@@ -100,7 +100,7 @@ internal class JdaEmbedBuilder : EmbedBuilder {
             null,
             footer,
             null,
-            null
+            null,
         )
     }
 }

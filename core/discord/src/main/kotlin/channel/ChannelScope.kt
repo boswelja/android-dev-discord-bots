@@ -29,7 +29,6 @@ interface ChannelScope {
 /**
  * Represents a Discord Channel.
  * @property type The type of the channel.
- * @property position The order of the channel in the channel list, or null if there is no order.
  * @property name The name of the channel, or null if there is no name.
  * @property topic The topic of the channel, or null if there is no topic.
  * @property nsfw Whether this is a NSFW channel.
@@ -37,7 +36,6 @@ interface ChannelScope {
  */
 data class Channel(
     val type: Type,
-    val position: Int?,
     val name: String?,
     val topic: String?,
     val nsfw: Boolean,
@@ -54,7 +52,6 @@ data class Channel(
         PUBLIC_THREAD,
         PRIVATE_THREAD,
         GUILD_STAGE_VOICE,
-        GUILD_DIRECTORY,
         GUILD_FORUM,
     }
 }

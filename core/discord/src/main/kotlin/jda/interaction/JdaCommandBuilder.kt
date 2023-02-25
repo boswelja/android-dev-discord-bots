@@ -79,7 +79,7 @@ class JdaCommandGroupBuilder(
         builder: SubCommandBuilder.() -> Unit,
     ) {
         command = command.addSubcommands(
-            JdaSubCommandBuilder(name, description).apply(builder).build()
+            JdaSubCommandBuilder(name, description).apply(builder).build(),
         )
         registerCommandInvokedListener("$commandName $name", onCommandInvoked)
     }
@@ -88,10 +88,10 @@ class JdaCommandGroupBuilder(
         command = command.addSubcommandGroups(
             JdaSubCommandGroupBuilder(
                 name,
-                description
+                description,
             ) { subcommandName, onCommandInvoked ->
                 registerCommandInvokedListener("$commandName $subcommandName", onCommandInvoked)
-            }.apply(builder).build()
+            }.apply(builder).build(),
         )
     }
 
@@ -152,11 +152,10 @@ internal class JdaSubCommandGroupBuilder(
         builder: SubCommandBuilder.() -> Unit,
     ) {
         command = command.addSubcommands(
-            JdaSubCommandBuilder(name, description).apply(builder).build()
+            JdaSubCommandBuilder(name, description).apply(builder).build(),
         )
         registerCommandInvokedListener("$commandName $name", onCommandInvoked)
     }
-
 
     fun build(): SubcommandGroupData {
         return command
