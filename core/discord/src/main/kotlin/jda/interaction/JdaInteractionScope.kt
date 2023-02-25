@@ -77,13 +77,14 @@ internal class JdaInteractionScope(private val event: GenericCommandInteractionE
                     Permission.REQUEST_TO_SPEAK -> MemberPermission.REQUEST_TO_SPEAK
                     Permission.ADMINISTRATOR -> MemberPermission.ADMINISTRATOR
                     Permission.UNKNOWN,
-                    null -> MemberPermission.UNKNOWN
+                    null,
+                    -> MemberPermission.UNKNOWN
                 }
             }.toSet(),
             nickname = it.nickname,
             avatarUrl = it.avatarUrl,
             boostingSince = it.timeBoosted?.toInstant()?.toKotlinInstant(),
-            timedOutUntil = it.timeOutEnd?.toInstant()?.toKotlinInstant()
+            timedOutUntil = it.timeOutEnd?.toInstant()?.toKotlinInstant(),
         )
     }
 

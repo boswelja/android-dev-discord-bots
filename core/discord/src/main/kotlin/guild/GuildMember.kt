@@ -33,5 +33,5 @@ data class GuildMember(
     val nickname: String?,
     val avatarUrl: String?,
     val boostingSince: Instant?,
-    val timedOutUntil: Instant?
+    val timedOutUntil: Instant?,
 )
