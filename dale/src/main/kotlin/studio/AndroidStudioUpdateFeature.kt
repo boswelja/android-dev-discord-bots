@@ -62,7 +62,7 @@ class AndroidStudioUpdateFeature(
                     description = "Enable update messages for Android Studio releases",
                     onCommandInvoked = {
                         val targetChannelId = getChannelId("target")
-                        createResponseMessage(sourceChannelId, true, "Enabled Android Studio update messages for <#${targetChannelId}>")
+                        createResponseMessage(true, "Enabled Android Studio update messages for <#${targetChannelId}>")
                         enableStudioUpdateNotifications(sourceGuildId!!, targetChannelId)
                     },
                 ) {
@@ -77,7 +77,7 @@ class AndroidStudioUpdateFeature(
                     description = "Disable update messages for Android Studio releases",
                     onCommandInvoked = {
                         disableStudioUpdateMessages(sourceGuildId!!)
-                        createResponseMessage(sourceChannelId, true, "Disabled Android Studio update messages for this server")
+                        createResponseMessage(true, "Disabled Android Studio update messages for this server")
                     },
                 ) {
                     // No options here
