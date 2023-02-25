@@ -27,17 +27,12 @@ import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.events.GenericEvent
 import net.dv8tion.jda.api.events.interaction.command.GenericCommandInteractionEvent
 import net.dv8tion.jda.api.hooks.EventListener
+import net.dv8tion.jda.api.interactions.commands.OptionType
 
 internal class JdaApplicationCommandScope(
     private val coroutineScope: CoroutineScope,
     private val jda: JDA
 ) : ApplicationCommandScope {
-    private val commandInvocationMap = mutableMapOf<String, suspend InteractionScope.() -> Unit>()
-
-    init {
-        jda.addEventListener(CommandEventListener())
-    }
-
     override suspend fun registerGlobalChatInputCommand(
         name: String,
         description: String,
@@ -46,7 +41,7 @@ internal class JdaApplicationCommandScope(
     ) {
         withContext(Dispatchers.IO) {
             jda.upsertCommand(name, description).complete()
-            commandInvocationMap[name] = onCommandInvoked
+            jda.addEventListener(CommandEventListener(coroutineScope, name, onCommandInvoked))
         }
     }
 
@@ -56,20 +51,34 @@ internal class JdaApplicationCommandScope(
         builder: CommandGroupBuilder.() -> Unit,
     ) {
         withContext(Dispatchers.IO) {
-            jda.upsertCommand(JdaCommandGroupBuilder(name, description).apply(builder).build()).complete()
+            val command = JdaCommandGroupBuilder(
+                name,
+                description,
+                ::registerCommandInvokedListener
+            ).apply(builder).build()
+            jda.upsertCommand(command).complete()
         }
     }
 
-    inner class CommandEventListener : EventListener {
-        override fun onEvent(event: GenericEvent) {
-            if (event !is GenericCommandInteractionEvent) return
+    private fun registerCommandInvokedListener(fullCommandName: String, onCommandInvoked: suspend InteractionScope.() -> Unit) {
+        jda.addEventListener(CommandEventListener(coroutineScope, fullCommandName, onCommandInvoked))
+    }
+}
 
+class CommandEventListener(
+    private val coroutineScope: CoroutineScope,
+    private val fullCommandName: String,
+    private val onCommandInvoked: suspend InteractionScope.() -> Unit,
+) : EventListener {
+    override fun onEvent(event: GenericEvent) {
+        if (event !is GenericCommandInteractionEvent) return
+
+        if (event.fullCommandName == fullCommandName) {
             val interactionScope = JdaInteractionScope(event)
 
             coroutineScope.launch {
-                commandInvocationMap[event.fullCommandName]?.invoke(interactionScope)
+                onCommandInvoked(interactionScope)
             }
         }
     }
-
 }

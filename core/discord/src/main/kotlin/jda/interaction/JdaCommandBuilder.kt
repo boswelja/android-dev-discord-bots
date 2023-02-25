@@ -23,6 +23,7 @@ import interaction.SubCommandGroupBuilder
 import net.dv8tion.jda.api.interactions.commands.OptionType
 import net.dv8tion.jda.api.interactions.commands.build.CommandData
 import net.dv8tion.jda.api.interactions.commands.build.Commands
+import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandData
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandGroupData
 
@@ -63,9 +64,13 @@ internal class JdaCommandBuilder(name: String, description: String) : CommandBui
     }
 }
 
-class JdaCommandGroupBuilder(name: String, description: String) : CommandGroupBuilder {
+class JdaCommandGroupBuilder(
+    private val commandName: String,
+    description: String,
+    private val registerCommandInvokedListener: (String, suspend InteractionScope.() -> Unit) -> Unit,
+) : CommandGroupBuilder {
 
-    private var command = Commands.slash(name, description)
+    private var command = Commands.slash(commandName, description)
 
     override fun subCommand(
         name: String,
@@ -76,16 +81,21 @@ class JdaCommandGroupBuilder(name: String, description: String) : CommandGroupBu
         command = command.addSubcommands(
             JdaSubCommandBuilder(name, description).apply(builder).build()
         )
-        // TODO command invocation
+        registerCommandInvokedListener("$commandName $name", onCommandInvoked)
     }
 
     override fun subCommandGroup(name: String, description: String, builder: SubCommandGroupBuilder.() -> Unit) {
         command = command.addSubcommandGroups(
-            JdaSubCommandGroupBuilder(name, description).apply(builder).build()
+            JdaSubCommandGroupBuilder(
+                name,
+                description
+            ) { subcommandName, onCommandInvoked ->
+                registerCommandInvokedListener("$commandName $subcommandName", onCommandInvoked)
+            }.apply(builder).build()
         )
     }
 
-    fun build(): CommandData {
+    fun build(): SlashCommandData {
         return command
     }
 }
@@ -127,9 +137,13 @@ internal class JdaSubCommandBuilder(name: String, description: String) : SubComm
     }
 }
 
-internal class JdaSubCommandGroupBuilder(name: String, description: String) : SubCommandGroupBuilder {
+internal class JdaSubCommandGroupBuilder(
+    private val commandName: String,
+    description: String,
+    private val registerCommandInvokedListener: (String, suspend InteractionScope.() -> Unit) -> Unit,
+) : SubCommandGroupBuilder {
 
-    private var command = SubcommandGroupData(name, description)
+    private var command = SubcommandGroupData(commandName, description)
 
     override fun subCommand(
         name: String,
@@ -140,7 +154,7 @@ internal class JdaSubCommandGroupBuilder(name: String, description: String) : Su
         command = command.addSubcommands(
             JdaSubCommandBuilder(name, description).apply(builder).build()
         )
-        // TODO invocation handler
+        registerCommandInvokedListener("$commandName $name", onCommandInvoked)
     }
 
 
