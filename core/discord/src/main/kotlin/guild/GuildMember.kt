@@ -20,12 +20,12 @@ import kotlinx.datetime.Instant
 /**
  * A member of a guild (a.k.a server).
  *
- * @param joinedAt When the user joined the guild.
- * @param permissions A set of [MemberPermission]s this member has in the guild.
- * @param nickname The members nickname, or null if they don't have one set.
- * @param avatarUrl The URL of the members guild avatar, or null if they don't have a custom avatar set.
- * @param boostingSince When the member started boosting the guild.
- * @param timedOutUntil When the user will be out of their timeout.
+ * @property joinedAt When the user joined the guild.
+ * @property permissions A set of [MemberPermission]s this member has in the guild.
+ * @property nickname The members nickname, or null if they don't have one set.
+ * @property avatarUrl The URL of the members guild avatar, or null if they don't have a custom avatar set.
+ * @property boostingSince When the member started boosting the guild.
+ * @property timedOutUntil When the user will be out of their timeout.
  */
 data class GuildMember(
     val joinedAt: Instant,
