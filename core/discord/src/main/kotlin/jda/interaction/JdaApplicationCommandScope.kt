@@ -40,7 +40,7 @@ internal class JdaApplicationCommandScope(
         builder: CommandBuilder.() -> Unit,
     ) {
         withContext(Dispatchers.IO) {
-            jda.upsertCommand(name, description).complete()
+            jda.upsertCommand(JdaCommandBuilder(name, description).apply(builder).build()).complete()
             jda.addEventListener(CommandEventListener(coroutineScope, name, onCommandInvoked))
         }
     }
