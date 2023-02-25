@@ -61,7 +61,7 @@ internal class JdaApplicationCommandScope(
 
     private fun registerCommandInvokedListener(
         fullCommandName: String,
-        onCommandInvoked: suspend InteractionScope.() -> Unit
+        onCommandInvoked: suspend InteractionScope.() -> Unit,
     ) {
         jda.addEventListener(CommandEventListener(coroutineScope, fullCommandName, onCommandInvoked))
     }
