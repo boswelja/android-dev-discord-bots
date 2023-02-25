@@ -15,17 +15,15 @@
  */
 import channel.ChannelScope
 import channel.MessageScope
-import dev.kord.gateway.DefaultGateway
-import dev.kord.gateway.start
-import dev.kord.rest.service.RestClient
 import interaction.ApplicationCommandScope
-import kord.channel.KordChannelScope
-import kord.channel.KordMessageScope
-import kord.interaction.KordApplicationCommandScope
-import kord.presence.KordPresenceScope
+import jda.channel.JdaChannelScope
+import jda.channel.JdaMessageScope
+import jda.interaction.JdaApplicationCommandScope
+import jda.presence.JdaPresenceScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
+import net.dv8tion.jda.api.JDABuilder
 import presence.PresenceScope
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
@@ -47,7 +45,7 @@ suspend inline fun discordBot(
     }
 
     supervisorScope {
-        val bot = createKordDiscordBot(token)
+        val bot = createJdaDiscordBot(token)
 
         launch {
             block(bot)
@@ -68,17 +66,12 @@ class DiscordBotScope(
     PresenceScope by presenceScope,
     ChannelScope by channelScope
 
-fun CoroutineScope.createKordDiscordBot(token: String): DiscordBotScope {
-    val restClient = RestClient(token)
-    val gateway = DefaultGateway()
-
-    launch {
-        gateway.start(token)
-    }
+fun CoroutineScope.createJdaDiscordBot(token: String): DiscordBotScope {
+    val jda = JDABuilder.createDefault(token).build()
     return DiscordBotScope(
-        KordApplicationCommandScope(restClient, gateway, this),
-        KordMessageScope(restClient),
-        KordPresenceScope(token, gateway, this),
-        KordChannelScope(restClient),
+        JdaApplicationCommandScope(this, jda),
+        JdaMessageScope(jda),
+        JdaPresenceScope(jda),
+        JdaChannelScope(jda),
     )
 }
