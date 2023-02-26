@@ -15,6 +15,9 @@
  */
 package fetcher
 
+/**
+ * A generic exception thrown when there is an error fetching a Feed.
+ */
 open class FeedCouldNotBeObtainedException(
     message: String? = null,
     cause: Throwable? = null,
@@ -23,16 +26,23 @@ open class FeedCouldNotBeObtainedException(
         if (cause != null) initCause(cause)
     }
 
-    final override fun initCause(cause: Throwable?): Throwable {
-        return super.initCause(cause)
-    }
+    final override fun initCause(cause: Throwable?): Throwable = super.initCause(cause)
 }
 
+/**
+ * Thrown when a Feed could not be found. For example, when the server returns 404.
+ */
 class FeedNotFoundException(source: String, cause: Throwable? = null) :
     FeedCouldNotBeObtainedException("Not found at source: $source", cause)
 
+/**
+ * Thrown when the feed was found, but could not be parsed. For example, when the URL content was not an RSS feed.
+ */
 class FeedInvalidException(message: String, cause: Throwable? = null) :
     FeedCouldNotBeObtainedException(message, cause)
 
+/**
+ * Thrown when the feed is temporarily unavailable. For example, when the server returns 5xx.
+ */
 class FeedTemporaryUnavailableException(source: String, cause: Throwable? = null) :
     FeedCouldNotBeObtainedException("Temporary unavailable resource: $source", cause)

@@ -51,9 +51,7 @@ internal class RealRssParser constructor(
         }
     }
 
-    private fun parseFeedInternal(xml: String): RssFeedDto {
-        return xmlMapper.readValue(xml, RssFeedDto::class.java)
-    }
+    private fun parseFeedInternal(xml: String): RssFeedDto = xmlMapper.readValue(xml, RssFeedDto::class.java)
 
     private fun RssFeedDto.toRssFeed(): Feed {
         return Feed(

@@ -21,14 +21,26 @@ import network.NetworkModule
 import network.NetworkModuleFactory
 import network.SourceNotFoundException
 
+/**
+ * Allows fetching RSS feeds.
+ */
 interface Fetcher {
+
+    /**
+     * Obtains a [Feed] from the given URL.
+     */
     @Throws(FeedCouldNotBeObtainedException::class)
     suspend fun obtainFeed(url: String): Feed
 }
 
-fun createFetcher() = FetcherFactory.create()
+/**
+ * A factory for producing [Fetcher]s.
+ */
+object FetcherFactory {
 
-internal object FetcherFactory {
+    /**
+     * Creates a new [Fetcher].
+     */
     fun create(): Fetcher {
         return NetworkFetcher(
             networkModule = NetworkModuleFactory.create(),

@@ -652,7 +652,7 @@ style:
   TrailingWhitespace:
     active: true
   TrimMultilineRawString:
-    active: true
+    active: false
   UnderscoresInNumericLiterals:
     active: true
     acceptableLength: 4
