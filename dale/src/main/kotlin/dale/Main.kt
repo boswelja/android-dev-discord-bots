@@ -15,10 +15,10 @@
  */
 package dale
 
+import dale.studio.AndroidStudioUpdateFeature
 import discord.discordBot
 import features.initFeatures
 import guildsettings.GuildSettingsDatabaseFactory
-import dale.studio.AndroidStudioUpdateFeature
 
 /**
  * The main entrypoint for Dale. Passing a bot token as a program argument is expected.

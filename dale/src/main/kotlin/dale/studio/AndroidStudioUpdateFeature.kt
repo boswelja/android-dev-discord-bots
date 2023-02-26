@@ -17,16 +17,16 @@ package dale.studio
 
 import discord.DiscordBotScope
 import discord.channel.Channel
-import features.Feature
 import discord.guild.MemberPermission
+import features.Feature
 import guildsettings.GuildSettingsDatabase
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.datetime.toKotlinInstant
-import scheduler.schedule
 import scheduler.Repeating
+import scheduler.schedule
 
 /**
  * A [Feature] that configured a bot for checking and posting about new Android Studio updates.
@@ -131,7 +131,8 @@ class AndroidStudioUpdateFeature(
                     Channel.Type.GUILD_TEXT,
                     Channel.Type.DM,
                     Channel.Type.GROUP_DM,
-                    Channel.Type.GUILD_ANNOUNCEMENT ->
+                    Channel.Type.GUILD_ANNOUNCEMENT,
+                    ->
                         discordBotScope.createEmbed(targetChannelId) {
                             title = newUpdate.title
                             // description = newUpdate.content

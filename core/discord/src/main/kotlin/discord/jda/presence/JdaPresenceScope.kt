@@ -15,10 +15,10 @@
  */
 package discord.jda.presence
 
-import net.dv8tion.jda.api.JDA
-import net.dv8tion.jda.api.OnlineStatus
 import discord.presence.PresenceScope
 import discord.presence.PresenceStatus
+import net.dv8tion.jda.api.JDA
+import net.dv8tion.jda.api.OnlineStatus
 
 internal class JdaPresenceScope(private val jda: JDA) : PresenceScope {
     override fun updatePresence(afk: Boolean, status: PresenceStatus) {

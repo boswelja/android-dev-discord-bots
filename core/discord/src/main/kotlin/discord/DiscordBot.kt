@@ -22,11 +22,11 @@ import discord.jda.channel.JdaChannelScope
 import discord.jda.channel.JdaMessageScope
 import discord.jda.interaction.JdaApplicationCommandScope
 import discord.jda.presence.JdaPresenceScope
+import discord.presence.PresenceScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
 import net.dv8tion.jda.api.JDABuilder
-import discord.presence.PresenceScope
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
