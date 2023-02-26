@@ -34,8 +34,10 @@ class AndroidStudioUpdateChecker(
     suspend fun getNewPosts(): List<Entry> {
         val deserializedResponse = source.obtainFeed("https://androidstudio.googleblog.com/feeds/posts/default")
         val lastCheckTime = getLastCheckTime()
+        // If we haven't done an update check before, then return nothing. Otherwise, return posts created after the
+        // last check time
         val newEntries = if (lastCheckTime == null) {
-            deserializedResponse.entries
+            emptyList()
         } else {
             deserializedResponse.entries.filter { it.publishedOn > lastCheckTime }
         }
