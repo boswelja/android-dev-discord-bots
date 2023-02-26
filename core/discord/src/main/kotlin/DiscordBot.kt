@@ -66,6 +66,9 @@ class DiscordBotScope(
     PresenceScope by presenceScope,
     ChannelScope by channelScope
 
+/**
+ * Returns a new [DiscordBotScope] powered by JDA.
+ */
 fun CoroutineScope.createJdaDiscordBot(token: String): DiscordBotScope {
     val jda = JDABuilder.createDefault(token).build()
     return DiscordBotScope(

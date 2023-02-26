@@ -20,9 +20,7 @@ open class NetworkException(message: String? = null, cause: Throwable? = null) :
         if (cause != null) initCause(cause)
     }
 
-    final override fun initCause(cause: Throwable?): Throwable {
-        return super.initCause(cause)
-    }
+    final override fun initCause(cause: Throwable?): Throwable = super.initCause(cause)
 }
 
 class SourceNotFoundException(source: String, cause: Throwable? = null) :

@@ -59,9 +59,7 @@ internal class JdaCommandBuilder(name: String, description: String) : CommandBui
         command = command.addOption(OptionType.NUMBER, name, description, required)
     }
 
-    fun build(): CommandData {
-        return command
-    }
+    fun build(): CommandData = command
 }
 
 class JdaCommandGroupBuilder(
@@ -95,9 +93,7 @@ class JdaCommandGroupBuilder(
         )
     }
 
-    fun build(): SlashCommandData {
-        return command
-    }
+    fun build(): SlashCommandData = command
 }
 
 internal class JdaSubCommandBuilder(name: String, description: String) : SubCommandBuilder {
@@ -132,9 +128,7 @@ internal class JdaSubCommandBuilder(name: String, description: String) : SubComm
         command = command.addOption(OptionType.NUMBER, name, description, required)
     }
 
-    fun build(): SubcommandData {
-        return command
-    }
+    fun build(): SubcommandData = command
 }
 
 internal class JdaSubCommandGroupBuilder(
@@ -157,7 +151,5 @@ internal class JdaSubCommandGroupBuilder(
         registerCommandInvokedListener("$commandName $name", onCommandInvoked)
     }
 
-    fun build(): SubcommandGroupData {
-        return command
-    }
+    fun build(): SubcommandGroupData = command
 }

@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 import features.initFeatures
-import guildsettings.guildSettingDatabaseInstance
+import guildsettings.GuildSettingsDatabaseFactory
 import studio.AndroidStudioUpdateFeature
 
 suspend fun main(args: Array<String>) = discordBot(args.first()) {
-    val settingsRepository = guildSettingDatabaseInstance("dale")
+    val settingsRepository = GuildSettingsDatabaseFactory.instance("dale")
 
     initFeatures(
         AndroidStudioUpdateFeature(this, settingsRepository),
