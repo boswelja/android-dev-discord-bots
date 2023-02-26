@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package studio
+package dale.studio
 
 import DiscordBotScope
 import channel.Channel
@@ -28,6 +28,9 @@ import kotlinx.datetime.toKotlinInstant
 import scheduler.schedule
 import scheduler.Repeating
 
+/**
+ * A [Feature] that configured a bot for checking and posting about new Android Studio updates.
+ */
 class AndroidStudioUpdateFeature(
     private val discordBotScope: DiscordBotScope,
     private val settings: GuildSettingsDatabase,
@@ -128,8 +131,7 @@ class AndroidStudioUpdateFeature(
                     Channel.Type.GUILD_TEXT,
                     Channel.Type.DM,
                     Channel.Type.GROUP_DM,
-                    Channel.Type.GUILD_ANNOUNCEMENT,
-                    -> {
+                    Channel.Type.GUILD_ANNOUNCEMENT ->
                         discordBotScope.createEmbed(targetChannelId) {
                             title = newUpdate.title
                             // description = newUpdate.content
@@ -137,8 +139,7 @@ class AndroidStudioUpdateFeature(
                             url = newUpdate.links.firstOrNull()?.url
                             author(newUpdate.author.name, null, null)
                         }
-                    }
-                    Channel.Type.GUILD_FORUM -> {
+                    Channel.Type.GUILD_FORUM ->
                         discordBotScope.createForumPost(targetChannelId, newUpdate.title) {
                             title = newUpdate.title
                             // description = newUpdate.content
@@ -146,7 +147,6 @@ class AndroidStudioUpdateFeature(
                             url = newUpdate.links.firstOrNull()?.url
                             author(newUpdate.author.name, null, null)
                         }
-                    }
                     Channel.Type.ANNOUNCEMENT_THREAD,
                     Channel.Type.PUBLIC_THREAD,
                     Channel.Type.PRIVATE_THREAD,

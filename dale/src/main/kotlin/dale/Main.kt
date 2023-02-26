@@ -13,10 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package dale
+
+import discordBot
 import features.initFeatures
 import guildsettings.GuildSettingsDatabaseFactory
-import studio.AndroidStudioUpdateFeature
+import dale.studio.AndroidStudioUpdateFeature
 
+/**
+ * The main entrypoint for Dale. Passing a bot token as a program argument is expected.
+ */
 suspend fun main(args: Array<String>) = discordBot(args.first()) {
     val settingsRepository = GuildSettingsDatabaseFactory.instance("dale")
 

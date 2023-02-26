@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package studio
+package dale.studio
 
 import fetcher.Entry
 import fetcher.Fetcher
@@ -31,6 +31,9 @@ class AndroidStudioUpdateChecker(
     private val source: Fetcher = createFetcher(),
 ) {
 
+    /**
+     * Get a List of [Entry] that were created after the last check time.
+     */
     suspend fun getNewPosts(): List<Entry> {
         val deserializedResponse = source.obtainFeed("https://androidstudio.googleblog.com/feeds/posts/default")
         val lastCheckTime = getLastCheckTime()
@@ -45,13 +48,9 @@ class AndroidStudioUpdateChecker(
         return newEntries
     }
 
-    private suspend fun updateLastCheckTime(newDate: OffsetDateTime) {
-        // TODO Guild ID
+    private suspend fun updateLastCheckTime(newDate: OffsetDateTime) =
         settingsRepository.setString("0", "lastCheckTime", newDate.toString())
-    }
 
-    private suspend fun getLastCheckTime(): OffsetDateTime? {
-        // TODO Guild ID
-        return settingsRepository.getString("0", "lastCheckTime").first()?.let { OffsetDateTime.parse(it) }
-    }
+    private suspend fun getLastCheckTime(): OffsetDateTime? =
+        settingsRepository.getString("0", "lastCheckTime").first()?.let { OffsetDateTime.parse(it) }
 }
