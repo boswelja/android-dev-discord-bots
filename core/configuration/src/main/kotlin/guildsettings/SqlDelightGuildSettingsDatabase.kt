@@ -26,7 +26,7 @@ import kotlinx.coroutines.withContext
 import org.sqlite.SQLiteException
 
 internal class SqlDelightGuildSettingsDatabase(
-    private val driver: SqlDriver,
+    driver: SqlDriver,
 ) : GuildSettingsDatabase {
     private val database = GuildSettings(driver)
 

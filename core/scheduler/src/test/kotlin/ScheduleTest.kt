@@ -31,13 +31,14 @@ class ScheduleTest {
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `schedule daily one hour in the future executes in one hour`() = runTest {
-        val nowTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+        val nowTime = Clock.System.now()
+        val targetTime = nowTime.plus(1.hours).toLocalDateTime(TimeZone.currentSystemDefault())
 
         // Wrap in a Launch, so we can cancel after the first execution
         var executions = 0
         val scheduleJob = launch {
             schedule(
-                repeating = Repeating.Daily(nowTime.hour + 1, nowTime.minute, nowTime.second),
+                repeating = Repeating.Daily(targetTime.hour, targetTime.minute, targetTime.second),
             ) {
                 executions++
             }
@@ -51,13 +52,19 @@ class ScheduleTest {
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `schedule weekly one hour in the future executes in one hour`() = runTest {
-        val nowTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+        val nowTime = Clock.System.now()
+        val targetTime = nowTime.plus(1.hours).toLocalDateTime(TimeZone.currentSystemDefault())
 
         // Wrap in a Launch, so we can cancel after the first execution
         var executions = 0
         val scheduleJob = launch {
             schedule(
-                repeating = Repeating.Weekly(nowTime.dayOfWeek, nowTime.hour + 1, nowTime.minute, nowTime.second),
+                repeating = Repeating.Weekly(
+                    targetTime.dayOfWeek,
+                    targetTime.hour,
+                    targetTime.minute,
+                    targetTime.second,
+                ),
             ) {
                 executions++
             }
@@ -71,13 +78,19 @@ class ScheduleTest {
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `schedule fortnightly one hour in the future executes in one hour`() = runTest {
-        val nowTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+        val nowTime = Clock.System.now()
+        val targetTime = nowTime.plus(1.hours).toLocalDateTime(TimeZone.currentSystemDefault())
 
         // Wrap in a Launch, so we can cancel after the first execution
         var executions = 0
         val scheduleJob = launch {
             schedule(
-                repeating = Repeating.Fortnightly(nowTime.dayOfWeek, nowTime.hour + 1, nowTime.minute, nowTime.second),
+                repeating = Repeating.Fortnightly(
+                    targetTime.dayOfWeek,
+                    targetTime.hour,
+                    targetTime.minute,
+                    targetTime.second,
+                ),
             ) {
                 executions++
             }
