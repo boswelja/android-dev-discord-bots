@@ -25,7 +25,8 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.datetime.toKotlinInstant
-import schedule
+import scheduler.schedule
+import scheduler.Repeating
 
 class AndroidStudioUpdateFeature(
     private val discordBotScope: DiscordBotScope,

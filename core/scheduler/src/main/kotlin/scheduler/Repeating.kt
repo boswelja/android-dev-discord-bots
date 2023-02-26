@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package scheduler
+
 import java.time.DayOfWeek
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
