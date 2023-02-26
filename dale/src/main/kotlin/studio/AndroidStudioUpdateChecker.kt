@@ -25,7 +25,6 @@ import java.time.OffsetDateTime
 /**
  * This utility checker is used to retrieve Android Studio blog updates, compare that with local data and return new
  * posts. Local data is updated automatically. See [getNewPosts] for more details.
- * TODO Actually implement this
  */
 class AndroidStudioUpdateChecker(
     private val settingsRepository: GuildSettingsDatabase,
@@ -35,8 +34,10 @@ class AndroidStudioUpdateChecker(
     suspend fun getNewPosts(): List<Entry> {
         val deserializedResponse = source.obtainFeed("https://androidstudio.googleblog.com/feeds/posts/default")
         val lastCheckTime = getLastCheckTime()
+        // If we haven't done an update check before, then return nothing. Otherwise, return posts created after the
+        // last check time
         val newEntries = if (lastCheckTime == null) {
-            deserializedResponse.entries
+            emptyList()
         } else {
             deserializedResponse.entries.filter { it.publishedOn > lastCheckTime }
         }
@@ -45,10 +46,12 @@ class AndroidStudioUpdateChecker(
     }
 
     private suspend fun updateLastCheckTime(newDate: OffsetDateTime) {
+        // TODO Guild ID
         settingsRepository.setString("0", "lastCheckTime", newDate.toString())
     }
 
     private suspend fun getLastCheckTime(): OffsetDateTime? {
+        // TODO Guild ID
         return settingsRepository.getString("0", "lastCheckTime").first()?.let { OffsetDateTime.parse(it) }
     }
 }
