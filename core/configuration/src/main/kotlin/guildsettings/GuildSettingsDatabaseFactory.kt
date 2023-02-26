@@ -17,9 +17,16 @@ package guildsettings
 
 import sqldelight.SQLDelightDrivers
 
+/**
+ * A factory for producing instances of [GuildSettingsDatabase].
+ */
 object GuildSettingsDatabaseFactory {
     private val instances: MutableMap<String, GuildSettingsDatabase> = mutableMapOf()
 
+    /**
+     * Get an instance of [GuildSettingsDatabase] for a given name, usually the bot name for clarity. The returned
+     * instance may be reused if an instance for the same name already exists.
+     */
     fun instance(name: String): GuildSettingsDatabase {
         return instances[name] ?: synchronized(this) {
             instances[name]

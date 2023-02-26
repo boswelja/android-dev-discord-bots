@@ -21,7 +21,7 @@ import kotlinx.coroutines.supervisorScope
 /**
  * Initialises a number of features asynchronously.
  */
-suspend fun initFeatures(vararg features: Feature): Unit = supervisorScope {
+suspend fun initFeatures(vararg features: Feature) = supervisorScope {
     features.forEach {
         launch {
             it.init()

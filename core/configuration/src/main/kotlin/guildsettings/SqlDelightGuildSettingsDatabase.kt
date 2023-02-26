@@ -38,9 +38,11 @@ internal class SqlDelightGuildSettingsDatabase(
         }
     }
 
-    override fun getString(guildId: String, key: String): Flow<String?> {
-        return database.guildSettingsQueries.get(guildId, key).asFlow().mapToOneOrNull()
-    }
+    override fun getString(guildId: String, key: String): Flow<String?> = database
+        .guildSettingsQueries
+        .get(guildId, key)
+        .asFlow()
+        .mapToOneOrNull()
 
     override suspend fun setString(guildId: String, key: String, value: String) {
         withContext(Dispatchers.IO) {
@@ -48,9 +50,11 @@ internal class SqlDelightGuildSettingsDatabase(
         }
     }
 
-    override fun getAll(key: String): Flow<List<String>> {
-        return database.guildSettingsQueries.getAll(key).asFlow().mapToList()
-    }
+    override fun getAll(key: String): Flow<List<String>> = database
+        .guildSettingsQueries
+        .getAll(key)
+        .asFlow()
+        .mapToList()
 
     override suspend fun delete(guildId: String, key: String) {
         withContext(Dispatchers.IO) {
