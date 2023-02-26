@@ -13,8 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package interaction
+package discord.interaction
 
+/**
+ * A builder for chat input command groups.
+ */
 @ChatInputCommandBuilderMarker
 interface CommandGroupBuilder {
     /**
@@ -134,5 +137,8 @@ interface SubCommandGroupBuilder {
     )
 }
 
+/**
+ * DSL marker for chat input command builders to prevent implicit scope function access.
+ */
 @DslMarker
 annotation class ChatInputCommandBuilderMarker

@@ -13,10 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package guild
+package discord.guild
 
+/**
+ * Available permissions any given guild member might have.
+ */
 enum class MemberPermission {
-    // General Server / Channel Permissions
     MANAGE_CHANNEL,
     MANAGE_SERVER,
     VIEW_AUDIT_LOGS,

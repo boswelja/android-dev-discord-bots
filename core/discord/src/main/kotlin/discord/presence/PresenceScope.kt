@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package presence
+package discord.presence
 
 /**
  * A scope interface for managing bot presence. Presence includes things like online status, now playing details etc.
@@ -28,6 +28,9 @@ interface PresenceScope {
     fun updatePresence(afk: Boolean, status: PresenceStatus)
 }
 
+/**
+ * User statuses available as part of the "presence" system.
+ */
 enum class PresenceStatus {
     INVISIBLE,
     DO_NOT_DISTURB,

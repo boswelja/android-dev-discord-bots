@@ -13,18 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import channel.ChannelScope
-import channel.MessageScope
-import interaction.ApplicationCommandScope
-import jda.channel.JdaChannelScope
-import jda.channel.JdaMessageScope
-import jda.interaction.JdaApplicationCommandScope
-import jda.presence.JdaPresenceScope
+package discord
+
+import discord.channel.ChannelScope
+import discord.channel.MessageScope
+import discord.interaction.ApplicationCommandScope
+import discord.jda.channel.JdaChannelScope
+import discord.jda.channel.JdaMessageScope
+import discord.jda.interaction.JdaApplicationCommandScope
+import discord.jda.presence.JdaPresenceScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
 import net.dv8tion.jda.api.JDABuilder
-import presence.PresenceScope
+import discord.presence.PresenceScope
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract

@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package jda.interaction
+package discord.jda.interaction
 
-import interaction.CommandBuilder
-import interaction.CommandGroupBuilder
-import interaction.InteractionScope
-import interaction.SubCommandBuilder
-import interaction.SubCommandGroupBuilder
+import discord.interaction.CommandBuilder
+import discord.interaction.CommandGroupBuilder
+import discord.interaction.InteractionScope
+import discord.interaction.SubCommandBuilder
+import discord.interaction.SubCommandGroupBuilder
 import net.dv8tion.jda.api.interactions.commands.OptionType
 import net.dv8tion.jda.api.interactions.commands.build.CommandData
 import net.dv8tion.jda.api.interactions.commands.build.Commands
@@ -62,7 +62,7 @@ internal class JdaCommandBuilder(name: String, description: String) : CommandBui
     fun build(): CommandData = command
 }
 
-class JdaCommandGroupBuilder(
+internal class JdaCommandGroupBuilder(
     private val commandName: String,
     description: String,
     private val registerCommandInvokedListener: (String, suspend InteractionScope.() -> Unit) -> Unit,

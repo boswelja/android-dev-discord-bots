@@ -15,7 +15,7 @@
  */
 package dale
 
-import discordBot
+import discord.discordBot
 import features.initFeatures
 import guildsettings.GuildSettingsDatabaseFactory
 import dale.studio.AndroidStudioUpdateFeature

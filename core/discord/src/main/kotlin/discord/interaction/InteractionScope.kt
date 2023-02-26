@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package interaction
+package discord.interaction
 
-import guild.GuildMember
+import discord.guild.GuildMember
 
 /**
  * A scope interface that allows responding to user interactions with the bot, usually from application commands.

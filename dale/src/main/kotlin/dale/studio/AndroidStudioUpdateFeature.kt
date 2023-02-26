@@ -15,10 +15,10 @@
  */
 package dale.studio
 
-import DiscordBotScope
-import channel.Channel
+import discord.DiscordBotScope
+import discord.channel.Channel
 import features.Feature
-import guild.MemberPermission
+import discord.guild.MemberPermission
 import guildsettings.GuildSettingsDatabase
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope

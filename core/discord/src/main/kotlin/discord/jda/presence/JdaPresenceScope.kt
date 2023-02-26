@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package jda.presence
+package discord.jda.presence
 
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.OnlineStatus
-import presence.PresenceScope
-import presence.PresenceStatus
+import discord.presence.PresenceScope
+import discord.presence.PresenceStatus
 
-class JdaPresenceScope(private val jda: JDA) : PresenceScope {
+internal class JdaPresenceScope(private val jda: JDA) : PresenceScope {
     override fun updatePresence(afk: Boolean, status: PresenceStatus) {
         jda.presence.setPresence(
             when (status) {

@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package jda.interaction
+package discord.jda.interaction
 
-import interaction.ApplicationCommandScope
-import interaction.CommandBuilder
-import interaction.CommandGroupBuilder
-import interaction.InteractionScope
+import discord.interaction.ApplicationCommandScope
+import discord.interaction.CommandBuilder
+import discord.interaction.CommandGroupBuilder
+import discord.interaction.InteractionScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -67,7 +67,7 @@ internal class JdaApplicationCommandScope(
     }
 }
 
-class CommandEventListener(
+internal class CommandEventListener(
     private val coroutineScope: CoroutineScope,
     private val fullCommandName: String,
     private val onCommandInvoked: suspend InteractionScope.() -> Unit,

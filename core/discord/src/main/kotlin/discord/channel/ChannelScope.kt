@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package channel
+package discord.channel
 
 /**
  * A scope interface for interacting with Discord channels.
@@ -41,6 +41,9 @@ data class Channel(
     val nsfw: Boolean,
     val lastMessageId: String?,
 ) {
+    /**
+     * The type of channel this object represents.
+     */
     enum class Type {
         GUILD_TEXT,
         DM,

@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package jda.interaction
+package discord.jda.interaction
 
-import guild.GuildMember
-import guild.MemberPermission
-import interaction.InteractionScope
+import discord.guild.GuildMember
+import discord.guild.MemberPermission
+import discord.interaction.InteractionScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.toKotlinInstant

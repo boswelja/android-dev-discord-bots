@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package jda.channel
+package discord.jda.channel
 
-import channel.Channel
-import channel.ChannelScope
+import discord.channel.Channel
+import discord.channel.ChannelScope
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.entities.channel.ChannelType
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel
