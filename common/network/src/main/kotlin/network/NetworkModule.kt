@@ -24,13 +24,24 @@ import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpStatusCode
 
+/**
+ * Allows performing basic, higher-level network operations such as downloading a file.
+ */
 interface NetworkModule {
+
+    /**
+     * Downloads the file at the given URI, and returns its data as a String.
+     */
     suspend fun downloadFileAsText(uri: String): String
 }
 
-fun createNetworkModule() = NetworkModuleFactory.create()
-
-internal object NetworkModuleFactory {
+/**
+ * A Factory for producing new [NetworkModule]s.
+ */
+object NetworkModuleFactory {
+    /**
+     * Creates a new [NetworkModule].
+     */
     fun create(): NetworkModule {
         return HttpNetworkModule(
             httpClient = HttpClient(CIO),

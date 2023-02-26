@@ -15,6 +15,9 @@
  */
 package network
 
+/**
+ * The base exception thrown when a network-related error occurs.
+ */
 open class NetworkException(message: String? = null, cause: Throwable? = null) : Exception(message) {
     init {
         if (cause != null) initCause(cause)
@@ -23,8 +26,14 @@ open class NetworkException(message: String? = null, cause: Throwable? = null) :
     final override fun initCause(cause: Throwable?): Throwable = super.initCause(cause)
 }
 
+/**
+ * Thrown when a resource is not found. For example, when a web server returns 404.
+ */
 class SourceNotFoundException(source: String, cause: Throwable? = null) :
     NetworkException("Not found: $source", cause)
 
+/**
+ * Thrown when the server returns an error, except 404 (see [SourceNotFoundException]).
+ */
 class ServerErrorException(message: String?, cause: Throwable?) :
     NetworkException(message, cause)

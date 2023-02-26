@@ -18,8 +18,8 @@ package fetcher
 import fetcher.rss.RssParser
 import fetcher.rss.RssParserFactory
 import network.NetworkModule
+import network.NetworkModuleFactory
 import network.SourceNotFoundException
-import network.createNetworkModule
 
 interface Fetcher {
     @Throws(FeedCouldNotBeObtainedException::class)
@@ -31,7 +31,7 @@ fun createFetcher() = FetcherFactory.create()
 internal object FetcherFactory {
     fun create(): Fetcher {
         return NetworkFetcher(
-            networkModule = createNetworkModule(),
+            networkModule = NetworkModuleFactory.create(),
             parser = RssParserFactory.create(),
         )
     }
