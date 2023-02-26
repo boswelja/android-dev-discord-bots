@@ -17,11 +17,33 @@ package guildsettings
 
 import kotlinx.coroutines.flow.Flow
 
-// TODO write higher level functions to alter the DB and expose those
+/**
+ * A generic database designed to hold Guild-specific settings.
+ */
 interface GuildSettingsDatabase {
+
+    /**
+     * Flows the value of the entry matching the given key & guild ID.
+     */
     fun getString(guildId: String, key: String): Flow<String?>
 
+    /**
+     * Flows a list of all values matching the given key across all guilds.
+     */
     fun getAll(key: String): Flow<List<String>>
 
+    /**
+     * Sets a value to a key & guild ID combination.
+     */
     suspend fun setString(guildId: String, key: String, value: String)
+
+    /**
+     * Deletes an entry matching the given key & guild ID.
+     */
+    suspend fun delete(guildId: String, key: String)
+
+    /**
+     * Deletes all entries matching the given guild ID.
+     */
+    suspend fun deleteAllForGuild(guildId: String)
 }

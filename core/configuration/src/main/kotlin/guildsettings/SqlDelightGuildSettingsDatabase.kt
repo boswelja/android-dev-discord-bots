@@ -26,7 +26,7 @@ import kotlinx.coroutines.withContext
 import org.sqlite.SQLiteException
 
 internal class SqlDelightGuildSettingsDatabase(
-    private val driver: SqlDriver,
+    driver: SqlDriver,
 ) : GuildSettingsDatabase {
     private val database = GuildSettings(driver)
 
@@ -50,5 +50,17 @@ internal class SqlDelightGuildSettingsDatabase(
 
     override fun getAll(key: String): Flow<List<String>> {
         return database.guildSettingsQueries.getAll(key).asFlow().mapToList()
+    }
+
+    override suspend fun delete(guildId: String, key: String) {
+        withContext(Dispatchers.IO) {
+            database.guildSettingsQueries.delete(guildId, key)
+        }
+    }
+
+    override suspend fun deleteAllForGuild(guildId: String) {
+        withContext(Dispatchers.IO) {
+            database.guildSettingsQueries.deleteAllForGuild(guildId)
+        }
     }
 }
