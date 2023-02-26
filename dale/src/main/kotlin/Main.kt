@@ -15,13 +15,12 @@
  */
 import features.initFeatures
 import guildsettings.guildSettingDatabaseInstance
-import studio.AndroidStudioUpdateChecker
 import studio.AndroidStudioUpdateFeature
 
 suspend fun main(args: Array<String>) = discordBot(args.first()) {
     val settingsRepository = guildSettingDatabaseInstance("dale")
 
     initFeatures(
-        AndroidStudioUpdateFeature(this, settingsRepository)
+        AndroidStudioUpdateFeature(this, settingsRepository),
     )
 }

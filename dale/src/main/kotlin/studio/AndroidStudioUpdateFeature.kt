@@ -30,7 +30,7 @@ import schedule
 class AndroidStudioUpdateFeature(
     private val discordBotScope: DiscordBotScope,
     private val settings: GuildSettingsDatabase,
-    private val updateChecker: AndroidStudioUpdateChecker = AndroidStudioUpdateChecker(settings)
+    private val updateChecker: AndroidStudioUpdateChecker = AndroidStudioUpdateChecker(settings),
 ) : Feature {
 
     private var updateCheckerJob: Job? = null
@@ -64,11 +64,12 @@ class AndroidStudioUpdateFeature(
                         // If the guild member has permission, or is not a guild member (i.e. the command was triggered
                         // from DMs)
                         if (sourceGuildMember?.permissions?.contains(MemberPermission.MANAGE_SERVER) == true ||
-                            sourceGuildMember == null) {
+                            sourceGuildMember == null
+                        ) {
                             val targetChannelId = getChannelId("target")
                             createResponseMessage(
                                 true,
-                                "Enabled Android Studio update messages for <#${targetChannelId}>"
+                                "Enabled Android Studio update messages for <#$targetChannelId>",
                             )
                             enableStudioUpdateNotifications(sourceGuildId!!, targetChannelId)
                         } else {
@@ -90,7 +91,8 @@ class AndroidStudioUpdateFeature(
                         // If the guild member has permission, or is not a guild member (i.e. the command was triggered
                         // from DMs)
                         if (sourceGuildMember?.permissions?.contains(MemberPermission.MANAGE_SERVER) == true ||
-                            sourceGuildMember == null) {
+                            sourceGuildMember == null
+                        ) {
                             disableStudioUpdateMessages(sourceGuildId!!)
                             createResponseMessage(true, "Disabled Android Studio update messages for this server")
                         } else {
@@ -125,10 +127,11 @@ class AndroidStudioUpdateFeature(
                     Channel.Type.GUILD_TEXT,
                     Channel.Type.DM,
                     Channel.Type.GROUP_DM,
-                    Channel.Type.GUILD_ANNOUNCEMENT -> {
+                    Channel.Type.GUILD_ANNOUNCEMENT,
+                    -> {
                         discordBotScope.createEmbed(targetChannelId) {
                             title = newUpdate.title
-                            //description = newUpdate.content
+                            // description = newUpdate.content
                             timestamp = newUpdate.publishedOn.toInstant().toKotlinInstant()
                             url = newUpdate.links.firstOrNull()?.url
                             author(newUpdate.author.name, null, null)
@@ -137,7 +140,7 @@ class AndroidStudioUpdateFeature(
                     Channel.Type.GUILD_FORUM -> {
                         discordBotScope.createForumPost(targetChannelId, newUpdate.title) {
                             title = newUpdate.title
-                            //description = newUpdate.content
+                            // description = newUpdate.content
                             timestamp = newUpdate.publishedOn.toInstant().toKotlinInstant()
                             url = newUpdate.links.firstOrNull()?.url
                             author(newUpdate.author.name, null, null)
@@ -145,10 +148,12 @@ class AndroidStudioUpdateFeature(
                     }
                     Channel.Type.ANNOUNCEMENT_THREAD,
                     Channel.Type.PUBLIC_THREAD,
-                    Channel.Type.PRIVATE_THREAD -> error("Threads are unsupported (for now)")
+                    Channel.Type.PRIVATE_THREAD,
+                    -> error("Threads are unsupported (for now)")
                     Channel.Type.GUILD_VOICE,
                     Channel.Type.GUILD_CATEGORY,
-                    Channel.Type.GUILD_STAGE_VOICE -> error("Unsupported channel type $channelType")
+                    Channel.Type.GUILD_STAGE_VOICE,
+                    -> error("Unsupported channel type $channelType")
                 }
             }
         }
