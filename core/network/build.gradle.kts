@@ -7,10 +7,9 @@ group = "com.boswelja"
 version = "1.0-SNAPSHOT"
 
 dependencies {
-    implementation(projects.core.network)
     implementation(libs.kotlinx.coroutines.core)
 
-    implementation(libs.bundles.jackson.xml)
+    implementation(libs.bundles.ktor)
 
     testImplementation(kotlin("test"))
     testImplementation(libs.kotlinx.coroutines.test)

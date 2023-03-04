@@ -8,10 +8,10 @@ dependencyResolutionManagement {
 }
 
 include(
-    "common:network",
     "core:configuration",
-    "core:fetcher",
     "core:discord",
+    "core:fetcher",
+    ":core:network",
     "core:scheduler",
     "dale",
 )
