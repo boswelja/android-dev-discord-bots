@@ -11,7 +11,8 @@ dependencies {
     implementation(projects.core.configuration)
     implementation(projects.core.discord)
     implementation(projects.core.scheduler)
-    implementation("com.apptasticsoftware:rssreader:3.4.2")
+
+    implementation(libs.apptastic.rssreader)
 
     testImplementation(kotlin("test"))
 }
