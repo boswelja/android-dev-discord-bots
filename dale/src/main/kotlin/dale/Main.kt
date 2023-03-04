@@ -13,16 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package features
+package dale
+
+import dale.studio.AndroidStudioUpdateFeature
+import discord.discordBot
+import features.initFeatures
+import guildsettings.GuildSettingsDatabaseFactory
 
 /**
- * A basic interface for defining a "feature". Features must have an entrypoint [init] configured.
+ * The main entrypoint for Dale. Passing a bot token as a program argument is expected.
  */
-interface Feature {
+suspend fun main(args: Array<String>) = discordBot(args.first()) {
+    val settingsRepository = GuildSettingsDatabaseFactory.instance("dale")
 
-    /**
-     * Initialises the feature. This is a good place to do things like register commands, initialise state based on
-     * settings etc.
-     */
-    suspend fun init()
+    initFeatures(
+        AndroidStudioUpdateFeature(this, settingsRepository),
+    )
 }

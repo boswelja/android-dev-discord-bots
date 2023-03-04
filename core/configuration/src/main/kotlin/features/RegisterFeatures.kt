@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 AndroidDev Discord Dev Team
+ * Copyright 2023 AndroidDev Discord Dev Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import kotlinx.coroutines.supervisorScope
 /**
  * Initialises a number of features asynchronously.
  */
-suspend fun initFeatures(vararg features: Feature): Unit = supervisorScope {
+suspend fun initFeatures(vararg features: Feature) = supervisorScope {
     features.forEach {
         launch {
             it.init()

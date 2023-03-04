@@ -13,16 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package features
+package discord.presence
 
 /**
- * A basic interface for defining a "feature". Features must have an entrypoint [init] configured.
+ * A scope interface for managing bot presence. Presence includes things like online status, now playing details etc.
  */
-interface Feature {
+interface PresenceScope {
 
     /**
-     * Initialises the feature. This is a good place to do things like register commands, initialise state based on
-     * settings etc.
+     * Updates the bots presence to match the given state.
+     * @param afk Whether the bot should be displayed as AFK.
+     * @param status The status that should be displayed for the bot.
      */
-    suspend fun init()
+    fun updatePresence(afk: Boolean, status: PresenceStatus)
+}
+
+/**
+ * User statuses available as part of the "presence" system.
+ */
+enum class PresenceStatus {
+    INVISIBLE,
+    DO_NOT_DISTURB,
+    IDLE,
+    ONLINE,
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 AndroidDev Discord Dev Team
+ * Copyright 2023 AndroidDev Discord Dev Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,9 +38,11 @@ internal class SqlDelightGuildSettingsDatabase(
         }
     }
 
-    override fun getString(guildId: String, key: String): Flow<String?> {
-        return database.guildSettingsQueries.get(guildId, key).asFlow().mapToOneOrNull()
-    }
+    override fun getString(guildId: String, key: String): Flow<String?> = database
+        .guildSettingsQueries
+        .get(guildId, key)
+        .asFlow()
+        .mapToOneOrNull()
 
     override suspend fun setString(guildId: String, key: String, value: String) {
         withContext(Dispatchers.IO) {
@@ -48,9 +50,11 @@ internal class SqlDelightGuildSettingsDatabase(
         }
     }
 
-    override fun getAll(key: String): Flow<List<String>> {
-        return database.guildSettingsQueries.getAll(key).asFlow().mapToList()
-    }
+    override fun getAll(key: String): Flow<List<String>> = database
+        .guildSettingsQueries
+        .getAll(key)
+        .asFlow()
+        .mapToList()
 
     override suspend fun delete(guildId: String, key: String) {
         withContext(Dispatchers.IO) {

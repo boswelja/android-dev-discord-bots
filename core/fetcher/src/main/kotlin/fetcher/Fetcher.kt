@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 AndroidDev Discord Dev Team
+ * Copyright 2023 AndroidDev Discord Dev Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,20 +18,32 @@ package fetcher
 import fetcher.rss.RssParser
 import fetcher.rss.RssParserFactory
 import network.NetworkModule
+import network.NetworkModuleFactory
 import network.SourceNotFoundException
-import network.createNetworkModule
 
+/**
+ * Allows fetching RSS feeds.
+ */
 interface Fetcher {
+
+    /**
+     * Obtains a [Feed] from the given URL.
+     */
     @Throws(FeedCouldNotBeObtainedException::class)
     suspend fun obtainFeed(url: String): Feed
 }
 
-fun createFetcher() = FetcherFactory.create()
+/**
+ * A factory for producing [Fetcher]s.
+ */
+object FetcherFactory {
 
-internal object FetcherFactory {
+    /**
+     * Creates a new [Fetcher].
+     */
     fun create(): Fetcher {
         return NetworkFetcher(
-            networkModule = createNetworkModule(),
+            networkModule = NetworkModuleFactory.create(),
             parser = RssParserFactory.create(),
         )
     }

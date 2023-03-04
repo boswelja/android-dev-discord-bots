@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 AndroidDev Discord Dev Team
+ * Copyright 2023 AndroidDev Discord Dev Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +17,16 @@ package guildsettings
 
 import sqldelight.SQLDelightDrivers
 
-fun guildSettingDatabaseInstance(name: String) = GuildSettingsDatabaseFactory.instance(name)
-
-internal object GuildSettingsDatabaseFactory {
+/**
+ * A factory for producing instances of [GuildSettingsDatabase].
+ */
+object GuildSettingsDatabaseFactory {
     private val instances: MutableMap<String, GuildSettingsDatabase> = mutableMapOf()
 
+    /**
+     * Get an instance of [GuildSettingsDatabase] for a given name, usually the bot name for clarity. The returned
+     * instance may be reused if an instance for the same name already exists.
+     */
     fun instance(name: String): GuildSettingsDatabase {
         return instances[name] ?: synchronized(this) {
             instances[name]

@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 AndroidDev Discord Dev Team
+ * Copyright 2023 AndroidDev Discord Dev Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,9 +51,7 @@ internal class RealRssParser constructor(
         }
     }
 
-    private fun parseFeedInternal(xml: String): RssFeedDto {
-        return xmlMapper.readValue(xml, RssFeedDto::class.java)
-    }
+    private fun parseFeedInternal(xml: String): RssFeedDto = xmlMapper.readValue(xml, RssFeedDto::class.java)
 
     private fun RssFeedDto.toRssFeed(): Feed {
         return Feed(

@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 AndroidDev Discord Dev Team
+ * Copyright 2023 AndroidDev Discord Dev Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -116,7 +116,7 @@ class RssParserTest {
         val expectedLastUpdatedOn = OffsetDateTime.of(
             // 2022-11-30T19:27:01.610-08:00 --> UTC 2022-12-01T03:27:01.610Z
             LocalDate.of(2022, Month.DECEMBER, 1),
-            LocalTime.of(3, 27, 1, 610000000),
+            LocalTime.of(3, 27, 1, 610_000_000),
             ZoneOffset.UTC,
         )
         val expectedAuthor = Author(

@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 AndroidDev Discord Dev Team
+ * Copyright 2023 AndroidDev Discord Dev Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,18 +15,25 @@
  */
 package network
 
+/**
+ * The base exception thrown when a network-related error occurs.
+ */
 open class NetworkException(message: String? = null, cause: Throwable? = null) : Exception(message) {
     init {
         if (cause != null) initCause(cause)
     }
 
-    final override fun initCause(cause: Throwable?): Throwable {
-        return super.initCause(cause)
-    }
+    final override fun initCause(cause: Throwable?): Throwable = super.initCause(cause)
 }
 
+/**
+ * Thrown when a resource is not found. For example, when a web server returns 404.
+ */
 class SourceNotFoundException(source: String, cause: Throwable? = null) :
     NetworkException("Not found: $source", cause)
 
+/**
+ * Thrown when the server returns an error, except 404 (see [SourceNotFoundException]).
+ */
 class ServerErrorException(message: String?, cause: Throwable?) :
     NetworkException(message, cause)

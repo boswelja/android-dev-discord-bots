@@ -13,16 +13,3 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package features
-
-/**
- * A basic interface for defining a "feature". Features must have an entrypoint [init] configured.
- */
-interface Feature {
-
-    /**
-     * Initialises the feature. This is a good place to do things like register commands, initialise state based on
-     * settings etc.
-     */
-    suspend fun init()
-}
