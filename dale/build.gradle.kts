@@ -9,9 +9,9 @@ version = "1.0-SNAPSHOT"
 
 dependencies {
     implementation(projects.core.configuration)
-    implementation(projects.core.fetcher)
     implementation(projects.core.discord)
     implementation(projects.core.scheduler)
+    implementation("com.apptasticsoftware:rssreader:3.4.2")
 
     testImplementation(kotlin("test"))
 }

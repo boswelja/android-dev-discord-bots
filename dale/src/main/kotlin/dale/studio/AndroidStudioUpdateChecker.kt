@@ -15,12 +15,12 @@
  */
 package dale.studio
 
-import fetcher.Entry
-import fetcher.Fetcher
-import fetcher.FetcherFactory
+import com.apptasticsoftware.rssreader.Item
+import com.apptasticsoftware.rssreader.RssReader
 import guildsettings.GuildSettingsDatabase
 import kotlinx.coroutines.flow.first
 import java.time.OffsetDateTime
+import java.util.stream.Collectors
 
 /**
  * This utility checker is used to retrieve Android Studio blog updates, compare that with local data and return new
@@ -28,24 +28,27 @@ import java.time.OffsetDateTime
  */
 class AndroidStudioUpdateChecker(
     private val settingsRepository: GuildSettingsDatabase,
-    private val source: Fetcher = FetcherFactory.create(),
+    private val source: RssReader = RssReader(),
 ) {
 
     /**
-     * Get a List of [Entry] that were created after the last check time.
+     * Get a List of feed entries that were created after the last check time.
      */
-    suspend fun getNewPosts(): List<Entry> {
-        val deserializedResponse = source.obtainFeed("https://androidstudio.googleblog.com/feeds/posts/default")
+    suspend fun getNewPosts(): List<Item> {
         val lastCheckTime = getLastCheckTime()
+
         // If we haven't done an update check before, then return nothing. Otherwise, return posts created after the
         // last check time
-        val newEntries = if (lastCheckTime == null) {
+        val newPosts: List<Item> = if (lastCheckTime == null) {
             emptyList()
         } else {
-            deserializedResponse.entries.filter { it.publishedOn > lastCheckTime }
+            source.read("https://androidstudio.googleblog.com/feeds/posts/default")
+                .filter { OffsetDateTime.parse(it.pubDate.get()) > lastCheckTime }
+                .collect(Collectors.toList())
         }
-        updateLastCheckTime(deserializedResponse.lastUpdatedOn)
-        return newEntries
+
+        updateLastCheckTime(OffsetDateTime.now())
+        return newPosts
     }
 
     private suspend fun updateLastCheckTime(newDate: OffsetDateTime) =

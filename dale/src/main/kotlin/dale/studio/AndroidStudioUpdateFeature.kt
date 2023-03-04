@@ -27,6 +27,7 @@ import kotlinx.coroutines.launch
 import kotlinx.datetime.toKotlinInstant
 import scheduler.Repeating
 import scheduler.schedule
+import kotlin.jvm.optionals.getOrNull
 
 /**
  * A [Feature] that configured a bot for checking and posting about new Android Studio updates.
@@ -45,6 +46,7 @@ class AndroidStudioUpdateFeature(
         // Start the update checker loop
         updateCheckerJob = coroutineScope {
             launch {
+                postNewUpdatesIfAny()
                 schedule(Repeating.Daily()) {
                     postNewUpdatesIfAny()
                 }
@@ -134,19 +136,23 @@ class AndroidStudioUpdateFeature(
                     Channel.Type.GUILD_ANNOUNCEMENT,
                     ->
                         discordBotScope.createEmbed(targetChannelId) {
-                            title = newUpdate.title
-                            // description = newUpdate.content
-                            timestamp = newUpdate.publishedOn.toInstant().toKotlinInstant()
-                            url = newUpdate.links.firstOrNull()?.url
-                            author(newUpdate.author.name, null, null)
+                            title = newUpdate.title.getOrNull()
+//                            description = newUpdate.description.getOrNull()
+                            timestamp = newUpdate.pubDateZonedDateTime.get().toInstant().toKotlinInstant()
+                            url = newUpdate.link.getOrNull()
+                            newUpdate.author.getOrNull()?.let {
+                                author(it, null, null)
+                            }
                         }
                     Channel.Type.GUILD_FORUM ->
-                        discordBotScope.createForumPost(targetChannelId, newUpdate.title) {
-                            title = newUpdate.title
-                            // description = newUpdate.content
-                            timestamp = newUpdate.publishedOn.toInstant().toKotlinInstant()
-                            url = newUpdate.links.firstOrNull()?.url
-                            author(newUpdate.author.name, null, null)
+                        discordBotScope.createForumPost(targetChannelId, newUpdate.title.get()) {
+                            title = newUpdate.title.getOrNull()
+//                            description = newUpdate.description.getOrNull()
+                            timestamp = newUpdate.pubDateZonedDateTime.get().toInstant().toKotlinInstant()
+                            url = newUpdate.link.getOrNull()
+                            newUpdate.author.getOrNull()?.let {
+                                author(it, null, null)
+                            }
                         }
                     Channel.Type.ANNOUNCEMENT_THREAD,
                     Channel.Type.PUBLIC_THREAD,
