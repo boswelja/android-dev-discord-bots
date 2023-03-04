@@ -7,7 +7,7 @@ group = "com.boswelja"
 version = "1.0-SNAPSHOT"
 
 dependencies {
-    implementation(projects.common.network)
+    implementation(projects.core.network)
     implementation(libs.kotlinx.coroutines.core)
 
     implementation(libs.bundles.jackson.xml)
