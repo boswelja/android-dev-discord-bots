@@ -21,7 +21,7 @@ tasks.getByName<Test>("test") {
 }
 
 application {
-    mainClass.set("MainKt")
+    mainClass.set("dale.MainKt")
 }
 
 detekt {
