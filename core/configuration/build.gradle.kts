@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "com.boswelja"
-version = "1.0-SNAPSHOT"
+version = "1.0"
 
 dependencies {
     api(libs.kotlinx.coroutines.core)
