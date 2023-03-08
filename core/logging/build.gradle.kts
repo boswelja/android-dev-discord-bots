@@ -7,6 +7,8 @@ group = "com.boswelja"
 version = "1.0"
 
 dependencies {
+    implementation("io.github.oshai:kotlin-logging-jvm:4.0.0-beta-22")
+
     testImplementation(kotlin("test"))
 }
 
