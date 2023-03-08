@@ -122,6 +122,7 @@ class AndroidStudioUpdateFeature(
         settings.delete(guildId, TARGET_CHANNEL_KEY)
     }
 
+    @Suppress("NestedBlockDepth")
     private suspend fun postNewUpdatesIfAny() {
         val newUpdates = updateChecker.getNewPosts()
         if (newUpdates.isEmpty()) return

@@ -8,6 +8,7 @@ version = "1.0"
 
 dependencies {
     implementation("io.github.oshai:kotlin-logging-jvm:4.0.0-beta-22")
+    implementation("org.slf4j:slf4j-simple:2.0.3")
 
     testImplementation(kotlin("test"))
 }
