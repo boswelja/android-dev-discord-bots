@@ -22,18 +22,18 @@ private val loggers = mutableMapOf<String, KLogger>()
 
 private fun getOrCreateLogger(name: String): KLogger = loggers.getOrPut(name) { KotlinLogging.logger(name) }
 
-fun Any.logDebug(message: () -> String) {
-    getOrCreateLogger(javaClass.name).debug(message)
+fun Any.logDebug(throwable: Throwable? = null, message: () -> String) {
+    getOrCreateLogger(javaClass.name).debug(throwable, message)
 }
 
-fun Any.logInfo(message: () -> String) {
-    getOrCreateLogger(javaClass.name).info(message)
+fun Any.logInfo(throwable: Throwable? = null, message: () -> String) {
+    getOrCreateLogger(javaClass.name).info(throwable, message)
 }
 
-fun Any.logWarn(message: () -> String) {
-    getOrCreateLogger(javaClass.name).warn(message)
+fun Any.logWarn(throwable: Throwable? = null, message: () -> String) {
+    getOrCreateLogger(javaClass.name).warn(throwable, message)
 }
 
-fun Any.logError(message: () -> String) {
-    getOrCreateLogger(javaClass.name).error(message)
+fun Any.logError(throwable: Throwable? = null, message: () -> String) {
+    getOrCreateLogger(javaClass.name).error(throwable, message)
 }
