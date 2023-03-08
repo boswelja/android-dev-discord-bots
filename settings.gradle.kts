@@ -11,7 +11,8 @@ include(
     "core:configuration",
     "core:discord",
     "core:fetcher",
-    ":core:network",
+    "core:logging",
+    "core:network",
     "core:scheduler",
     "dale",
 )
