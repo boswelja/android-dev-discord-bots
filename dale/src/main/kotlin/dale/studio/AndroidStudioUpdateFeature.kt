@@ -25,6 +25,8 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.datetime.toKotlinInstant
+import logging.logError
+import logging.logInfo
 import scheduler.Repeating
 import scheduler.schedule
 
@@ -46,6 +48,7 @@ class AndroidStudioUpdateFeature(
         updateCheckerJob = coroutineScope {
             launch {
                 schedule(Repeating.Daily()) {
+                    logInfo { "Checking for new Android Studio updates" }
                     postNewUpdatesIfAny()
                 }
             }
@@ -119,44 +122,50 @@ class AndroidStudioUpdateFeature(
         settings.delete(guildId, TARGET_CHANNEL_KEY)
     }
 
+    @Suppress("NestedBlockDepth")
     private suspend fun postNewUpdatesIfAny() {
         val newUpdates = updateChecker.getNewPosts()
         if (newUpdates.isEmpty()) return
+        logInfo { "${newUpdates.count()} new Android Studio updates found" }
 
         val allTargets = settings.getAll(TARGET_CHANNEL_KEY).first()
         allTargets.forEach { targetChannelId ->
-            val channelType = discordBotScope.getChannel(targetChannelId).type
-            newUpdates.forEach { newUpdate ->
-                when (channelType) {
-                    Channel.Type.GUILD_TEXT,
-                    Channel.Type.DM,
-                    Channel.Type.GROUP_DM,
-                    Channel.Type.GUILD_ANNOUNCEMENT,
-                    ->
-                        discordBotScope.createEmbed(targetChannelId) {
-                            title = newUpdate.title
-                            // description = newUpdate.content
-                            timestamp = newUpdate.publishedOn.toInstant().toKotlinInstant()
-                            url = newUpdate.links.firstOrNull()?.url
-                            author(newUpdate.author.name, null, null)
-                        }
-                    Channel.Type.GUILD_FORUM ->
-                        discordBotScope.createForumPost(targetChannelId, newUpdate.title) {
-                            title = newUpdate.title
-                            // description = newUpdate.content
-                            timestamp = newUpdate.publishedOn.toInstant().toKotlinInstant()
-                            url = newUpdate.links.firstOrNull()?.url
-                            author(newUpdate.author.name, null, null)
-                        }
-                    Channel.Type.ANNOUNCEMENT_THREAD,
-                    Channel.Type.PUBLIC_THREAD,
-                    Channel.Type.PRIVATE_THREAD,
-                    -> error("Threads are unsupported (for now)")
-                    Channel.Type.GUILD_VOICE,
-                    Channel.Type.GUILD_CATEGORY,
-                    Channel.Type.GUILD_STAGE_VOICE,
-                    -> error("Unsupported channel type $channelType")
+            try {
+                val channelType = discordBotScope.getChannel(targetChannelId).type
+                newUpdates.forEach { newUpdate ->
+                    when (channelType) {
+                        Channel.Type.GUILD_TEXT,
+                        Channel.Type.DM,
+                        Channel.Type.GROUP_DM,
+                        Channel.Type.GUILD_ANNOUNCEMENT,
+                        ->
+                            discordBotScope.createEmbed(targetChannelId) {
+                                title = newUpdate.title
+                                // description = newUpdate.content
+                                timestamp = newUpdate.publishedOn.toInstant().toKotlinInstant()
+                                url = newUpdate.links.firstOrNull()?.url
+                                author(newUpdate.author.name, null, null)
+                            }
+                        Channel.Type.GUILD_FORUM ->
+                            discordBotScope.createForumPost(targetChannelId, newUpdate.title) {
+                                title = newUpdate.title
+                                // description = newUpdate.content
+                                timestamp = newUpdate.publishedOn.toInstant().toKotlinInstant()
+                                url = newUpdate.links.firstOrNull()?.url
+                                author(newUpdate.author.name, null, null)
+                            }
+                        Channel.Type.ANNOUNCEMENT_THREAD,
+                        Channel.Type.PUBLIC_THREAD,
+                        Channel.Type.PRIVATE_THREAD,
+                        -> error("Threads are unsupported (for now)")
+                        Channel.Type.GUILD_VOICE,
+                        Channel.Type.GUILD_CATEGORY,
+                        Channel.Type.GUILD_STAGE_VOICE,
+                        -> error("Unsupported channel type $channelType")
+                    }
                 }
+            } catch (e: Exception) {
+                logError(e) { "Failed to notify $targetChannelId of a new Android Studio release." }
             }
         }
     }

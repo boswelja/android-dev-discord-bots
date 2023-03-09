@@ -1,6 +1,5 @@
 plugins {
     kotlin("jvm")
-    application
     id("io.gitlab.arturbosch.detekt")
 }
 
@@ -8,21 +7,14 @@ group = "com.boswelja"
 version = "1.0"
 
 dependencies {
-    implementation(projects.core.configuration)
-    implementation(projects.core.fetcher)
-    implementation(projects.core.discord)
-    implementation(projects.core.scheduler)
-    implementation(projects.core.logging)
+    implementation("io.github.oshai:kotlin-logging-jvm:4.0.0-beta-22")
+    implementation("org.slf4j:slf4j-simple:2.0.3")
 
     testImplementation(kotlin("test"))
 }
 
 tasks.getByName<Test>("test") {
     useJUnitPlatform()
-}
-
-application {
-    mainClass.set("dale.MainKt")
 }
 
 detekt {
