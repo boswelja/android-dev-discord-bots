@@ -27,8 +27,8 @@ import kotlinx.coroutines.launch
 import kotlinx.datetime.toKotlinInstant
 import logging.logError
 import logging.logInfo
-import scheduler.Repeating
-import scheduler.schedule
+import scheduler.scheduleRepeating
+import kotlin.time.Duration.Companion.hours
 
 /**
  * A [Feature] that configured a bot for checking and posting about new Android Studio updates.
@@ -47,7 +47,7 @@ class AndroidStudioUpdateFeature(
         // Start the update checker loop
         updateCheckerJob = coroutineScope {
             launch {
-                schedule(Repeating.Daily()) {
+                scheduleRepeating(interval = 1.hours) {
                     logInfo { "Checking for new Android Studio updates" }
                     postNewUpdatesIfAny()
                 }

@@ -17,11 +17,6 @@ package scheduler
 
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
-import kotlinx.datetime.Clock
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.atTime
-import kotlinx.datetime.toInstant
-import kotlinx.datetime.toLocalDateTime
 import kotlin.coroutines.coroutineContext
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
@@ -29,34 +24,18 @@ import kotlin.time.measureTime
 
 /**
  * Schedules repeating work via Coroutines. Cancelling the parent coroutine will cancel subsequent work appropriately.
- * See [Repeating] for possible configuration options.
  */
 @OptIn(ExperimentalTime::class)
-suspend fun schedule(
-    repeating: Repeating,
-    clock: Clock = Clock.System,
+suspend fun scheduleRepeating(
+    interval: Duration,
+    delayUntilStart: Duration = Duration.ZERO,
     block: suspend () -> Unit,
 ) {
-    delay(calculateInitialDelay(clock, repeating))
+    delay(delayUntilStart)
     while (coroutineContext.isActive) {
         val workDuration = measureTime {
             block()
         }
-        delay(repeating.interval - workDuration)
+        delay(interval - workDuration)
     }
-}
-
-private fun calculateInitialDelay(clock: Clock, repeating: Repeating): Duration {
-    val timeZone = TimeZone.currentSystemDefault()
-    val nowDateTime = clock.now().toLocalDateTime(timeZone)
-
-    val nextDateTime = nowDateTime.date
-        .atTime(repeating.hour, repeating.minute, repeating.second)
-
-    val nextInstant = if (nextDateTime <= nowDateTime) {
-        nextDateTime.toInstant(timeZone) + repeating.interval
-    } else {
-        nextDateTime.toInstant(timeZone)
-    }
-    return nextInstant - nowDateTime.toInstant(timeZone)
 }
