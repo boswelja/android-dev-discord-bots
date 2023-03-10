@@ -54,7 +54,7 @@ class ScheduleTest {
         launch {
             testScheduleRepeating(
                 interval = 1.days,
-                delayUntilStart = Duration.ZERO
+                delayUntilStart = Duration.ZERO,
             )
         }
     }
@@ -66,7 +66,7 @@ class ScheduleTest {
         launch {
             testScheduleRepeating(
                 interval = 7.days,
-                delayUntilStart = Duration.ZERO
+                delayUntilStart = Duration.ZERO,
             )
         }
     }
@@ -78,7 +78,7 @@ class ScheduleTest {
         launch {
             testScheduleRepeating(
                 interval = 14.days,
-                delayUntilStart = Duration.ZERO
+                delayUntilStart = Duration.ZERO,
             )
         }
     }

@@ -24,6 +24,9 @@ import kotlin.time.measureTime
 
 /**
  * Schedules repeating work via Coroutines. Cancelling the parent coroutine will cancel subsequent work appropriately.
+ * @param interval The [Duration] between run starts. The actual delay duration is calculated by [interval] - run time.
+ * @param delayUntilStart An optional delay before the first execution.
+ * @param block A suspending function to be called at the defined interval.
  */
 @OptIn(ExperimentalTime::class)
 suspend fun scheduleRepeating(
