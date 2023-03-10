@@ -20,138 +20,88 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.runTest
-import kotlinx.datetime.Clock
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
 import org.junit.jupiter.api.Test
-import java.time.DayOfWeek
 import kotlin.test.assertEquals
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.hours
 
 class ScheduleTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun `schedule daily one hour in the future executes in one hour`() = runTest {
-        val nowTime = Clock.System.now()
-        val targetTime = nowTime.plus(1.hours).toLocalDateTime(TimeZone.currentSystemDefault())
-
+    fun `scheduleRepeating one hour in the future executes in one hour`() = runTest {
         // Wrap in a Launch, so we can cancel after the first execution
         var executions = 0
         val scheduleJob = launch {
-            schedule(
-                repeating = Repeating.Daily(targetTime.hour, targetTime.minute, targetTime.second),
+            scheduleRepeating(
+                interval = 7.days,
+                delayUntilStart = 1.hours,
             ) {
                 executions++
             }
         }
 
-        advanceTimeBy(1.hours.inWholeMilliseconds)
+        advanceTimeBy(1.hours.inWholeMilliseconds + 1)
         assertEquals(1, executions)
         scheduleJob.cancel()
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun `schedule weekly one hour in the future executes in one hour`() = runTest {
-        val nowTime = Clock.System.now()
-        val targetTime = nowTime.plus(1.hours).toLocalDateTime(TimeZone.currentSystemDefault())
-
-        // Wrap in a Launch, so we can cancel after the first execution
-        var executions = 0
-        val scheduleJob = launch {
-            schedule(
-                repeating = Repeating.Weekly(
-                    targetTime.dayOfWeek,
-                    targetTime.hour,
-                    targetTime.minute,
-                    targetTime.second,
-                ),
-            ) {
-                executions++
-            }
-        }
-
-        advanceTimeBy(1.hours.inWholeMilliseconds)
-        assertEquals(1, executions)
-        scheduleJob.cancel()
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    @Test
-    fun `schedule fortnightly one hour in the future executes in one hour`() = runTest {
-        val nowTime = Clock.System.now()
-        val targetTime = nowTime.plus(1.hours).toLocalDateTime(TimeZone.currentSystemDefault())
-
-        // Wrap in a Launch, so we can cancel after the first execution
-        var executions = 0
-        val scheduleJob = launch {
-            schedule(
-                repeating = Repeating.Fortnightly(
-                    targetTime.dayOfWeek,
-                    targetTime.hour,
-                    targetTime.minute,
-                    targetTime.second,
-                ),
-            ) {
-                executions++
-            }
-        }
-
-        advanceTimeBy(1.hours.inWholeMilliseconds)
-        assertEquals(1, executions)
-        scheduleJob.cancel()
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    @Test
-    fun `schedule daily repeats at 24 hour intervals`() = runTest {
+    fun `scheduleRepeating daily repeats at 24 hour intervals`() = runTest {
         // Wrap in a Launch, so we can cancel without throwing exceptions in this scope
         launch {
             testScheduleRepeating(
-                repeating = Repeating.Daily(),
+                interval = 1.days,
+                delayUntilStart = Duration.ZERO,
             )
         }
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun `schedule weekly repeats at 7 day intervals`() = runTest {
+    fun `scheduleRepeating weekly repeats at 7 day intervals`() = runTest {
         // Wrap in a Launch, so we can cancel without throwing exceptions in this scope
         launch {
             testScheduleRepeating(
-                repeating = Repeating.Weekly(DayOfWeek.MONDAY),
+                interval = 7.days,
+                delayUntilStart = Duration.ZERO,
             )
         }
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun `schedule fortnightly repeats at 14 day intervals`() = runTest {
+    fun `scheduleRepeating fortnightly repeats at 14 day intervals`() = runTest {
         // Wrap in a Launch, so we can cancel without throwing exceptions in this scope
         launch {
             testScheduleRepeating(
-                repeating = Repeating.Fortnightly(DayOfWeek.MONDAY),
+                interval = 14.days,
+                delayUntilStart = Duration.ZERO,
             )
         }
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private fun TestScope.testScheduleRepeating(
-        repeating: Repeating,
+        interval: Duration,
+        delayUntilStart: Duration,
         targetRuns: Int = 5,
     ) {
         // Wrap in a Launch, so we can cancel after the first execution
         var executions = 0
         val scheduleJob = launch {
-            schedule(
-                repeating = repeating,
+            scheduleRepeating(
+                interval = interval,
+                delayUntilStart = delayUntilStart,
             ) {
                 executions++
             }
         }
 
-        advanceTimeBy(repeating.interval.inWholeMilliseconds * targetRuns)
+        // -1 here because scheduler executes block immediately
+        advanceTimeBy(interval.inWholeMilliseconds * (targetRuns - 1))
         assertEquals(targetRuns, executions)
         scheduleJob.cancel()
     }
