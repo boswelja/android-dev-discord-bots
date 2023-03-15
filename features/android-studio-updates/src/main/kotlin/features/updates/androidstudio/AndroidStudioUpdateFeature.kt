@@ -25,7 +25,6 @@ import features.updates.androidstudio.updatesource.AndroidStudioUpdate
 import features.updates.androidstudio.updatesource.AndroidStudioUpdateSource
 import features.updates.androidstudio.updatesource.createUpdateSource
 import guildsettings.GuildSettingsDatabase
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import logging.logError
@@ -40,7 +39,7 @@ class AndroidStudioUpdateFeature(
     private val discordBotScope: DiscordBotScope,
     guildSettings: GuildSettingsDatabase,
     private val settings: AndroidStudioUpdateSettings = AndroidStudioUpdateSettingsDatabase(guildSettings),
-    private val updateSource: AndroidStudioUpdateSource = createUpdateSource()
+    private val updateSource: AndroidStudioUpdateSource = createUpdateSource(),
 ) : Feature {
 
     override suspend fun init() {
@@ -140,7 +139,7 @@ class AndroidStudioUpdateFeature(
     private suspend fun postMessageToChannel(
         channelId: String,
         channelType: Channel.Type,
-        update: AndroidStudioUpdate
+        update: AndroidStudioUpdate,
     ) {
         when (channelType) {
             Channel.Type.GUILD_TEXT,

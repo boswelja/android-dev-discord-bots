@@ -38,7 +38,7 @@ internal class AndroidStudioBlogUpdateSource(
                         fullVersionName = extractVersionFromTitle(it.title),
                         summary = it.title, // TODO Can we extract a better summary?
                         timestamp = it.publishedOn.toInstant().toKotlinInstant(),
-                        url = it.links.last().url
+                        url = it.links.last().url,
                     )
                 }
             Result.success(events.toList())

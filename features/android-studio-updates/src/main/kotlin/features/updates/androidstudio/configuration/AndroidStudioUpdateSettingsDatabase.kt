@@ -24,7 +24,7 @@ import kotlinx.datetime.Instant
  * An implementation of [AndroidStudioUpdateSettings] backed by [GuildSettingsDatabase].
  */
 class AndroidStudioUpdateSettingsDatabase(
-    private val guildSettingsDatabase: GuildSettingsDatabase
+    private val guildSettingsDatabase: GuildSettingsDatabase,
 ) : AndroidStudioUpdateSettings {
     override suspend fun getLastCheckInstant(): Instant {
         return guildSettingsDatabase.getString("0", LastCheckInstantKey).first()?.let(Instant::parse)
@@ -48,6 +48,5 @@ class AndroidStudioUpdateSettingsDatabase(
     companion object {
         private const val LastCheckInstantKey = "lastCheckTime"
         private const val TargetChannelKey = "target_channel"
-
     }
 }
