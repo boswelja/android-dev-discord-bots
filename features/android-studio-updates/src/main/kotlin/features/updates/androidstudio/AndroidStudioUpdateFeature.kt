@@ -43,13 +43,11 @@ class AndroidStudioUpdateFeature(
     private val updateSource: AndroidStudioUpdateSource = createUpdateSource()
 ) : Feature {
 
-    private var updateCheckerJob: Job? = null
-
     override suspend fun init() {
         registerCommands()
 
-        // Start the update checker loop
-        updateCheckerJob = coroutineScope {
+        // Start the update checker loop. Cleanup is handled automagically
+        coroutineScope {
             launch {
                 scheduleRepeating(interval = 1.hours) {
                     logInfo { "Checking for new Android Studio updates" }
