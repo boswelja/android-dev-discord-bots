@@ -20,6 +20,7 @@ import fetcher.Fetcher
 import fetcher.FetcherFactory
 import kotlinx.datetime.Instant
 import kotlinx.datetime.toKotlinInstant
+import kotlin.streams.toList
 
 /**
  * An implementation of [AndroidStudioUpdateSource] that retrieves updates from the Android Studio Blog.
