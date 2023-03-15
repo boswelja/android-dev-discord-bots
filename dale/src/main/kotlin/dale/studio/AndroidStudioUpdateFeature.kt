@@ -143,7 +143,7 @@ class AndroidStudioUpdateFeature(
                                 title = newUpdate.title
                                 // description = newUpdate.content
                                 timestamp = newUpdate.publishedOn.toInstant().toKotlinInstant()
-                                url = newUpdate.links.firstOrNull()?.url
+                                url = newUpdate.links.lastOrNull()?.url
                                 author(newUpdate.author.name, null, null)
                             }
                         Channel.Type.GUILD_FORUM ->
@@ -151,7 +151,7 @@ class AndroidStudioUpdateFeature(
                                 title = newUpdate.title
                                 // description = newUpdate.content
                                 timestamp = newUpdate.publishedOn.toInstant().toKotlinInstant()
-                                url = newUpdate.links.firstOrNull()?.url
+                                url = newUpdate.links.lastOrNull()?.url
                                 author(newUpdate.author.name, null, null)
                             }
                         Channel.Type.ANNOUNCEMENT_THREAD,
