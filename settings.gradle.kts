@@ -5,6 +5,7 @@ dependencyResolutionManagement {
         mavenCentral()
         maven("https://oss.sonatype.org/content/repositories/snapshots")
     }
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
 }
 
 include(
@@ -14,6 +15,7 @@ include(
     "core:logging",
     "core:network",
     "core:scheduler",
+    "features:android-studio-updates",
     "dale",
 )
 

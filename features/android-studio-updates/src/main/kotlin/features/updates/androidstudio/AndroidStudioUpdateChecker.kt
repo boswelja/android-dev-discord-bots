@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dale.studio
+package features.updates.androidstudio
 
 import fetcher.Entry
 import fetcher.Fetcher
