@@ -31,4 +31,19 @@ interface AndroidStudioUpdateSettings {
      * Stores a new [Instant] representing the last time we checked for new updates.
      */
     suspend fun setLastCheckInstant(lastChecked: Instant)
+
+    /**
+     * Stores a new target channel ID to receive Android Studio updates for the guild with the given ID.
+     */
+    suspend fun setTargetChannelForGuild(guildId: String, targetChannelId: String)
+
+    /**
+     * Removes any existing target channel for the guild with the given ID.
+     */
+    suspend fun removeTargetChannelForGuild(guildId: String)
+
+    /**
+     * Get all target channels from all guilds.
+     */
+    suspend fun getAllTargetChannels(): List<String>
 }

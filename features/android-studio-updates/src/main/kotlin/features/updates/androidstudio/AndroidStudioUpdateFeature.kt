@@ -27,7 +27,6 @@ import features.updates.androidstudio.updatesource.createUpdateSource
 import guildsettings.GuildSettingsDatabase
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import logging.logError
 import logging.logInfo
@@ -39,7 +38,7 @@ import kotlin.time.Duration.Companion.hours
  */
 class AndroidStudioUpdateFeature(
     private val discordBotScope: DiscordBotScope,
-    private val guildSettings: GuildSettingsDatabase,
+    guildSettings: GuildSettingsDatabase,
     private val settings: AndroidStudioUpdateSettings = AndroidStudioUpdateSettingsDatabase(guildSettings),
     private val updateSource: AndroidStudioUpdateSource = createUpdateSource()
 ) : Feature {
@@ -83,7 +82,7 @@ class AndroidStudioUpdateFeature(
                                 true,
                                 "Enabled Android Studio update messages for <#$targetChannelId>",
                             )
-                            enableStudioUpdateNotifications(sourceGuildId!!, targetChannelId)
+                            settings.setTargetChannelForGuild(sourceGuildId!!, targetChannelId)
                         } else {
                             // Else the user is a guild member and does not have permission
                             createResponseMessage(true, "You do not have permission to do that here")
@@ -105,7 +104,7 @@ class AndroidStudioUpdateFeature(
                         if (sourceGuildMember?.permissions?.contains(MemberPermission.MANAGE_SERVER) == true ||
                             sourceGuildMember == null
                         ) {
-                            disableStudioUpdateMessages(sourceGuildId!!)
+                            settings.removeTargetChannelForGuild(sourceGuildId!!)
                             createResponseMessage(true, "Disabled Android Studio update messages for this server")
                         } else {
                             // Else the user is a guild member and does not have permission
@@ -119,14 +118,6 @@ class AndroidStudioUpdateFeature(
         }
     }
 
-    private suspend fun enableStudioUpdateNotifications(guildId: String, targetChannelId: String) {
-        guildSettings.setString(guildId, TARGET_CHANNEL_KEY, targetChannelId)
-    }
-
-    private suspend fun disableStudioUpdateMessages(guildId: String) {
-        guildSettings.delete(guildId, TARGET_CHANNEL_KEY)
-    }
-
     private suspend fun postNewUpdatesIfAny() {
         val lastCheckInstant = settings.getLastCheckInstant()
         val newUpdatesResult = updateSource.getUpdatesAfter(lastCheckInstant)
@@ -135,7 +126,7 @@ class AndroidStudioUpdateFeature(
         logInfo { "${newUpdates.count()} new Android Studio updates found" }
         if (newUpdates.isEmpty()) return
 
-        val allTargets = guildSettings.getAll(TARGET_CHANNEL_KEY).first()
+        val allTargets = settings.getAllTargetChannels()
         allTargets.forEach { targetChannelId ->
             try {
                 val channelType = discordBotScope.getChannel(targetChannelId).type
@@ -181,9 +172,5 @@ class AndroidStudioUpdateFeature(
             Channel.Type.GUILD_STAGE_VOICE,
             -> error("Unsupported channel type $channelType")
         }
-    }
-
-    companion object {
-        private const val TARGET_CHANNEL_KEY = "target_channel"
     }
 }

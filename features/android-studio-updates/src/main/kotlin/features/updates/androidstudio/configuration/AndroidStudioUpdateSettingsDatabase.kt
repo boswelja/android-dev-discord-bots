@@ -35,7 +35,19 @@ class AndroidStudioUpdateSettingsDatabase(
         guildSettingsDatabase.setString("0", LastCheckInstantKey, lastChecked.toString())
     }
 
+    override suspend fun setTargetChannelForGuild(guildId: String, targetChannelId: String) {
+        guildSettingsDatabase.setString(guildId, TargetChannelKey, targetChannelId)
+    }
+
+    override suspend fun removeTargetChannelForGuild(guildId: String) {
+        guildSettingsDatabase.delete(guildId, TargetChannelKey)
+    }
+
+    override suspend fun getAllTargetChannels(): List<String> = guildSettingsDatabase.getAll(TargetChannelKey).first()
+
     companion object {
         private const val LastCheckInstantKey = "lastCheckTime"
+        private const val TargetChannelKey = "target_channel"
+
     }
 }
