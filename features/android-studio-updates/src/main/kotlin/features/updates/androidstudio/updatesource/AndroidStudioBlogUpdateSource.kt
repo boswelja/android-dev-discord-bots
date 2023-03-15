@@ -41,6 +41,7 @@ internal class AndroidStudioBlogUpdateSource(
                         url = it.links.last().url,
                     )
                 }
+                .sorted { o1, o2 -> o1.timestamp.compareTo(o2.timestamp) }
             Result.success(events.toList())
         } catch (e: FeedCouldNotBeObtainedException) {
             Result.failure(e)
