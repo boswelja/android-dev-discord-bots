@@ -21,6 +21,7 @@ import discord.guild.MemberPermission
 import features.Feature
 import features.updates.androidstudio.configuration.AndroidStudioUpdateSettings
 import features.updates.androidstudio.configuration.AndroidStudioUpdateSettingsDatabase
+import features.updates.androidstudio.updatesource.AndroidStudioUpdate
 import features.updates.androidstudio.updatesource.AndroidStudioUpdateSource
 import features.updates.androidstudio.updatesource.createUpdateSource
 import guildsettings.GuildSettingsDatabase
@@ -126,7 +127,6 @@ class AndroidStudioUpdateFeature(
         guildSettings.delete(guildId, TARGET_CHANNEL_KEY)
     }
 
-    @Suppress("NestedBlockDepth")
     private suspend fun postNewUpdatesIfAny() {
         val lastCheckInstant = settings.getLastCheckInstant()
         val newUpdatesResult = updateSource.getUpdatesAfter(lastCheckInstant)
@@ -140,38 +140,46 @@ class AndroidStudioUpdateFeature(
             try {
                 val channelType = discordBotScope.getChannel(targetChannelId).type
                 newUpdates.forEach { newUpdate ->
-                    when (channelType) {
-                        Channel.Type.GUILD_TEXT,
-                        Channel.Type.DM,
-                        Channel.Type.GROUP_DM,
-                        Channel.Type.GUILD_ANNOUNCEMENT,
-                        ->
-                            discordBotScope.createEmbed(targetChannelId) {
-                                title = newUpdate.fullVersionName
-                                description = newUpdate.summary
-                                timestamp = newUpdate.timestamp
-                                url = newUpdate.url
-                            }
-                        Channel.Type.GUILD_FORUM ->
-                            discordBotScope.createForumPost(targetChannelId, newUpdate.fullVersionName) {
-                                title = newUpdate.fullVersionName
-                                description = newUpdate.summary
-                                timestamp = newUpdate.timestamp
-                                url = newUpdate.url
-                            }
-                        Channel.Type.ANNOUNCEMENT_THREAD,
-                        Channel.Type.PUBLIC_THREAD,
-                        Channel.Type.PRIVATE_THREAD,
-                        -> error("Threads are unsupported (for now)")
-                        Channel.Type.GUILD_VOICE,
-                        Channel.Type.GUILD_CATEGORY,
-                        Channel.Type.GUILD_STAGE_VOICE,
-                        -> error("Unsupported channel type $channelType")
-                    }
+                    postMessageToChannel(targetChannelId, channelType, newUpdate)
                 }
             } catch (e: Exception) {
                 logError(e) { "Failed to notify $targetChannelId of a new Android Studio release." }
             }
+        }
+    }
+
+    private suspend fun postMessageToChannel(
+        channelId: String,
+        channelType: Channel.Type,
+        update: AndroidStudioUpdate
+    ) {
+        when (channelType) {
+            Channel.Type.GUILD_TEXT,
+            Channel.Type.DM,
+            Channel.Type.GROUP_DM,
+            Channel.Type.GUILD_ANNOUNCEMENT,
+            ->
+                discordBotScope.createEmbed(channelId) {
+                    title = update.fullVersionName
+                    description = update.summary
+                    timestamp = update.timestamp
+                    url = update.url
+                }
+            Channel.Type.GUILD_FORUM ->
+                discordBotScope.createForumPost(channelId, update.fullVersionName) {
+                    title = update.fullVersionName
+                    description = update.summary
+                    timestamp = update.timestamp
+                    url = update.url
+                }
+            Channel.Type.ANNOUNCEMENT_THREAD,
+            Channel.Type.PUBLIC_THREAD,
+            Channel.Type.PRIVATE_THREAD,
+            -> error("Threads are unsupported (for now)")
+            Channel.Type.GUILD_VOICE,
+            Channel.Type.GUILD_CATEGORY,
+            Channel.Type.GUILD_STAGE_VOICE,
+            -> error("Unsupported channel type $channelType")
         }
     }
 
