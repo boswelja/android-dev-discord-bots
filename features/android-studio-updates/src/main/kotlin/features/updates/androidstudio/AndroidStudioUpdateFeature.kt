@@ -19,12 +19,15 @@ import discord.DiscordBotScope
 import discord.channel.Channel
 import discord.guild.MemberPermission
 import features.Feature
+import features.updates.androidstudio.configuration.AndroidStudioUpdateSettings
+import features.updates.androidstudio.configuration.AndroidStudioUpdateSettingsDatabase
+import features.updates.androidstudio.updatesource.AndroidStudioUpdateSource
+import features.updates.androidstudio.updatesource.createUpdateSource
 import guildsettings.GuildSettingsDatabase
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import kotlinx.datetime.toKotlinInstant
 import logging.logError
 import logging.logInfo
 import scheduler.scheduleRepeating
@@ -35,8 +38,9 @@ import kotlin.time.Duration.Companion.hours
  */
 class AndroidStudioUpdateFeature(
     private val discordBotScope: DiscordBotScope,
-    private val settings: GuildSettingsDatabase,
-    private val updateChecker: AndroidStudioUpdateChecker = AndroidStudioUpdateChecker(settings),
+    private val guildSettings: GuildSettingsDatabase,
+    private val settings: AndroidStudioUpdateSettings = AndroidStudioUpdateSettingsDatabase(guildSettings),
+    private val updateSource: AndroidStudioUpdateSource = createUpdateSource()
 ) : Feature {
 
     private var updateCheckerJob: Job? = null
@@ -115,20 +119,23 @@ class AndroidStudioUpdateFeature(
     }
 
     private suspend fun enableStudioUpdateNotifications(guildId: String, targetChannelId: String) {
-        settings.setString(guildId, TARGET_CHANNEL_KEY, targetChannelId)
+        guildSettings.setString(guildId, TARGET_CHANNEL_KEY, targetChannelId)
     }
 
     private suspend fun disableStudioUpdateMessages(guildId: String) {
-        settings.delete(guildId, TARGET_CHANNEL_KEY)
+        guildSettings.delete(guildId, TARGET_CHANNEL_KEY)
     }
 
     @Suppress("NestedBlockDepth")
     private suspend fun postNewUpdatesIfAny() {
-        val newUpdates = updateChecker.getNewPosts()
-        if (newUpdates.isEmpty()) return
+        val lastCheckInstant = settings.getLastCheckInstant()
+        val newUpdatesResult = updateSource.getUpdatesAfter(lastCheckInstant)
+        if (newUpdatesResult.isFailure) return // TODO Handle failures
+        val newUpdates = newUpdatesResult.getOrThrow()
         logInfo { "${newUpdates.count()} new Android Studio updates found" }
+        if (newUpdates.isEmpty()) return
 
-        val allTargets = settings.getAll(TARGET_CHANNEL_KEY).first()
+        val allTargets = guildSettings.getAll(TARGET_CHANNEL_KEY).first()
         allTargets.forEach { targetChannelId ->
             try {
                 val channelType = discordBotScope.getChannel(targetChannelId).type
@@ -140,19 +147,17 @@ class AndroidStudioUpdateFeature(
                         Channel.Type.GUILD_ANNOUNCEMENT,
                         ->
                             discordBotScope.createEmbed(targetChannelId) {
-                                title = newUpdate.title
-                                // description = newUpdate.content
-                                timestamp = newUpdate.publishedOn.toInstant().toKotlinInstant()
-                                url = newUpdate.links.lastOrNull()?.url
-                                author(newUpdate.author.name, null, null)
+                                title = newUpdate.fullVersionName
+                                description = newUpdate.summary
+                                timestamp = newUpdate.timestamp
+                                url = newUpdate.url
                             }
                         Channel.Type.GUILD_FORUM ->
-                            discordBotScope.createForumPost(targetChannelId, newUpdate.title) {
-                                title = newUpdate.title
-                                // description = newUpdate.content
-                                timestamp = newUpdate.publishedOn.toInstant().toKotlinInstant()
-                                url = newUpdate.links.lastOrNull()?.url
-                                author(newUpdate.author.name, null, null)
+                            discordBotScope.createForumPost(targetChannelId, newUpdate.fullVersionName) {
+                                title = newUpdate.fullVersionName
+                                description = newUpdate.summary
+                                timestamp = newUpdate.timestamp
+                                url = newUpdate.url
                             }
                         Channel.Type.ANNOUNCEMENT_THREAD,
                         Channel.Type.PUBLIC_THREAD,
