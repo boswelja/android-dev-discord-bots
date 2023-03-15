@@ -24,7 +24,7 @@ import kotlinx.datetime.toKotlinInstant
 /**
  * An implementation of [AndroidStudioUpdateSource] that retrieves updates from the Android Studio Blog.
  */
-class AndroidStudioBlogUpdateSource(
+internal class AndroidStudioBlogUpdateSource(
     private val source: Fetcher = FetcherFactory.create(),
 ) : AndroidStudioUpdateSource {
 

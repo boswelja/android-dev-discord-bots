@@ -27,3 +27,8 @@ interface AndroidStudioUpdateSource {
      */
     suspend fun getUpdatesAfter(after: Instant): Result<List<AndroidStudioUpdate>>
 }
+
+/**
+ * Creates a new [AndroidStudioUpdateSource] instance.
+ */
+fun createUpdateSource(): AndroidStudioUpdateSource = AndroidStudioBlogUpdateSource()
