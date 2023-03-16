@@ -13,20 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dale
+package features.updates.androidstudio.updatesource
 
-import discord.discordBot
-import features.initFeatures
-import features.updates.androidstudio.AndroidStudioUpdateFeature
-import guildsettings.GuildSettingsDatabaseFactory
+import kotlinx.datetime.Instant
 
 /**
- * The main entrypoint for Dale. Passing a bot token as a program argument is expected.
+ * A source for Android Studio updates.
  */
-suspend fun main(args: Array<String>) = discordBot(args.first()) {
-    val settingsRepository = GuildSettingsDatabaseFactory.instance("dale")
+interface AndroidStudioUpdateSource {
 
-    initFeatures(
-        AndroidStudioUpdateFeature(this, settingsRepository),
-    )
+    /**
+     * Get a List of Android Studio updates that were created after the given Instant.
+     */
+    suspend fun getUpdatesAfter(after: Instant): Result<List<AndroidStudioUpdate>>
 }
+
+/**
+ * Creates a new [AndroidStudioUpdateSource] instance.
+ */
+fun createUpdateSource(): AndroidStudioUpdateSource = AndroidStudioBlogUpdateSource()

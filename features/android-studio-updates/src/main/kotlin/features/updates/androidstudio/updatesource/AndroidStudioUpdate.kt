@@ -13,20 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dale
+package features.updates.androidstudio.updatesource
 
-import discord.discordBot
-import features.initFeatures
-import features.updates.androidstudio.AndroidStudioUpdateFeature
-import guildsettings.GuildSettingsDatabaseFactory
+import kotlinx.datetime.Instant
 
 /**
- * The main entrypoint for Dale. Passing a bot token as a program argument is expected.
+ * Describes an update for Android Studio.
+ *
+ * @property fullVersionName The full name of the version, ex. "Android Studio Giraffe Canary 9"
+ * @property summary A short summary of this update. Usually 1-2 sentences.
+ * @property timestamp The instant this update was made available.
+ * @property url An HTTPS URL that links to a relevant page, ex. an article, or release notes.
  */
-suspend fun main(args: Array<String>) = discordBot(args.first()) {
-    val settingsRepository = GuildSettingsDatabaseFactory.instance("dale")
-
-    initFeatures(
-        AndroidStudioUpdateFeature(this, settingsRepository),
-    )
-}
+data class AndroidStudioUpdate(
+    val fullVersionName: String,
+    val summary: String,
+    val timestamp: Instant,
+    val url: String,
+)
