@@ -16,6 +16,7 @@ include(
     "core:network",
     "core:scheduler",
     "features:android-studio-updates",
+    "features:library-updates",
     "dale",
 )
 
