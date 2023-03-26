@@ -1,5 +1,6 @@
 plugins {
     kotlin("jvm")
+    id("com.squareup.sqldelight")
     id("io.gitlab.arturbosch.detekt")
 }
 
@@ -13,10 +14,18 @@ dependencies {
     implementation(projects.core.logging)
     implementation(projects.core.network)
 
+    implementation(libs.bundles.sqldelight)
+
     implementation("org.apache.maven:maven-repository-metadata:3.9.1")
     implementation("org.apache.maven:maven-model:3.9.1")
 
     testImplementation(kotlin("test"))
+}
+
+sqldelight {
+    database("MavenIndex") {
+        packageName = "features.updates.library.mavenindexer.database"
+    }
 }
 
 tasks.getByName<Test>("test") {

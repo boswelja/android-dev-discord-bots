@@ -13,11 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package features.updates.library.updatesource
+package features.updates.library.mavenindexer.indexsource
 
-interface MavenArtifactUpdateSource {
+/**
+ * A generic Maven repository indexer.
+ */
+interface MavenIndexSource {
 
-    suspend fun getVersionsFor(coordinateUrl: String): MavenVersions
-
-    suspend fun getPomFor(artifactUrl: String): MavenPom
+    /**
+     * Retrieves a list of [MavenCoordinate]s that are available from this Maven repository.
+     */
+    fun getAvailableArtifacts(): List<MavenCoordinate>
 }

@@ -16,12 +16,22 @@
 package features.updates.library
 
 import features.Feature
-import org.apache.maven.model.io.xpp3.MavenXpp3Reader
-import java.io.InputStream
+import features.updates.library.mavenindexer.MavenIndexerImpl
+import features.updates.library.updatesource.MavenArtifactUpdateSource
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.supervisorScope
+import scheduler.scheduleRepeating
+import kotlin.time.Duration.Companion.days
 
-class LibraryUpdateFeature : Feature {
-    override suspend fun init() {
-        val parser = MavenXpp3Reader()
-        val model = parser.read(InputStream.nullInputStream())
+class LibraryUpdateFeature(
+    private val indexer: MavenIndexerImpl,
+    private val updateSource: MavenArtifactUpdateSource
+) : Feature {
+    override suspend fun init(): Unit = supervisorScope {
+        launch {
+            scheduleRepeating(1.days) {
+                indexer.updateIndex()
+            }
+        }
     }
 }

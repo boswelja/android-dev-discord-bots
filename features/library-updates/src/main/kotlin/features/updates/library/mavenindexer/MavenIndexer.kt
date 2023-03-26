@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package features.updates.library.updatesource
+package features.updates.library.mavenindexer
 
-interface MavenArtifactUpdateSource {
+import features.updates.library.mavenindexer.indexsource.MavenCoordinate
 
-    suspend fun getVersionsFor(coordinateUrl: String): MavenVersions
+interface MavenIndexer {
+    suspend fun updateIndex()
 
-    suspend fun getPomFor(artifactUrl: String): MavenPom
+    suspend fun getArtifactsMatching(groupId: Regex): List<MavenCoordinate>
 }

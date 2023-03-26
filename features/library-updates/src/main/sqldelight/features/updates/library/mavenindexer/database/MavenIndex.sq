@@ -1,0 +1,15 @@
+CREATE TABLE mavenIndex (
+    group_id TEXT NOT NULL,
+    artifact_id TEXT NOT NULL,
+    coordinate_url TEXT NOT NULL,
+    PRIMARY KEY (group_id, artifact_id)
+);
+
+getMatching:
+SELECT * FROM mavenIndex WHERE group_id REGEXP ?;
+
+deleteAll:
+DELETE FROM mavenIndex;
+
+insert:
+INSERT INTO mavenIndex VALUES (?, ?, ?);
