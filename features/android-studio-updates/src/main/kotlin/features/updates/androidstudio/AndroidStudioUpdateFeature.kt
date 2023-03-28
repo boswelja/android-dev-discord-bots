@@ -27,6 +27,9 @@ import features.updates.androidstudio.updatesource.createUpdateSource
 import guildsettings.GuildSettingsDatabase
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import logging.logError
 import logging.logInfo
 import scheduler.scheduleRepeating
@@ -120,7 +123,11 @@ class AndroidStudioUpdateFeature(
         val newUpdatesResult = updateSource.getUpdatesAfter(lastCheckInstant)
         if (newUpdatesResult.isFailure) return // TODO Handle failures
         val newUpdates = newUpdatesResult.getOrThrow()
-        logInfo { "${newUpdates.count()} new Android Studio updates found" }
+        settings.setLastCheckInstant(Clock.System.now())
+        logInfo {
+            val lastCheckHumanReadable = lastCheckInstant.toLocalDateTime(TimeZone.UTC).toString()
+            "${newUpdates.count()} new Android Studio updates found since $lastCheckHumanReadable"
+        }
         if (newUpdates.isEmpty()) return
 
         val allTargets = settings.getAllTargetChannels()
