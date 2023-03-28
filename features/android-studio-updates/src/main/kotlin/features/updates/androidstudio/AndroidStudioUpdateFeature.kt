@@ -125,7 +125,8 @@ class AndroidStudioUpdateFeature(
         val newUpdates = newUpdatesResult.getOrThrow()
         settings.setLastCheckInstant(Clock.System.now())
         logInfo {
-            "${newUpdates.count()} new Android Studio updates found since ${lastCheckInstant.toLocalDateTime(TimeZone.UTC)}"
+            val lastCheckHumanReadable = lastCheckInstant.toLocalDateTime(TimeZone.UTC).toString()
+            "${newUpdates.count()} new Android Studio updates found since $lastCheckHumanReadable"
         }
         if (newUpdates.isEmpty()) return
 
