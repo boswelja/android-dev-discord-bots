@@ -24,7 +24,7 @@ dependencies {
 
 sqldelight {
     database("MavenIndex") {
-        packageName = "features.updates.library.mavenindexer.database"
+        packageName = "features.updates.library.database"
     }
 }
 

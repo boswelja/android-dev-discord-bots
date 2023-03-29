@@ -17,7 +17,7 @@ package features.updates.library
 
 import features.Feature
 import features.updates.library.mavenindexer.MavenIndexerImpl
-import features.updates.library.updatesource.MavenArtifactUpdateSource
+import features.updates.library.versionsource.MavenArtifactVersionSource
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
 import scheduler.scheduleRepeating
@@ -25,7 +25,7 @@ import kotlin.time.Duration.Companion.days
 
 class LibraryUpdateFeature(
     private val indexer: MavenIndexerImpl,
-    private val updateSource: MavenArtifactUpdateSource
+    private val updateSource: MavenArtifactVersionSource
 ) : Feature {
     override suspend fun init(): Unit = supervisorScope {
         launch {

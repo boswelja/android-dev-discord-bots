@@ -15,7 +15,7 @@
  */
 package features.updates.library.mavenindexer
 
-import features.updates.library.mavenindexer.database.MavenIndex
+import features.updates.library.database.MavenIndexQueries
 import features.updates.library.mavenindexer.indexsource.MavenCoordinate
 import features.updates.library.mavenindexer.indexsource.MavenIndexSource
 import kotlinx.coroutines.CoroutineDispatcher
@@ -26,7 +26,7 @@ import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.withContext
 
 class MavenIndexerImpl(
-    private val indexDatabase: MavenIndex,
+    private val indexDatabase: MavenIndexQueries,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : MavenIndexer {
 
@@ -42,10 +42,10 @@ class MavenIndexerImpl(
             }.awaitAll().flatten()
 
             // Update the database
-            indexDatabase.mavenIndexQueries.transaction {
-                indexDatabase.mavenIndexQueries.deleteAll()
+            indexDatabase.transaction {
+                indexDatabase.deleteAll()
                 coordinates.forEach {
-                    indexDatabase.mavenIndexQueries.insert(it.groupId, it.artifactId, it.url)
+                    indexDatabase.insert(it.groupId, it.artifactId, it.url)
                 }
             }
         }
@@ -53,7 +53,7 @@ class MavenIndexerImpl(
 
     override suspend fun getArtifactsMatching(groupId: Regex): List<MavenCoordinate> {
         return withContext(dispatcher) {
-            indexDatabase.mavenIndexQueries.getMatching(groupId.pattern) { groupId, artifactId, coordinateUrl ->
+            indexDatabase.getMatching(groupId.pattern) { groupId, artifactId, coordinateUrl ->
                 MavenCoordinate(groupId, artifactId, coordinateUrl)
             }.executeAsList()
         }

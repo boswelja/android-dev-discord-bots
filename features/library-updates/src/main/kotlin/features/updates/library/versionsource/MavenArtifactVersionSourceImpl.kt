@@ -13,21 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package features.updates.library.updatesource
+package features.updates.library.versionsource
 
+import features.updates.library.database.MavenVersionQueries
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import kotlinx.datetime.TimeZone
 import network.NetworkModule
 import org.apache.maven.artifact.repository.metadata.io.xpp3.MetadataXpp3Reader
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader
 
-class MavenArtifactUpdateSourceImpl(
+class MavenArtifactVersionSourceImpl(
     private val network: NetworkModule,
-) : MavenArtifactUpdateSource {
+    private val versionQueries: MavenVersionQueries,
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
+) : MavenArtifactVersionSource {
 
     private val pomReader = MavenXpp3Reader()
     private val metadataReader = MetadataXpp3Reader()
 
-    override suspend fun getVersionsFor(coordinateUrl: String): MavenVersions {
+    override suspend fun getLatestVersions(coordinateUrl: String): MavenVersions {
         val url = "$coordinateUrl/maven-metadata.xml"
         val pomText = network.downloadFileAsText(url)
         val metadata = metadataReader.read(pomText.reader())
@@ -38,7 +44,7 @@ class MavenArtifactUpdateSourceImpl(
         )
     }
 
-    override suspend fun getPomFor(artifactUrl: String): MavenPom {
+    override suspend fun getPom(artifactUrl: String): MavenPom {
         val pomText = network.downloadFileAsText(artifactUrl)
         val model = pomReader.read(pomText.reader())
         return MavenPom(
@@ -104,5 +110,17 @@ class MavenArtifactUpdateSourceImpl(
                 url = model.ciManagement.url,
             ),
         )
+    }
+
+    override suspend fun getLastKnownVersion(artifactId: String): String? {
+        return withContext(dispatcher) {
+            versionQueries.getVersion(artifactId).executeAsOneOrNull()
+        }
+    }
+
+    override suspend fun updateLastKnownVersion(artifactId: String, version: String) {
+        withContext(dispatcher) {
+            versionQueries.storeNewVersion(artifactId, version)
+        }
     }
 }

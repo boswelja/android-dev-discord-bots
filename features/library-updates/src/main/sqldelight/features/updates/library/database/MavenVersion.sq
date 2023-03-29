@@ -1,0 +1,10 @@
+CREATE TABLE mavenVersion (
+    artifact_coordinate TEXT NOT NULL PRIMARY KEY,
+    last_version TEXT NOT NULL
+);
+
+storeNewVersion:
+INSERT OR REPLACE INTO mavenVersion VALUES (?, ?);
+
+getVersion:
+SELECT last_version FROM mavenVersion WHERE artifact_coordinate = ? LIMIT 1;

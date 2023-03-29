@@ -13,11 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package features.updates.library.updatesource
+package features.updates.library.versionsource
 
-interface MavenArtifactUpdateSource {
+interface MavenArtifactVersionSource {
 
-    suspend fun getVersionsFor(coordinateUrl: String): MavenVersions
+    suspend fun getLatestVersions(coordinateUrl: String): MavenVersions
 
-    suspend fun getPomFor(artifactUrl: String): MavenPom
+    suspend fun getPom(artifactUrl: String): MavenPom
+
+    suspend fun getLastKnownVersion(artifactId: String): String?
+
+    suspend fun updateLastKnownVersion(artifactId: String, version: String)
 }
