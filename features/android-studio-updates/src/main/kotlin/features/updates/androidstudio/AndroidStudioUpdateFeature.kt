@@ -123,12 +123,12 @@ class AndroidStudioUpdateFeature(
         val newUpdatesResult = updateSource.getUpdatesAfter(lastCheckInstant)
         if (newUpdatesResult.isFailure) return // TODO Handle failures
         val newUpdates = newUpdatesResult.getOrThrow()
-        settings.setLastCheckInstant(Clock.System.now())
         logInfo {
             val lastCheckHumanReadable = lastCheckInstant.toLocalDateTime(TimeZone.UTC).toString()
             "${newUpdates.count()} new Android Studio updates found since $lastCheckHumanReadable"
         }
         if (newUpdates.isEmpty()) return
+        settings.setLastCheckInstant(Clock.System.now())
 
         val allTargets = settings.getAllTargetChannels()
         allTargets.forEach { targetChannelId ->
