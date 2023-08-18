@@ -1,13 +1,13 @@
 plugins {
-    kotlin("jvm") version "1.8.10" apply false
-    id("com.squareup.sqldelight") version "1.5.4" apply false
-    id("io.gitlab.arturbosch.detekt") version "1.22.0" apply false
-    id("com.diffplug.spotless") version "6.12.0"
+    kotlin("jvm") version "1.9.0" apply false
+    id("app.cash.sqldelight") version "2.0.0" apply false
+    id("io.gitlab.arturbosch.detekt") version "1.23.1" apply false
+    id("com.diffplug.spotless") version "6.20.0"
 }
 
 buildscript {
     dependencies {
-        classpath("com.pinterest:ktlint:0.47.1")
+        classpath("com.pinterest:ktlint:0.50.0")
     }
 }
 
@@ -24,19 +24,10 @@ subprojects {
         }
         kotlin {
             target("**/*.kt")
-            targetExclude("$buildDir/**/*.kt")
+            targetExclude("${layout.buildDirectory}/**/*.kt")
             targetExclude("bin/**/*.kt")
 
             ktlint()
-                .setUseExperimental(true)
-                // spotless doesn't yet read from .editorconfig
-                // see https://github.com/diffplug/spotless/issues/142
-                .editorConfigOverride(
-                    mapOf(
-                        "ij_kotlin_allow_trailing_comma" to true,
-                        "ij_kotlin_allow_trailing_comma_on_call_site" to true,
-                    ),
-                )
             trimTrailingWhitespace()
             endWithNewline()
             licenseHeaderFile(rootProject.file("spotless/copyright.kt"))
