@@ -1,6 +1,6 @@
 plugins {
     kotlin("jvm")
-    id("com.squareup.sqldelight")
+    id("app.cash.sqldelight")
     id("io.gitlab.arturbosch.detekt")
 }
 
@@ -18,8 +18,10 @@ tasks.getByName<Test>("test") {
 }
 
 sqldelight {
-    database("GuildSettings") {
-        packageName = "guildsettings.database"
+    databases {
+        create("GuildSettings") {
+            packageName.set("guildsettings.database")
+        }
     }
 }
 
