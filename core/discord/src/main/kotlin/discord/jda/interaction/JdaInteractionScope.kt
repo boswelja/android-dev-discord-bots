@@ -79,6 +79,11 @@ internal class JdaInteractionScope(private val event: GenericCommandInteractionE
                     Permission.UNKNOWN,
                     null,
                     -> MemberPermission.UNKNOWN
+                    Permission.MANAGE_GUILD_EXPRESSIONS -> MemberPermission.MANAGE_GUILD_EXPRESSIONS
+                    Permission.VIEW_CREATOR_MONETIZATION_ANALYTICS -> MemberPermission.VIEW_CREATOR_MONETIZATION_ANALYTICS
+                    Permission.MESSAGE_ATTACH_VOICE_MESSAGE -> MemberPermission.MESSAGE_ATTACH_VOICE_MESSAGE
+                    Permission.VOICE_USE_SOUNDBOARD -> MemberPermission.VOICE_USE_SOUNDBOARD
+                    Permission.VOICE_USE_EXTERNAL_SOUNDS -> MemberPermission.VOICE_USE_EXTERNAL_SOUNDS
                 }
             }.toSet(),
             nickname = it.nickname,

@@ -15,11 +15,12 @@
  */
 package guildsettings
 
-import com.squareup.sqldelight.db.SqlDriver
-import com.squareup.sqldelight.runtime.coroutines.asFlow
-import com.squareup.sqldelight.runtime.coroutines.mapToList
-import com.squareup.sqldelight.runtime.coroutines.mapToOneOrNull
+import app.cash.sqldelight.coroutines.asFlow
+import app.cash.sqldelight.coroutines.mapToList
+import app.cash.sqldelight.coroutines.mapToOneOrNull
+import app.cash.sqldelight.db.SqlDriver
 import guildsettings.database.GuildSettings
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
@@ -27,6 +28,7 @@ import org.sqlite.SQLiteException
 
 internal class SqlDelightGuildSettingsDatabase(
     driver: SqlDriver,
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : GuildSettingsDatabase {
     private val database = GuildSettings(driver)
 
@@ -42,7 +44,7 @@ internal class SqlDelightGuildSettingsDatabase(
         .guildSettingsQueries
         .get(guildId, key)
         .asFlow()
-        .mapToOneOrNull()
+        .mapToOneOrNull(dispatcher)
 
     override suspend fun setString(guildId: String, key: String, value: String) {
         withContext(Dispatchers.IO) {
@@ -54,7 +56,7 @@ internal class SqlDelightGuildSettingsDatabase(
         .guildSettingsQueries
         .getAll(key)
         .asFlow()
-        .mapToList()
+        .mapToList(dispatcher)
 
     override suspend fun delete(guildId: String, key: String) {
         withContext(Dispatchers.IO) {
