@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fetcher.rss
+package features.updates.androidstudio.rssfetcher.rss
 
-import fetcher.Author
-import fetcher.Link
+import features.updates.androidstudio.rssfetcher.Author
+import features.updates.androidstudio.rssfetcher.Link
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -28,7 +28,6 @@ import java.time.Month
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class RssParserTest {
 
     private lateinit var parser: RssParser

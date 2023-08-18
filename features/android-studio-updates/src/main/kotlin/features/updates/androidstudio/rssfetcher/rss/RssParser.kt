@@ -13,16 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fetcher.rss
+package features.updates.androidstudio.rssfetcher.rss
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.xml.XmlMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
-import fetcher.Author
-import fetcher.Entry
-import fetcher.Feed
-import fetcher.Link
+import features.updates.androidstudio.rssfetcher.Author
+import features.updates.androidstudio.rssfetcher.Entry
+import features.updates.androidstudio.rssfetcher.Feed
+import features.updates.androidstudio.rssfetcher.Link
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
