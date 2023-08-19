@@ -17,7 +17,6 @@ package features.updates.androidstudio.rssfetcher.rss
 
 import features.updates.androidstudio.rssfetcher.Author
 import features.updates.androidstudio.rssfetcher.Link
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
