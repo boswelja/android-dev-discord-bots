@@ -8,12 +8,17 @@ version = "1.0"
 
 dependencies {
     implementation(projects.core.configuration)
-    implementation(projects.core.fetcher)
     implementation(projects.core.discord)
     implementation(projects.core.scheduler)
     implementation(projects.core.logging)
 
+    implementation(projects.core.network)
+    implementation(libs.kotlinx.coroutines.core)
+
+    implementation(libs.bundles.jackson.xml)
+
     testImplementation(kotlin("test"))
+    testImplementation(libs.kotlinx.coroutines.test)
 }
 
 tasks.getByName<Test>("test") {
