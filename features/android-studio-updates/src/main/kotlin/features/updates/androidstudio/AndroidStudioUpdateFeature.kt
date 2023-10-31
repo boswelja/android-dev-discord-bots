@@ -17,7 +17,6 @@ package features.updates.androidstudio
 
 import dev.kord.common.entity.Permission
 import dev.kord.common.entity.Snowflake
-import dev.kord.common.entity.optional.Optional
 import dev.kord.core.Kord
 import dev.kord.core.behavior.channel.createEmbed
 import dev.kord.core.behavior.interaction.response.respond
@@ -44,7 +43,6 @@ import kotlinx.datetime.toLocalDateTime
 import logging.logError
 import logging.logInfo
 import scheduler.scheduleRepeating
-import kotlin.reflect.KProperty
 import kotlin.time.Duration.Companion.hours
 
 /**
@@ -99,40 +97,32 @@ class AndroidStudioUpdateFeature(
         }
 
         discordBotScope.on<GuildChatInputCommandInteractionCreateEvent> {
-            val commandName = interaction.command.data.name.value ?: return@on
+            val commandName = interaction.command.data.name.value!!
             val sourceGuildMember = interaction.user
             if (commandName.startsWith("updates android-studio")) {
                 val response = interaction.deferEphemeralResponse()
-                when {
-                    commandName.endsWith("enable") -> {
-                        // If the guild member has permission
-                        if (sourceGuildMember.getPermissions().contains(Permission.ManageGuild)) {
+                if (sourceGuildMember.getPermissions().contains(Permission.ManageGuild)) {
+                    when {
+                        commandName.endsWith("enable") -> {
                             val targetChannel = interaction.command.channels["target"]!!
                             response.respond {
                                 content = "Enabled Android Studio update messages for ${targetChannel.mention}"
                             }
-                            settings.setTargetChannelForGuild(interaction.guildId.toString(), targetChannel.id.toString())
-                        } else {
-                            // Else the user is a guild member and does not have permission
-                            response.respond {
-                                content = "You do not have permission to do that here"
-                            }
+                            settings.setTargetChannelForGuild(
+                                guildId = interaction.guildId.toString(),
+                                targetChannelId = targetChannel.id.toString()
+                            )
                         }
-                    }
-                    commandName.endsWith("disable") -> {
-                        // If the guild member has permission, or is not a guild member (i.e. the command was triggered
-                        // from DMs)
-                        if (sourceGuildMember.getPermissions().contains(Permission.ManageGuild)) {
+                        commandName.endsWith("disable") -> {
                             settings.removeTargetChannelForGuild(interaction.guildId.toString())
                             response.respond {
                                 content = "Disabled Android Studio update messages for this server"
                             }
-                        } else {
-                            // Else the user is a guild member and does not have permission
-                            response.respond {
-                                content = "You do not have permission to do that here"
-                            }
                         }
+                    }
+                } else {
+                    response.respond {
+                        content = "You do not have permission to do that here"
                     }
                 }
             }
@@ -169,31 +159,23 @@ class AndroidStudioUpdateFeature(
         update: AndroidStudioUpdate,
     ) {
         when (channel) {
-            is MessageChannel -> {
-                channel.createEmbed {
-                    title = update.fullVersionName
-                    description = update.summary
-                    timestamp = update.timestamp
-                    url = update.url
-                }
+            is MessageChannel -> channel.createEmbed {
+                title = update.fullVersionName
+                description = update.summary
+                timestamp = update.timestamp
+                url = update.url
             }
-            is ForumChannel -> {
-                channel.startPublicThread(name = update.fullVersionName) {
-                    message {
-                        embed {
-                            title = update.fullVersionName
-                            description = update.summary
-                            timestamp = update.timestamp
-                            url = update.url
-                        }
+            is ForumChannel -> channel.startPublicThread(name = update.fullVersionName) {
+                message {
+                    embed {
+                        title = update.fullVersionName
+                        description = update.summary
+                        timestamp = update.timestamp
+                        url = update.url
                     }
                 }
             }
             else -> error("Unsupported channel $channel")
         }
     }
-}
-
-private operator fun <T> Optional<T>.getValue(t: T?, property: KProperty<*>): T? {
-    return value
 }
