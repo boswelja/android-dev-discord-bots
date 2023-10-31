@@ -1,13 +1,13 @@
 [versions]
 kotlinx-coroutines = "1.7.3"
-kotlinx-datetime = "0.4.0"
+kotlinx-datetime = "0.4.1"
 
-ktor-client = "2.3.3"
+ktor-client = "2.3.5"
 
 sqldelight = "2.0.0"
-sqlite-jdbc = "3.42.0.0"
+sqlite-jdbc = "3.43.2.2"
 
-jda = "5.0.0-beta.13"
+jda = "5.0.0-beta.17"
 
 jackson = "2.15.2"
 
