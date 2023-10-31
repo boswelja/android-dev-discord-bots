@@ -7,8 +7,6 @@ ktor-client = "2.3.5"
 sqldelight = "2.0.0"
 sqlite-jdbc = "3.43.2.2"
 
-jda = "5.0.0-beta.17"
-
 kord = "0.11.1"
 
 jackson = "2.15.2"
@@ -24,8 +22,6 @@ ktor-client-cio = { group = "io.ktor", name = "ktor-client-cio", version.ref = "
 jackson-kotlin = { group = "com.fasterxml.jackson.module", name = "jackson-module-kotlin", version.ref = "jackson" }
 jackson-jsr310 = { group = "com.fasterxml.jackson.datatype", name = "jackson-datatype-jsr310", version.ref = "jackson" }
 jackson-xml = { group = "com.fasterxml.jackson.dataformat", name = "jackson-dataformat-xml", version.ref = "jackson" }
-
-jda = { group = "net.dv8tion", name = "JDA", version.ref = "jda" }
 
 kord-core = { module = "dev.kord:kord-core", version.ref = "kord" }
 
