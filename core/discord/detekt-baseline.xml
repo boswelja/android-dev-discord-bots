@@ -1,7 +1,0 @@
-<?xml version="1.0" ?>
-<SmellBaseline>
-  <ManuallySuppressedIssues></ManuallySuppressedIssues>
-  <CurrentIssues>
-    <ID>CyclomaticComplexMethod:JdaChannelScope.kt$JdaChannelScope$override suspend fun getChannel(channelId: String): Channel</ID>
-  </CurrentIssues>
-</SmellBaseline>

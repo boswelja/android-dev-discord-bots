@@ -10,7 +10,6 @@ dependencyResolutionManagement {
 
 include(
     "core:configuration",
-    "core:discord",
     "core:logging",
     "core:network",
     "core:scheduler",

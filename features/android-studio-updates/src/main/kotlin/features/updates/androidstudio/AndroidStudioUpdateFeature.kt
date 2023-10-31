@@ -15,9 +15,23 @@
  */
 package features.updates.androidstudio
 
-import discord.DiscordBotScope
-import discord.channel.Channel
-import discord.guild.MemberPermission
+import dev.kord.common.entity.ChannelType
+import dev.kord.common.entity.Permission
+import dev.kord.common.entity.Snowflake
+import dev.kord.common.entity.optional.Optional
+import dev.kord.core.Kord
+import dev.kord.core.behavior.channel.createEmbed
+import dev.kord.core.behavior.interaction.response.respond
+import dev.kord.core.entity.channel.Channel
+import dev.kord.core.entity.channel.ForumChannel
+import dev.kord.core.entity.channel.GuildChannel
+import dev.kord.core.entity.channel.GuildMessageChannel
+import dev.kord.core.entity.channel.MessageChannel
+import dev.kord.core.event.interaction.GuildChatInputCommandInteractionCreateEvent
+import dev.kord.core.on
+import dev.kord.rest.builder.interaction.channel
+import dev.kord.rest.builder.interaction.group
+import dev.kord.rest.builder.message.create.embed
 import features.Feature
 import features.updates.androidstudio.configuration.AndroidStudioUpdateSettings
 import features.updates.androidstudio.configuration.AndroidStudioUpdateSettingsDatabase
@@ -33,13 +47,14 @@ import kotlinx.datetime.toLocalDateTime
 import logging.logError
 import logging.logInfo
 import scheduler.scheduleRepeating
+import kotlin.reflect.KProperty
 import kotlin.time.Duration.Companion.hours
 
 /**
  * A [Feature] that configured a bot for checking and posting about new Android Studio updates.
  */
 class AndroidStudioUpdateFeature(
-    private val discordBotScope: DiscordBotScope,
+    private val discordBotScope: Kord,
     guildSettings: GuildSettingsDatabase,
     private val settings: AndroidStudioUpdateSettings = AndroidStudioUpdateSettingsDatabase(guildSettings),
     private val updateSource: AndroidStudioUpdateSource = createUpdateSource(),
@@ -60,59 +75,68 @@ class AndroidStudioUpdateFeature(
     }
 
     private suspend fun registerCommands() {
-        discordBotScope.registerGlobalChatInputCommandGroup(
+        discordBotScope.createGlobalChatInputCommand(
             name = "updates",
             description = "Configure various update messages",
         ) {
-            subCommandGroup(
+            group(
                 name = "android-studio",
                 description = "Configure update messages for Android Studio releases",
             ) {
                 subCommand(
                     name = "enable",
                     description = "Enable update messages for Android Studio releases",
-                    onCommandInvoked = {
-                        // If the guild member has permission, or is not a guild member (i.e. the command was triggered
-                        // from DMs)
-                        if (sourceGuildMember?.permissions?.contains(MemberPermission.MANAGE_SERVER) == true ||
-                            sourceGuildMember == null
-                        ) {
-                            val targetChannelId = getChannelId("target")
-                            createResponseMessage(
-                                true,
-                                "Enabled Android Studio update messages for <#$targetChannelId>",
-                            )
-                            settings.setTargetChannelForGuild(sourceGuildId!!, targetChannelId)
-                        } else {
-                            // Else the user is a guild member and does not have permission
-                            createResponseMessage(true, "You do not have permission to do that here")
-                        }
-                    },
                 ) {
                     channel(
                         name = "target",
                         description = "The channel to post update messages to",
-                        required = true,
-                    )
+                    ) {
+                        required = true
+                    }
                 }
                 subCommand(
                     name = "disable",
                     description = "Disable update messages for Android Studio releases",
-                    onCommandInvoked = {
-                        // If the guild member has permission, or is not a guild member (i.e. the command was triggered
-                        // from DMs)
-                        if (sourceGuildMember?.permissions?.contains(MemberPermission.MANAGE_SERVER) == true ||
-                            sourceGuildMember == null
-                        ) {
-                            settings.removeTargetChannelForGuild(sourceGuildId!!)
-                            createResponseMessage(true, "Disabled Android Studio update messages for this server")
+                ) {}
+            }
+        }
+
+        discordBotScope.on<GuildChatInputCommandInteractionCreateEvent> {
+            val commandName = interaction.command.data.name.value ?: return@on
+            val sourceGuildMember = interaction.user
+            if (commandName.startsWith("updates android-studio")) {
+                val response = interaction.deferEphemeralResponse()
+                when {
+                    commandName.endsWith("enable") -> {
+                        // If the guild member has permission
+                        if (sourceGuildMember.getPermissions().contains(Permission.ManageGuild)) {
+                            val targetChannel = interaction.command.channels["target"]!!
+                            response.respond {
+                                content = "Enabled Android Studio update messages for ${targetChannel.mention}"
+                            }
+                            settings.setTargetChannelForGuild(interaction.guildId.toString(), targetChannel.id.toString())
                         } else {
                             // Else the user is a guild member and does not have permission
-                            createResponseMessage(true, "You do not have permission to do that here")
+                            response.respond {
+                                content = "You do not have permission to do that here"
+                            }
                         }
-                    },
-                ) {
-                    // No options here
+                    }
+                    commandName.endsWith("disable") -> {
+                        // If the guild member has permission, or is not a guild member (i.e. the command was triggered
+                        // from DMs)
+                        if (sourceGuildMember.getPermissions().contains(Permission.ManageGuild)) {
+                            settings.removeTargetChannelForGuild(interaction.guildId.toString())
+                            response.respond {
+                                content = "Disabled Android Studio update messages for this server"
+                            }
+                        } else {
+                            // Else the user is a guild member and does not have permission
+                            response.respond {
+                                content = "You do not have permission to do that here"
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -133,9 +157,9 @@ class AndroidStudioUpdateFeature(
         val allTargets = settings.getAllTargetChannels()
         allTargets.forEach { targetChannelId ->
             try {
-                val channelType = discordBotScope.getChannel(targetChannelId).type
+                val channel = discordBotScope.getChannel(Snowflake(targetChannelId))!!
                 newUpdates.forEach { newUpdate ->
-                    postMessageToChannel(targetChannelId, channelType, newUpdate)
+                    postMessageToChannel(channel, newUpdate)
                 }
             } catch (e: Exception) {
                 logError(e) { "Failed to notify $targetChannelId of a new Android Studio release." }
@@ -144,37 +168,35 @@ class AndroidStudioUpdateFeature(
     }
 
     private suspend fun postMessageToChannel(
-        channelId: String,
-        channelType: Channel.Type,
+        channel: Channel,
         update: AndroidStudioUpdate,
     ) {
-        when (channelType) {
-            Channel.Type.GUILD_TEXT,
-            Channel.Type.DM,
-            Channel.Type.GROUP_DM,
-            Channel.Type.GUILD_ANNOUNCEMENT,
-            ->
-                discordBotScope.createEmbed(channelId) {
+        when (channel) {
+            is MessageChannel -> {
+                channel.createEmbed {
                     title = update.fullVersionName
                     description = update.summary
                     timestamp = update.timestamp
                     url = update.url
                 }
-            Channel.Type.GUILD_FORUM ->
-                discordBotScope.createForumPost(channelId, update.fullVersionName) {
-                    title = update.fullVersionName
-                    description = update.summary
-                    timestamp = update.timestamp
-                    url = update.url
+            }
+            is ForumChannel -> {
+                channel.startPublicThread(name = update.fullVersionName) {
+                    message {
+                        embed {
+                            title = update.fullVersionName
+                            description = update.summary
+                            timestamp = update.timestamp
+                            url = update.url
+                        }
+                    }
                 }
-            Channel.Type.ANNOUNCEMENT_THREAD,
-            Channel.Type.PUBLIC_THREAD,
-            Channel.Type.PRIVATE_THREAD,
-            -> error("Threads are unsupported (for now)")
-            Channel.Type.GUILD_VOICE,
-            Channel.Type.GUILD_CATEGORY,
-            Channel.Type.GUILD_STAGE_VOICE,
-            -> error("Unsupported channel type $channelType")
+            }
+            else -> error("Unsupported channel $channel")
         }
     }
+}
+
+private operator fun <T> Optional<T>.getValue(t: T?, property: KProperty<*>): T? {
+    return value
 }
