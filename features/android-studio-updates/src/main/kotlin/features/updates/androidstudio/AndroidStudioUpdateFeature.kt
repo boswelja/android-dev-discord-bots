@@ -15,7 +15,6 @@
  */
 package features.updates.androidstudio
 
-import dev.kord.common.entity.ChannelType
 import dev.kord.common.entity.Permission
 import dev.kord.common.entity.Snowflake
 import dev.kord.common.entity.optional.Optional
@@ -24,8 +23,6 @@ import dev.kord.core.behavior.channel.createEmbed
 import dev.kord.core.behavior.interaction.response.respond
 import dev.kord.core.entity.channel.Channel
 import dev.kord.core.entity.channel.ForumChannel
-import dev.kord.core.entity.channel.GuildChannel
-import dev.kord.core.entity.channel.GuildMessageChannel
 import dev.kord.core.entity.channel.MessageChannel
 import dev.kord.core.event.interaction.GuildChatInputCommandInteractionCreateEvent
 import dev.kord.core.on
