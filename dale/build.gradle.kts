@@ -9,9 +9,9 @@ version = "1.0"
 
 dependencies {
     implementation(projects.core.configuration)
-    implementation(projects.core.discord)
     implementation(projects.core.logging)
 
+    implementation(libs.kord.core)
     implementation(projects.features.androidStudioUpdates)
 
     testImplementation(kotlin("test"))
