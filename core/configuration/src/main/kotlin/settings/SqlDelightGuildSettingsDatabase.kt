@@ -13,32 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package guildsettings
+package settings
 
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
 import app.cash.sqldelight.coroutines.mapToOneOrNull
-import app.cash.sqldelight.db.SqlDriver
-import guildsettings.database.GuildSettings
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
-import org.sqlite.SQLiteException
+import settings.database.Settings
 
 internal class SqlDelightGuildSettingsDatabase(
-    driver: SqlDriver,
+    private val database: Settings,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : GuildSettingsDatabase {
-    private val database = GuildSettings(driver)
-
-    init {
-        try {
-            GuildSettings.Schema.create(driver)
-        } catch (_: SQLiteException) {
-            // This probably means the table already exists, so ignore exceptions
-        }
-    }
 
     override fun getString(guildId: String, key: String): Flow<String?> = database
         .guildSettingsQueries

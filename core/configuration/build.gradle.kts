@@ -19,8 +19,8 @@ tasks.getByName<Test>("test") {
 
 sqldelight {
     databases {
-        create("GuildSettings") {
-            packageName.set("guildsettings.database")
+        create("Settings") {
+            packageName.set("settings.database")
         }
     }
 }
