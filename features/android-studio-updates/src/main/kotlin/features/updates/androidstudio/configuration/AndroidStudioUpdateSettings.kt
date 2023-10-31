@@ -35,12 +35,12 @@ interface AndroidStudioUpdateSettings {
     /**
      * Stores a new target channel ID to receive Android Studio updates for the guild with the given ID.
      */
-    suspend fun setTargetChannelForGuild(guildId: String, targetChannelId: String)
+    suspend fun enableUpdatesForChannel(channelId: String)
 
     /**
      * Removes any existing target channel for the guild with the given ID.
      */
-    suspend fun removeTargetChannelForGuild(guildId: String)
+    suspend fun disableUpdatesForChannel(channelId: String)
 
     /**
      * Get all target channels from all guilds.

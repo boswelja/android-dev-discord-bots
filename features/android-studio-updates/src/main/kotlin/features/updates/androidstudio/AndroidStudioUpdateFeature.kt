@@ -108,13 +108,13 @@ class AndroidStudioUpdateFeature(
                             response.respond {
                                 content = "Enabled Android Studio update messages for ${targetChannel.mention}"
                             }
-                            settings.setTargetChannelForGuild(
-                                guildId = interaction.guildId.toString(),
+                            settings.enableUpdatesForChannel(
+                                channelId = interaction.guildId.toString(),
                                 targetChannelId = targetChannel.id.toString()
                             )
                         }
                         commandName.endsWith("disable") -> {
-                            settings.removeTargetChannelForGuild(interaction.guildId.toString())
+                            settings.disableUpdatesForChannel(interaction.guildId.toString())
                             response.respond {
                                 content = "Disabled Android Studio update messages for this server"
                             }
