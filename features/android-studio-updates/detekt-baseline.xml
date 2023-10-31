@@ -1,0 +1,8 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues></ManuallySuppressedIssues>
+  <CurrentIssues>
+    <ID>LongMethod:AndroidStudioUpdateFeature.kt$AndroidStudioUpdateFeature$private suspend fun registerCommands()</ID>
+    <ID>StringLiteralDuplication:AndroidStudioUpdateFeature.kt$AndroidStudioUpdateFeature$"target"</ID>
+  </CurrentIssues>
+</SmellBaseline>

@@ -19,31 +19,32 @@ import settings.GuildSettingsDatabase
 import kotlinx.coroutines.flow.first
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
+import settings.ChannelSettingsDatabase
 
 /**
  * An implementation of [AndroidStudioUpdateSettings] backed by [GuildSettingsDatabase].
  */
 class AndroidStudioUpdateSettingsDatabase(
-    private val guildSettingsDatabase: GuildSettingsDatabase,
+    private val channelSettingsDatabase: ChannelSettingsDatabase,
 ) : AndroidStudioUpdateSettings {
     override suspend fun getLastCheckInstant(): Instant {
-        return guildSettingsDatabase.getString("0", LastCheckInstantKey).first()?.let(Instant::parse)
+        return channelSettingsDatabase.getString("0", LastCheckInstantKey).first()?.let(Instant::parse)
             ?: Clock.System.now()
     }
 
     override suspend fun setLastCheckInstant(lastChecked: Instant) {
-        guildSettingsDatabase.setString("0", LastCheckInstantKey, lastChecked.toString())
+        channelSettingsDatabase.setString("0", LastCheckInstantKey, lastChecked.toString())
     }
 
-    override suspend fun setTargetChannelForGuild(guildId: String, targetChannelId: String) {
-        guildSettingsDatabase.setString(guildId, TargetChannelKey, targetChannelId)
+    override suspend fun enableUpdatesForChannel(channelId: String) {
+        channelSettingsDatabase.setString(channelId, TargetChannelKey, "")
     }
 
-    override suspend fun removeTargetChannelForGuild(guildId: String) {
-        guildSettingsDatabase.delete(guildId, TargetChannelKey)
+    override suspend fun disableUpdatesForChannel(channelId: String) {
+        channelSettingsDatabase.delete(channelId, TargetChannelKey)
     }
 
-    override suspend fun getAllTargetChannels(): List<String> = guildSettingsDatabase.getAll(TargetChannelKey).first()
+    override suspend fun getAllTargetChannels(): List<String> = channelSettingsDatabase.getAll(TargetChannelKey).first()
 
     companion object {
         private const val LastCheckInstantKey = "lastCheckTime"

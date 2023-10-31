@@ -25,7 +25,7 @@ import settings.SettingsDatabaseFactory
  */
 suspend fun main(args: Array<String>) {
     val kord = Kord(args.first())
-    val settingsRepository = SettingsDatabaseFactory.guildSettingsInstance("dale")
+    val settingsRepository = SettingsDatabaseFactory.channelSettingsInstance("dale")
 
     initFeatures(
         AndroidStudioUpdateFeature(kord, settingsRepository)

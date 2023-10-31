@@ -34,7 +34,6 @@ import features.updates.androidstudio.configuration.AndroidStudioUpdateSettingsD
 import features.updates.androidstudio.updatesource.AndroidStudioUpdate
 import features.updates.androidstudio.updatesource.AndroidStudioUpdateSource
 import features.updates.androidstudio.updatesource.createUpdateSource
-import settings.GuildSettingsDatabase
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
@@ -43,6 +42,7 @@ import kotlinx.datetime.toLocalDateTime
 import logging.logError
 import logging.logInfo
 import scheduler.scheduleRepeating
+import settings.ChannelSettingsDatabase
 import kotlin.time.Duration.Companion.hours
 
 /**
@@ -50,8 +50,8 @@ import kotlin.time.Duration.Companion.hours
  */
 class AndroidStudioUpdateFeature(
     private val discordBotScope: Kord,
-    guildSettings: GuildSettingsDatabase,
-    private val settings: AndroidStudioUpdateSettings = AndroidStudioUpdateSettingsDatabase(guildSettings),
+    channelSettings: ChannelSettingsDatabase,
+    private val settings: AndroidStudioUpdateSettings = AndroidStudioUpdateSettingsDatabase(channelSettings),
     private val updateSource: AndroidStudioUpdateSource = createUpdateSource(),
 ) : Feature {
 
@@ -92,7 +92,14 @@ class AndroidStudioUpdateFeature(
                 subCommand(
                     name = "disable",
                     description = "Disable update messages for Android Studio releases",
-                ) {}
+                ) {
+                    channel(
+                        name = "target",
+                        description = "The channel to post update messages to",
+                    ) {
+                        required = true
+                    }
+                }
             }
         }
 
@@ -101,20 +108,17 @@ class AndroidStudioUpdateFeature(
             val sourceGuildMember = interaction.user
             if (commandName.startsWith("updates android-studio")) {
                 val response = interaction.deferEphemeralResponse()
+                val targetChannel = interaction.command.channels["target"]!!
                 if (sourceGuildMember.getPermissions().contains(Permission.ManageGuild)) {
                     when {
                         commandName.endsWith("enable") -> {
-                            val targetChannel = interaction.command.channels["target"]!!
                             response.respond {
                                 content = "Enabled Android Studio update messages for ${targetChannel.mention}"
                             }
-                            settings.setTargetChannelForGuild(
-                                guildId = interaction.guildId.toString(),
-                                targetChannelId = targetChannel.id.toString()
-                            )
+                            settings.enableUpdatesForChannel(targetChannel.id.toString())
                         }
                         commandName.endsWith("disable") -> {
-                            settings.removeTargetChannelForGuild(interaction.guildId.toString())
+                            settings.disableUpdatesForChannel(targetChannel.id.toString())
                             response.respond {
                                 content = "Disabled Android Studio update messages for this server"
                             }

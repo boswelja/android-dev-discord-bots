@@ -29,15 +29,15 @@ internal class SqlDelightChannelSettingsDatabase(
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : ChannelSettingsDatabase {
 
-    override fun getString(guildId: String, key: String): Flow<String?> = database
+    override fun getString(channelId: String, key: String): Flow<String?> = database
         .channelSettingsQueries
-        .get(guildId, key)
+        .get(channelId, key)
         .asFlow()
         .mapToOneOrNull(dispatcher)
 
-    override suspend fun setString(guildId: String, key: String, value: String) {
+    override suspend fun setString(channelId: String, key: String, value: String) {
         withContext(Dispatchers.IO) {
-            database.channelSettingsQueries.set(guildId, key, value)
+            database.channelSettingsQueries.set(channelId, key, value)
         }
     }
 
@@ -47,15 +47,15 @@ internal class SqlDelightChannelSettingsDatabase(
         .asFlow()
         .mapToList(dispatcher)
 
-    override suspend fun delete(guildId: String, key: String) {
+    override suspend fun delete(channelId: String, key: String) {
         withContext(Dispatchers.IO) {
-            database.channelSettingsQueries.delete(guildId, key)
+            database.channelSettingsQueries.delete(channelId, key)
         }
     }
 
-    override suspend fun deleteAllForGuild(guildId: String) {
+    override suspend fun deleteAllForChannel(channelId: String) {
         withContext(Dispatchers.IO) {
-            database.guildSettingsQueries.deleteAllForGuild(guildId)
+            database.channelSettingsQueries.deleteAllForChannel(channelId)
         }
     }
 }
