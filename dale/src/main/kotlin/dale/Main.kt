@@ -18,14 +18,14 @@ package dale
 import dev.kord.core.Kord
 import features.initFeatures
 import features.updates.androidstudio.AndroidStudioUpdateFeature
-import guildsettings.GuildSettingsDatabaseFactory
+import settings.SettingsDatabaseFactory
 
 /**
  * The main entrypoint for Dale. Passing a bot token as a program argument is expected.
  */
 suspend fun main(args: Array<String>) {
     val kord = Kord(args.first())
-    val settingsRepository = GuildSettingsDatabaseFactory.instance("dale")
+    val settingsRepository = SettingsDatabaseFactory.guildSettingsInstance("dale")
 
     initFeatures(
         AndroidStudioUpdateFeature(kord, settingsRepository)

@@ -1,0 +1,21 @@
+CREATE TABLE channelSettings (
+  channel_id TEXT NOT NULL,
+  key TEXT NOT NULL,
+  value TEXT NOT NULL,
+  PRIMARY KEY (channel_id, key)
+);
+
+get:
+SELECT (value) FROM channelSettings WHERE channel_id = ? AND key = ? LIMIT 1;
+
+getAll:
+SELECT (value) FROM channelSettings WHERE key = ?;
+
+set:
+INSERT OR REPLACE INTO channelSettings VALUES (?, ?, ?);
+
+delete:
+DELETE FROM channelSettings WHERE channel_id = ? AND key = ?;
+
+deleteAllForChannel:
+DELETE FROM channelSettings WHERE channel_id = ?;

@@ -15,7 +15,7 @@
  */
 package features.updates.androidstudio.configuration
 
-import guildsettings.GuildSettingsDatabase
+import settings.GuildSettingsDatabase
 import kotlinx.coroutines.flow.first
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
