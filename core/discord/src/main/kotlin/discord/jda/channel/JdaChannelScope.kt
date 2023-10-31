@@ -42,6 +42,7 @@ internal class JdaChannelScope(
                 ChannelType.GUILD_PUBLIC_THREAD -> Channel.Type.PUBLIC_THREAD
                 ChannelType.GUILD_PRIVATE_THREAD -> Channel.Type.PRIVATE_THREAD
                 ChannelType.FORUM -> Channel.Type.GUILD_FORUM
+                ChannelType.MEDIA -> TODO()
                 ChannelType.UNKNOWN -> error("Unknown channel type for channel with ID $channelId")
             },
             name = channel.name,
