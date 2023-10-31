@@ -20,16 +20,16 @@ import settings.database.Settings
 import sqldelight.SQLDelightDrivers
 
 /**
- * A factory for producing instances of [GuildSettingsDatabase].
+ * A factory for producing instances of [GuildSettings].
  */
 object SettingsDatabaseFactory {
     private val instances: MutableMap<String, Settings> = mutableMapOf()
 
     /**
-     * Get an instance of [GuildSettingsDatabase] for a given name, usually the bot name for clarity. The returned
+     * Get an instance of [GuildSettings] for a given name, usually the bot name for clarity. The returned
      * instance may be reused if an instance for the same name already exists.
      */
-    fun guildSettingsInstance(name: String): GuildSettingsDatabase {
+    fun guildSettingsInstance(name: String): GuildSettings {
         return instances[name]?.let { SqlDelightGuildSettingsDatabase(it) } ?: synchronized(this) {
             val driver = SQLDelightDrivers.instance(name)
             val settingsDb = instances[name]
@@ -45,10 +45,10 @@ object SettingsDatabaseFactory {
     }
 
     /**
-     * Get an instance of [ChannelSettingsDatabase] for a given name, usually the bot name for clarity. The returned
+     * Get an instance of [ChannelSettings] for a given name, usually the bot name for clarity. The returned
      * instance may be reused if an instance for the same name already exists.
      */
-    fun channelSettingsInstance(name: String): ChannelSettingsDatabase {
+    fun channelSettingsInstance(name: String): ChannelSettings {
         return instances[name]?.let { SqlDelightChannelSettingsDatabase(it) } ?: synchronized(this) {
             val driver = SQLDelightDrivers.instance(name)
             val settingsDb = instances[name]

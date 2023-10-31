@@ -18,32 +18,32 @@ package settings
 import kotlinx.coroutines.flow.Flow
 
 /**
- * A generic database designed to hold Guild-specific settings.
+ * A generic database designed to hold Channel-specific settings.
  */
-interface GuildSettingsDatabase {
+interface ChannelSettings {
 
     /**
-     * Flows the value of the entry matching the given key & guild ID.
+     * Flows the value of the entry matching the given key & channel ID.
      */
-    fun getString(guildId: String, key: String): Flow<String?>
+    fun getString(channelId: String, key: String): Flow<String?>
 
     /**
-     * Flows a list of all values matching the given key across all guilds.
+     * Flows a list of all values matching the given key across all channel.
      */
     fun getAll(key: String): Flow<List<String>>
 
     /**
-     * Sets a value to a key & guild ID combination.
+     * Sets a value to a key & channel ID combination.
      */
-    suspend fun setString(guildId: String, key: String, value: String)
+    suspend fun setString(channelId: String, key: String, value: String)
 
     /**
-     * Deletes an entry matching the given key & guild ID.
+     * Deletes an entry matching the given key & channel ID.
      */
-    suspend fun delete(guildId: String, key: String)
+    suspend fun delete(channelId: String, key: String)
 
     /**
-     * Deletes all entries matching the given guild ID.
+     * Deletes all entries matching the given channel ID.
      */
-    suspend fun deleteAllForGuild(guildId: String)
+    suspend fun deleteAllForChannel(channelId: String)
 }

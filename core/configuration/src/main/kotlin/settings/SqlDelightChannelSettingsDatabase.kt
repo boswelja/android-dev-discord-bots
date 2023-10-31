@@ -27,7 +27,7 @@ import settings.database.Settings
 internal class SqlDelightChannelSettingsDatabase(
     private val database: Settings,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
-) : ChannelSettingsDatabase {
+) : ChannelSettings {
 
     override fun getString(channelId: String, key: String): Flow<String?> = database
         .channelSettingsQueries

@@ -42,7 +42,7 @@ import kotlinx.datetime.toLocalDateTime
 import logging.logError
 import logging.logInfo
 import scheduler.scheduleRepeating
-import settings.ChannelSettingsDatabase
+import settings.ChannelSettings
 import kotlin.time.Duration.Companion.hours
 
 /**
@@ -50,7 +50,7 @@ import kotlin.time.Duration.Companion.hours
  */
 class AndroidStudioUpdateFeature(
     private val discordBotScope: Kord,
-    channelSettings: ChannelSettingsDatabase,
+    channelSettings: ChannelSettings,
     private val settings: AndroidStudioUpdateSettings = AndroidStudioUpdateSettingsDatabase(channelSettings),
     private val updateSource: AndroidStudioUpdateSource = createUpdateSource(),
 ) : Feature {
