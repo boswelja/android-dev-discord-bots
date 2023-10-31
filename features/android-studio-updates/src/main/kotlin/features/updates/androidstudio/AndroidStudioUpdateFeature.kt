@@ -34,7 +34,6 @@ import features.updates.androidstudio.configuration.AndroidStudioUpdateSettingsD
 import features.updates.androidstudio.updatesource.AndroidStudioUpdate
 import features.updates.androidstudio.updatesource.AndroidStudioUpdateSource
 import features.updates.androidstudio.updatesource.createUpdateSource
-import settings.GuildSettingsDatabase
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
