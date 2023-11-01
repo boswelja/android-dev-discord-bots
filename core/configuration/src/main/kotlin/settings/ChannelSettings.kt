@@ -18,7 +18,7 @@ package settings
 import kotlinx.coroutines.flow.Flow
 
 /**
- * A generic database designed to hold Channel-specific settings.
+ * A generic data store designed to hold Channel-specific settings.
  */
 interface ChannelSettings {
 
@@ -28,7 +28,7 @@ interface ChannelSettings {
     fun getString(channelId: String, key: String): Flow<String?>
 
     /**
-     * Flows a list of all values matching the given key across all channel.
+     * Flows a list of all values matching the given key across all channels.
      */
     fun getAll(key: String): Flow<List<String>>
 

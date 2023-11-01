@@ -18,7 +18,7 @@ package settings
 import kotlinx.coroutines.flow.Flow
 
 /**
- * A generic database designed to hold Guild-specific settings.
+ * A generic data store designed to hold Guild-specific settings.
  */
 interface GuildSettings {
 

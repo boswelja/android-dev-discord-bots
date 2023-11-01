@@ -62,4 +62,23 @@ object SettingsDatabaseFactory {
             SqlDelightChannelSettingsDatabase(settingsDb)
         }
     }
+
+    /**
+     * Get an instance of [BotSettings] for a given name, usually the bot name for clarity. The returned
+     * instance may be reused if an instance for the same name already exists.
+     */
+    fun botSettingsInstance(name: String): BotSettings {
+        return instances[name]?.let { SqlDelightBotSettingsDatabase(it) } ?: synchronized(this) {
+            val driver = SQLDelightDrivers.instance(name)
+            val settingsDb = instances[name]
+                ?: Settings(driver)
+                    .also { instances[name] = it }
+            try {
+                Settings.Schema.create(driver)
+            } catch (_: SQLiteException) {
+                // This probably means the table already exists, so ignore exceptions
+            }
+            SqlDelightBotSettingsDatabase(settingsDb)
+        }
+    }
 }
