@@ -15,16 +15,11 @@
  */
 package features
 
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.supervisorScope
-
 /**
  * Initialises a number of features asynchronously.
  */
-suspend fun initFeatures(vararg features: Feature) = supervisorScope {
+fun initFeatures(vararg features: Feature) {
     features.forEach {
-        launch {
-            it.init()
-        }
+        it.init()
     }
 }

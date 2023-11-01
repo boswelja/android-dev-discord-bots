@@ -16,6 +16,7 @@
 package features.updates.androidstudio
 
 import dev.kord.common.entity.Permission
+import dev.kord.common.entity.Permissions
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
 import dev.kord.core.behavior.channel.createEmbed
@@ -23,7 +24,8 @@ import dev.kord.core.behavior.interaction.response.respond
 import dev.kord.core.entity.channel.Channel
 import dev.kord.core.entity.channel.ForumChannel
 import dev.kord.core.entity.channel.MessageChannel
-import dev.kord.core.event.interaction.GuildChatInputCommandInteractionCreateEvent
+import dev.kord.core.entity.interaction.GroupCommand
+import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import dev.kord.core.on
 import dev.kord.rest.builder.interaction.channel
 import dev.kord.rest.builder.interaction.group
@@ -34,7 +36,8 @@ import features.updates.androidstudio.configuration.AndroidStudioUpdateSettingsD
 import features.updates.androidstudio.updatesource.AndroidStudioUpdate
 import features.updates.androidstudio.updatesource.AndroidStudioUpdateSource
 import features.updates.androidstudio.updatesource.createUpdateSource
-import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
@@ -49,31 +52,32 @@ import kotlin.time.Duration.Companion.hours
  * A [Feature] that configured a bot for checking and posting about new Android Studio updates.
  */
 class AndroidStudioUpdateFeature(
-    private val discordBotScope: Kord,
+    private val kord: Kord,
     channelSettings: ChannelSettings,
     private val settings: AndroidStudioUpdateSettings = AndroidStudioUpdateSettingsDatabase(channelSettings),
     private val updateSource: AndroidStudioUpdateSource = createUpdateSource(),
 ) : Feature {
 
-    override suspend fun init() {
-        registerCommands()
+    private val coroutineScope = CoroutineScope(SupervisorJob())
+
+    override fun init() {
+        coroutineScope.launch { registerCommands() }
 
         // Start the update checker loop. Cleanup is handled automagically
-        coroutineScope {
-            launch {
-                scheduleRepeating(interval = 1.hours) {
-                    logInfo { "Checking for new Android Studio updates" }
-                    postNewUpdatesIfAny()
-                }
+        coroutineScope.launch {
+            scheduleRepeating(interval = 1.hours) {
+                logInfo { "Checking for new Android Studio updates" }
+                postNewUpdatesIfAny()
             }
         }
     }
 
     private suspend fun registerCommands() {
-        discordBotScope.createGlobalChatInputCommand(
+        kord.createGlobalChatInputCommand(
             name = "updates",
             description = "Configure various update messages",
         ) {
+            defaultMemberPermissions = Permissions(Permission.ManageGuild)
             group(
                 name = "android-studio",
                 description = "Configure update messages for Android Studio releases",
@@ -102,31 +106,23 @@ class AndroidStudioUpdateFeature(
                 }
             }
         }
-
-        discordBotScope.on<GuildChatInputCommandInteractionCreateEvent> {
-            val commandName = interaction.command.data.name.value!!
-            val sourceGuildMember = interaction.user
-            if (commandName.startsWith("updates android-studio")) {
+        kord.on<ChatInputCommandInteractionCreateEvent> {
+            val command = interaction.command
+            if (command is GroupCommand && command.rootName == "updates" && command.groupName == "android-studio") {
                 val response = interaction.deferEphemeralResponse()
                 val targetChannel = interaction.command.channels["target"]!!
-                if (sourceGuildMember.getPermissions().contains(Permission.ManageGuild)) {
-                    when {
-                        commandName.endsWith("enable") -> {
-                            response.respond {
-                                content = "Enabled Android Studio update messages for ${targetChannel.mention}"
-                            }
-                            settings.enableUpdatesForChannel(targetChannel.id.toString())
+                when (command.name) {
+                    "enable" -> {
+                        response.respond {
+                            content = "Enabled Android Studio update messages for ${targetChannel.mention}"
                         }
-                        commandName.endsWith("disable") -> {
-                            settings.disableUpdatesForChannel(targetChannel.id.toString())
-                            response.respond {
-                                content = "Disabled Android Studio update messages for this server"
-                            }
-                        }
+                        //settings.enableUpdatesForChannel(targetChannel.id.toString())
                     }
-                } else {
-                    response.respond {
-                        content = "You do not have permission to do that here"
+                    "disable" -> {
+                        //settings.disableUpdatesForChannel(targetChannel.id.toString())
+                        response.respond {
+                            content = "Disabled Android Studio update messages for this server"
+                        }
                     }
                 }
             }
@@ -148,7 +144,7 @@ class AndroidStudioUpdateFeature(
         val allTargets = settings.getAllTargetChannels()
         allTargets.forEach { targetChannelId ->
             try {
-                val channel = discordBotScope.getChannel(Snowflake(targetChannelId))!!
+                val channel = kord.getChannel(Snowflake(targetChannelId))!!
                 newUpdates.forEach { newUpdate ->
                     postMessageToChannel(channel, newUpdate)
                 }
