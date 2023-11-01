@@ -20,7 +20,7 @@ import settings.database.Settings
 import sqldelight.SQLDelightDrivers
 
 /**
- * A factory for producing instances of [GuildSettings].
+ * A factory for producing instances of various settings stores.
  */
 object SettingsDatabaseFactory {
     private val instances: MutableMap<String, Settings> = mutableMapOf()
