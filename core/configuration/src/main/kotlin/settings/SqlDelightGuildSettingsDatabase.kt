@@ -27,7 +27,7 @@ import settings.database.Settings
 internal class SqlDelightGuildSettingsDatabase(
     private val database: Settings,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
-) : GuildSettingsDatabase {
+) : GuildSettings {
 
     override fun getString(guildId: String, key: String): Flow<String?> = database
         .guildSettingsQueries

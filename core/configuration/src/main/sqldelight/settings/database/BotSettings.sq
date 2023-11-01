@@ -1,0 +1,13 @@
+CREATE TABLE settings (
+    key TEXT NOT NULL PRIMARY KEY,
+    value TEXT NOT NULL
+);
+
+get:
+SELECT (value) FROM settings WHERE key = ? LIMIT 1;
+
+set:
+INSERT OR REPLACE INTO settings VALUES (?, ?);
+
+delete:
+DELETE FROM settings WHERE key = ?;

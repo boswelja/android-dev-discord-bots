@@ -16,7 +16,6 @@
 package settings
 
 import app.cash.sqldelight.coroutines.asFlow
-import app.cash.sqldelight.coroutines.mapToList
 import app.cash.sqldelight.coroutines.mapToOneOrNull
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -24,38 +23,26 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import settings.database.Settings
 
-internal class SqlDelightChannelSettingsDatabase(
+internal class SqlDelightBotSettingsDatabase(
     private val database: Settings,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
-) : ChannelSettings {
+) : BotSettings {
 
-    override fun getString(channelId: String, key: String): Flow<String?> = database
-        .channelSettingsQueries
-        .get(channelId, key)
+    override fun getString(key: String): Flow<String?> = database
+        .botSettingsQueries
+        .get(key)
         .asFlow()
         .mapToOneOrNull(dispatcher)
 
-    override suspend fun setString(channelId: String, key: String, value: String) {
+    override suspend fun setString(key: String, value: String) {
         withContext(Dispatchers.IO) {
-            database.channelSettingsQueries.set(channelId, key, value)
+            database.botSettingsQueries.set(key, value)
         }
     }
 
-    override fun getAll(key: String): Flow<List<String>> = database
-        .channelSettingsQueries
-        .getAll(key)
-        .asFlow()
-        .mapToList(dispatcher)
-
-    override suspend fun delete(channelId: String, key: String) {
+    override suspend fun delete(key: String) {
         withContext(Dispatchers.IO) {
-            database.channelSettingsQueries.delete(channelId, key)
-        }
-    }
-
-    override suspend fun deleteAllForChannel(channelId: String) {
-        withContext(Dispatchers.IO) {
-            database.channelSettingsQueries.deleteAllForChannel(channelId)
+            database.botSettingsQueries.delete(key)
         }
     }
 }
