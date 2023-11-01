@@ -24,5 +24,5 @@ interface Feature {
      * Initialises the feature. This is a good place to do things like register commands, initialise state based on
      * settings etc.
      */
-    suspend fun init()
+    fun init()
 }

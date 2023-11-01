@@ -30,4 +30,6 @@ suspend fun main(args: Array<String>) {
     initFeatures(
         AndroidStudioUpdateFeature(kord, settingsRepository)
     )
+
+    kord.login()
 }
