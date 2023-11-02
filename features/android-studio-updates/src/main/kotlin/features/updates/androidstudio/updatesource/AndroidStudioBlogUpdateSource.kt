@@ -81,6 +81,8 @@ internal class AndroidStudioBlogUpdateSource(
             title.contains("available") -> title.split("available").first()
             else -> error("Unknown title format $title")
         }.trim()
+            .removePrefix("Android Studio ")
+            .replace(Regex(" \\| \\d\\d\\d\\d\\.\\d\\.\\d"), "")
     }
 
     internal fun extractChannelFromTitle(title: String): AndroidStudioUpdate.UpdateChannel {
