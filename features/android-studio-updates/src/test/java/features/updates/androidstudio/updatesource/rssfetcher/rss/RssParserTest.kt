@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package features.updates.androidstudio.rssfetcher.rss
+package features.updates.androidstudio.updatesource.rssfetcher.rss
 
-import features.updates.androidstudio.rssfetcher.Author
-import features.updates.androidstudio.rssfetcher.Link
+import features.updates.androidstudio.updatesource.rssfetcher.Author
+import features.updates.androidstudio.updatesource.rssfetcher.Link
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach

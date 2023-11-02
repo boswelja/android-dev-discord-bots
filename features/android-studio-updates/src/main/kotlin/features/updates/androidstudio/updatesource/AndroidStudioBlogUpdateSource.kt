@@ -15,9 +15,9 @@
  */
 package features.updates.androidstudio.updatesource
 
-import features.updates.androidstudio.rssfetcher.FeedCouldNotBeObtainedException
-import features.updates.androidstudio.rssfetcher.Fetcher
-import features.updates.androidstudio.rssfetcher.FetcherFactory
+import features.updates.androidstudio.updatesource.rssfetcher.FeedCouldNotBeObtainedException
+import features.updates.androidstudio.updatesource.rssfetcher.Fetcher
+import features.updates.androidstudio.updatesource.rssfetcher.FetcherFactory
 import kotlinx.datetime.Instant
 import kotlinx.datetime.toKotlinInstant
 import kotlin.streams.toList

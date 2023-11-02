@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package features.updates.androidstudio.rssfetcher
+package features.updates.androidstudio.updatesource.rssfetcher
 
-import features.updates.androidstudio.rssfetcher.rss.RssParser
-import features.updates.androidstudio.rssfetcher.rss.RssParserFactory
+import features.updates.androidstudio.updatesource.rssfetcher.rss.RssParser
+import features.updates.androidstudio.updatesource.rssfetcher.rss.RssParserFactory
 import network.NetworkModule
 import network.NetworkModuleFactory
 import network.SourceNotFoundException
