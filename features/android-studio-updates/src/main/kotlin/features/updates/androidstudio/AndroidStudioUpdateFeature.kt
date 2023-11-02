@@ -33,15 +33,12 @@ import dev.kord.rest.builder.message.create.embed
 import features.Feature
 import features.updates.androidstudio.configuration.AndroidStudioUpdateSettings
 import features.updates.androidstudio.configuration.AndroidStudioUpdateSettingsDatabase
+import features.updates.androidstudio.updatesource.AndroidStudioBlogUpdateSource
 import features.updates.androidstudio.updatesource.AndroidStudioUpdate
 import features.updates.androidstudio.updatesource.AndroidStudioUpdateSource
-import features.updates.androidstudio.updatesource.createUpdateSource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Clock
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
 import logging.logError
 import logging.logInfo
 import scheduler.scheduleRepeating
@@ -55,7 +52,7 @@ class AndroidStudioUpdateFeature(
     private val kord: Kord,
     channelSettings: ChannelSettings,
     private val settings: AndroidStudioUpdateSettings = AndroidStudioUpdateSettingsDatabase(channelSettings),
-    private val updateSource: AndroidStudioUpdateSource = createUpdateSource(),
+    private val updateSource: AndroidStudioUpdateSource = AndroidStudioBlogUpdateSource(),
 ) : Feature {
 
     private val coroutineScope = CoroutineScope(SupervisorJob())
@@ -67,7 +64,14 @@ class AndroidStudioUpdateFeature(
         coroutineScope.launch {
             scheduleRepeating(interval = 1.hours) {
                 logInfo { "Checking for new Android Studio updates" }
-                postNewUpdatesIfAny()
+                updateSource.checkForUpdates()
+            }
+        }
+
+        coroutineScope.launch {
+            updateSource.latestUpdate.collect {
+                logInfo { "Posting new update $it" }
+                postUpdate(it)
             }
         }
     }
@@ -129,25 +133,12 @@ class AndroidStudioUpdateFeature(
         }
     }
 
-    private suspend fun postNewUpdatesIfAny() {
-        val lastCheckInstant = settings.getLastCheckInstant()
-        val newUpdatesResult = updateSource.getUpdatesAfter(lastCheckInstant)
-        if (newUpdatesResult.isFailure) return // TODO Handle failures
-        val newUpdates = newUpdatesResult.getOrThrow()
-        logInfo {
-            val lastCheckHumanReadable = lastCheckInstant.toLocalDateTime(TimeZone.UTC).toString()
-            "${newUpdates.count()} new Android Studio updates found since $lastCheckHumanReadable"
-        }
-        if (newUpdates.isEmpty()) return
-        settings.setLastCheckInstant(Clock.System.now())
-
+    private suspend fun postUpdate(update: AndroidStudioUpdate) {
         val allTargets = settings.getAllTargetChannels()
         allTargets.forEach { targetChannelId ->
             try {
                 val channel = kord.getChannel(Snowflake(targetChannelId))!!
-                newUpdates.forEach { newUpdate ->
-                    postMessageToChannel(channel, newUpdate)
-                }
+                postMessageToChannel(channel, update)
             } catch (e: Exception) {
                 logError(e) { "Failed to notify $targetChannelId of a new Android Studio release." }
             }
@@ -160,15 +151,15 @@ class AndroidStudioUpdateFeature(
     ) {
         when (channel) {
             is MessageChannel -> channel.createEmbed {
-                title = update.fullVersionName
+                title = update.version
                 description = update.summary
                 timestamp = update.timestamp
                 url = update.url
             }
-            is ForumChannel -> channel.startPublicThread(name = update.fullVersionName) {
+            is ForumChannel -> channel.startPublicThread(name = update.version) {
                 message {
                     embed {
-                        title = update.fullVersionName
+                        title = update.version
                         description = update.summary
                         timestamp = update.timestamp
                         url = update.url

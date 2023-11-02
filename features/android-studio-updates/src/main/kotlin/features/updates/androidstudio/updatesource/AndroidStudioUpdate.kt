@@ -20,14 +20,27 @@ import kotlinx.datetime.Instant
 /**
  * Describes an update for Android Studio.
  *
- * @property fullVersionName The full name of the version, ex. "Android Studio Giraffe Canary 9"
  * @property summary A short summary of this update. Usually 1-2 sentences.
+ * @property version The full name of the version, ex. "Android Studio Giraffe Canary 9"
  * @property timestamp The instant this update was made available.
  * @property url An HTTPS URL that links to a relevant page, ex. an article, or release notes.
+ * @property updateChannel The type of update this is.
  */
 data class AndroidStudioUpdate(
-    val fullVersionName: String,
     val summary: String,
+    val version: String,
     val timestamp: Instant,
     val url: String,
-)
+    val updateChannel: UpdateChannel
+) {
+
+    /**
+     * All possible channels that an update might be posted to.
+     */
+    enum class UpdateChannel {
+        Stable,
+        ReleaseCandidate,
+        Beta,
+        Canary
+    }
+}

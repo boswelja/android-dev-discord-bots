@@ -15,22 +15,10 @@
  */
 package features.updates.androidstudio.configuration
 
-import kotlinx.datetime.Instant
-
 /**
  * Allows storing and retrieving settings specific to Android Studio update checking.
  */
 interface AndroidStudioUpdateSettings {
-
-    /**
-     * Gets an [Instant] representing the last time we checked for new updates.
-     */
-    suspend fun getLastCheckInstant(): Instant
-
-    /**
-     * Stores a new [Instant] representing the last time we checked for new updates.
-     */
-    suspend fun setLastCheckInstant(lastChecked: Instant)
 
     /**
      * Stores a new target channel ID to receive Android Studio updates for the guild with the given ID.
