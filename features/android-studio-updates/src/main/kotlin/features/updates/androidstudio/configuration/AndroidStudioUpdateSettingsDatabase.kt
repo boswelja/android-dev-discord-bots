@@ -15,11 +15,9 @@
  */
 package features.updates.androidstudio.configuration
 
-import settings.GuildSettings
 import kotlinx.coroutines.flow.first
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
 import settings.ChannelSettings
+import settings.GuildSettings
 
 /**
  * An implementation of [AndroidStudioUpdateSettings] backed by [GuildSettings].
@@ -27,15 +25,6 @@ import settings.ChannelSettings
 class AndroidStudioUpdateSettingsDatabase(
     private val channelSettings: ChannelSettings,
 ) : AndroidStudioUpdateSettings {
-    override suspend fun getLastCheckInstant(): Instant {
-        return channelSettings.getString("0", LastCheckInstantKey).first()?.let(Instant::parse)
-            ?: Clock.System.now()
-    }
-
-    override suspend fun setLastCheckInstant(lastChecked: Instant) {
-        channelSettings.setString("0", LastCheckInstantKey, lastChecked.toString())
-    }
-
     override suspend fun enableUpdatesForChannel(channelId: String) {
         channelSettings.setString(channelId, TargetChannelKey, "")
     }
@@ -47,7 +36,6 @@ class AndroidStudioUpdateSettingsDatabase(
     override suspend fun getAllTargetChannels(): List<String> = channelSettings.getAll(TargetChannelKey).first()
 
     companion object {
-        private const val LastCheckInstantKey = "lastCheckTime"
         private const val TargetChannelKey = "target_channel"
     }
 }
