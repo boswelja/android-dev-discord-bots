@@ -39,6 +39,7 @@ data class AndroidStudioUpdate(
      */
     enum class UpdateChannel {
         Stable,
+        ReleaseCandidate,
         Beta,
         Canary
     }

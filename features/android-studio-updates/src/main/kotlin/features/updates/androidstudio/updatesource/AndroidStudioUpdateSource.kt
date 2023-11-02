@@ -15,7 +15,8 @@
  */
 package features.updates.androidstudio.updatesource
 
-import kotlinx.datetime.Instant
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 
 /**
  * A source for Android Studio updates.
@@ -23,12 +24,32 @@ import kotlinx.datetime.Instant
 interface AndroidStudioUpdateSource {
 
     /**
-     * Get a List of Android Studio updates that were created after the given Instant.
+     * Flows the latest stable release of Android Studio.
      */
-    suspend fun getUpdatesAfter(after: Instant): Result<List<AndroidStudioUpdate>>
-}
+    val latestStableUpdate: StateFlow<AndroidStudioUpdate?>
 
-/**
- * Creates a new [AndroidStudioUpdateSource] instance.
- */
-fun createUpdateSource(): AndroidStudioUpdateSource = AndroidStudioBlogUpdateSource()
+    /**
+     * Flows the latest RC release of Android Studio.
+     */
+    val latestReleaseCandidateUpdate: StateFlow<AndroidStudioUpdate?>
+
+    /**
+     * Flows the latest beta release of Android Studio.
+     */
+    val latestBetaUpdate: StateFlow<AndroidStudioUpdate?>
+
+    /**
+     * Flows the latest canary release of Android Studio.
+     */
+    val latestCanaryUpdate: StateFlow<AndroidStudioUpdate?>
+
+    /**
+     * Emits any new Android Studio releases to subscribers.
+     */
+    val latestUpdate: Flow<AndroidStudioUpdate>
+
+    /**
+     * checks for any new updates and submits them to the respective Flows.
+     */
+    suspend fun checkForUpdates()
+}
