@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package features.updates.androidstudio.rssfetcher
+package features.updates.androidstudio.updatesource.rssfetcher
 
 /**
  * A generic exception thrown when there is an error fetching a Feed.
