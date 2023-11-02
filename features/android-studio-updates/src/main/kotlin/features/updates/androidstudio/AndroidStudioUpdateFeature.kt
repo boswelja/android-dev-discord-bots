@@ -120,10 +120,10 @@ class AndroidStudioUpdateFeature(
                         response.respond {
                             content = "Enabled Android Studio update messages for ${targetChannel.mention}"
                         }
-                        //settings.enableUpdatesForChannel(targetChannel.id.toString())
+                        settings.enableUpdatesForChannel(targetChannel.id.toString())
                     }
                     "disable" -> {
-                        //settings.disableUpdatesForChannel(targetChannel.id.toString())
+                        settings.disableUpdatesForChannel(targetChannel.id.toString())
                         response.respond {
                             content = "Disabled Android Studio update messages for this server"
                         }
