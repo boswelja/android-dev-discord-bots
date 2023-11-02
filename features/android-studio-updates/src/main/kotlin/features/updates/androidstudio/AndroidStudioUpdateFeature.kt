@@ -39,6 +39,7 @@ import features.updates.androidstudio.updatesource.AndroidStudioUpdateSource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import logging.logDebug
 import logging.logError
 import logging.logInfo
 import scheduler.scheduleRepeating
@@ -121,12 +122,14 @@ class AndroidStudioUpdateFeature(
                             content = "Enabled Android Studio update messages for ${targetChannel.mention}"
                         }
                         settings.enableUpdatesForChannel(targetChannel.id.toString())
+                        logDebug { "Enabled Android Studio updates for ${targetChannel.name}" }
                     }
                     "disable" -> {
                         settings.disableUpdatesForChannel(targetChannel.id.toString())
                         response.respond {
                             content = "Disabled Android Studio update messages for this server"
                         }
+                        logDebug { "Disabled Android Studio updates for ${targetChannel.name}" }
                     }
                 }
             }
@@ -138,6 +141,7 @@ class AndroidStudioUpdateFeature(
         allTargets.forEach { targetChannelId ->
             try {
                 val channel = kord.getChannel(Snowflake(targetChannelId))!!
+                logDebug { "Attempting to notify ${channel.mention} of update" }
                 postMessageToChannel(channel, update)
             } catch (e: Exception) {
                 logError(e) { "Failed to notify $targetChannelId of a new Android Studio release." }
