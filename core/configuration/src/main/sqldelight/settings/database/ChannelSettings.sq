@@ -11,6 +11,9 @@ SELECT (value) FROM channelSettings WHERE channel_id = ? AND key = ? LIMIT 1;
 getAll:
 SELECT (value) FROM channelSettings WHERE key = ?;
 
+getChannels:
+SELECT (channel_id) FROM channelSettings WHERE key = ? AND value = ?;
+
 set:
 INSERT OR REPLACE INTO channelSettings VALUES (?, ?, ?);
 

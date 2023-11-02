@@ -47,6 +47,12 @@ internal class SqlDelightChannelSettingsDatabase(
         .asFlow()
         .mapToList(dispatcher)
 
+    override fun getChannelsWhere(key: String, value: String): Flow<List<String>> = database
+        .channelSettingsQueries
+        .getChannels(key, value)
+        .asFlow()
+        .mapToList(dispatcher)
+
     override suspend fun delete(channelId: String, key: String) {
         withContext(Dispatchers.IO) {
             database.channelSettingsQueries.delete(channelId, key)

@@ -33,7 +33,7 @@ class AndroidStudioUpdateSettingsDatabase(
         channelSettings.delete(channelId, TargetChannelKey)
     }
 
-    override suspend fun getAllTargetChannels(): List<String> = channelSettings.getAll(TargetChannelKey).first()
+    override suspend fun getAllTargetChannels(): List<String> = channelSettings.getChannelsWhere(TargetChannelKey, "").first()
 
     companion object {
         private const val TargetChannelKey = "target_channel"
