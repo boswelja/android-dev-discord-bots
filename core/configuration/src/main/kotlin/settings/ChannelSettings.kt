@@ -33,6 +33,11 @@ interface ChannelSettings {
     fun getAll(key: String): Flow<List<String>>
 
     /**
+     * Flows a list of all channel IDs where a key is set to a specific value.
+     */
+    fun getChannelsWhere(key: String, value: String): Flow<List<String>>
+
+    /**
      * Sets a value to a key & channel ID combination.
      */
     suspend fun setString(channelId: String, key: String, value: String)
