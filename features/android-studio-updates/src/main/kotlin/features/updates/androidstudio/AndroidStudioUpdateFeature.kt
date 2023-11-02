@@ -132,7 +132,10 @@ class AndroidStudioUpdateFeature(
     private suspend fun postNewUpdatesIfAny() {
         val lastCheckInstant = settings.getLastCheckInstant()
         val newUpdatesResult = updateSource.getUpdatesAfter(lastCheckInstant)
-        if (newUpdatesResult.isFailure) return // TODO Handle failures
+        if (newUpdatesResult.isFailure) {
+            logError(newUpdatesResult.exceptionOrNull()) { "Failed to get Android Studio updates" }
+            return
+        }
         val newUpdates = newUpdatesResult.getOrThrow()
         logInfo {
             val lastCheckHumanReadable = lastCheckInstant.toLocalDateTime(TimeZone.UTC).toString()
@@ -160,15 +163,15 @@ class AndroidStudioUpdateFeature(
     ) {
         when (channel) {
             is MessageChannel -> channel.createEmbed {
-                title = update.fullVersionName
+                title = update.version
                 description = update.summary
                 timestamp = update.timestamp
                 url = update.url
             }
-            is ForumChannel -> channel.startPublicThread(name = update.fullVersionName) {
+            is ForumChannel -> channel.startPublicThread(name = update.version) {
                 message {
                     embed {
-                        title = update.fullVersionName
+                        title = update.version
                         description = update.summary
                         timestamp = update.timestamp
                         url = update.url
