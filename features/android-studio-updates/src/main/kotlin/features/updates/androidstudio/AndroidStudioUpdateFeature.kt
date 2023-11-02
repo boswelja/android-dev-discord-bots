@@ -155,7 +155,7 @@ class AndroidStudioUpdateFeature(
     ) {
         when (channel) {
             is MessageChannel -> channel.createEmbed {
-                title = update.version
+                title = "Android Studio ${update.version}"
                 description = update.summary
                 timestamp = update.timestamp
                 url = update.url
@@ -163,7 +163,7 @@ class AndroidStudioUpdateFeature(
             is ForumChannel -> channel.startPublicThread(name = update.version) {
                 message {
                     embed {
-                        title = update.version
+                        title = "Android Studio ${update.version}"
                         description = update.summary
                         timestamp = update.timestamp
                         url = update.url

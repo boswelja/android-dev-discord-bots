@@ -25,24 +25,28 @@ class AndroidStudioBlogUpdateSourceTest {
     @Test
     fun text_extractVersionFromTitle() {
         assertEquals(
-            "Android Studio Giraffe Canary 9",
+            "Giraffe Canary 9",
             testSubject.extractVersionFromTitle("Android Studio Giraffe Canary 9 now available"),
         )
         assertEquals(
-            "Android Studio Flamingo Beta 5",
+            "Flamingo Beta 5",
             testSubject.extractVersionFromTitle("Android Studio Flamingo Beta 5 now available"),
         )
         assertEquals(
-            "Android Studio Flamingo Beta 3",
+            "Flamingo Beta 3",
             testSubject.extractVersionFromTitle("Android Studio Flamingo Beta 3 is now available"),
         )
         assertEquals(
-            "Android Studio Electric Eel | 2022.1.1 Patch 1",
+            "Electric Eel Patch 1",
             testSubject.extractVersionFromTitle("Android Studio Electric Eel | 2022.1.1 Patch 1 now available"),
         )
         assertEquals(
-            "Android Studio Electric Eel",
+            "Electric Eel",
             testSubject.extractVersionFromTitle("Android Studio Electric Eel available in the Stable channel"),
+        )
+        assertEquals(
+            "Hedgehog RC 2",
+            testSubject.extractVersionFromTitle("Android Studio Hedgehog | 2023.1.1 RC 2 now available")
         )
     }
 }
