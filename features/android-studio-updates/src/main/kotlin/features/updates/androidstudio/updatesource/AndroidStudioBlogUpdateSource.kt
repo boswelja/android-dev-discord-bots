@@ -59,10 +59,14 @@ internal class AndroidStudioBlogUpdateSource(
             }
             .sortedByDescending { it.timestamp }
 
-        val lastStableInFeed = versionsInFeed.first { it.updateChannel == AndroidStudioUpdate.UpdateChannel.Stable }
-        val lastRcInFeed = versionsInFeed.first { it.updateChannel == AndroidStudioUpdate.UpdateChannel.ReleaseCandidate }
-        val lastBetaInFeed = versionsInFeed.first { it.updateChannel == AndroidStudioUpdate.UpdateChannel.Beta }
-        val lastCanaryInFeed = versionsInFeed.first { it.updateChannel == AndroidStudioUpdate.UpdateChannel.Canary }
+        val lastStableInFeed = versionsInFeed
+            .first { it.updateChannel == AndroidStudioUpdate.UpdateChannel.Stable }
+        val lastRcInFeed = versionsInFeed
+            .first { it.updateChannel == AndroidStudioUpdate.UpdateChannel.ReleaseCandidate }
+        val lastBetaInFeed = versionsInFeed
+            .first { it.updateChannel == AndroidStudioUpdate.UpdateChannel.Beta }
+        val lastCanaryInFeed = versionsInFeed
+            .first { it.updateChannel == AndroidStudioUpdate.UpdateChannel.Canary }
 
         _latestStable.value = lastStableInFeed
         _latestRc.value = lastRcInFeed
