@@ -1,0 +1,34 @@
+name: Publish containers
+
+on: workflow_dispatch
+
+jobs:
+  build-publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 19
+        uses: actions/setup-java@v3
+        with:
+          java-version: '19'
+          distribution: 'adopt'
+          cache: gradle
+
+      - name: Build distributions
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: distTar
+
+      - name: GHCR login
+        run: docker login ghcr.io -u boswelja --password-stdin
+        env:
+          CR_PAT: ${{ GITHUB_TOKEN }}
+
+      - name: Build container
+        run: docker build -t boswelja/android-dev-discord-bots:dale-latest dale
+
+      - name: Publish container
+        run: docker push ghcr.io/boswelja/android-dev-discord-bots:dale-latest
