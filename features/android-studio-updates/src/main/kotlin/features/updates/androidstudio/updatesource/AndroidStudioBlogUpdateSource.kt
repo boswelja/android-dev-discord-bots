@@ -20,6 +20,7 @@ import features.updates.androidstudio.updatesource.rssfetcher.FetcherFactory
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.merge
 import kotlinx.datetime.toKotlinInstant
@@ -43,7 +44,7 @@ internal class AndroidStudioBlogUpdateSource(
             latestReleaseCandidateUpdate.filterNotNull(),
             latestBetaUpdate.filterNotNull(),
             latestCanaryUpdate.filterNotNull(),
-        )
+        ).drop(4)
 
     override suspend fun checkForUpdates() {
         val feed = source.obtainFeed("https://androidstudio.googleblog.com/feeds/posts/default")
