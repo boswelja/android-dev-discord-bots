@@ -25,10 +25,10 @@ jobs:
         with:
           arguments: check
 
-      - name: Build with Gradle
+      - name: Build
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: build
+          arguments: distTar
 
       - name: Test with Gradle
         uses: gradle/gradle-build-action@v2
