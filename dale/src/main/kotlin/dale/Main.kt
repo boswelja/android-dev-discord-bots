@@ -24,7 +24,9 @@ import settings.SettingsDatabaseFactory
  * The main entrypoint for Dale. Passing a bot token as a program argument is expected.
  */
 suspend fun main(args: Array<String>) {
-    val kord = Kord(args.first())
+    val apiKey = args.firstOrNull() ?: System.getenv("API_KEY") ?:
+        error("No API key was found. Please pass one as your first arg, or via the API_KEY env var")
+    val kord = Kord(apiKey)
     val settingsRepository = SettingsDatabaseFactory.channelSettingsInstance("dale")
 
     initFeatures(
