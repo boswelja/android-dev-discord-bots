@@ -23,12 +23,12 @@ jobs:
           arguments: distTar
 
       - name: GHCR login
-        run: docker login ghcr.io -u boswelja --password-stdin
+        run: echo $CR_PAT |docker login ghcr.io -u boswelja --password-stdin
         env:
-          CR_PAT: ${{ GITHUB_TOKEN }}
+          CR_PAT: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build container
-        run: docker build -t boswelja/android-dev-discord-bots:dale-latest dale
+        run: docker build -t ghcr.io/boswelja/android-dev-discord-bots:dale-latest dale
 
       - name: Publish container
         run: docker push ghcr.io/boswelja/android-dev-discord-bots:dale-latest
