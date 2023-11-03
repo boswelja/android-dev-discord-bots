@@ -15,6 +15,7 @@
  */
 package features.updates.androidstudio
 
+import dev.kord.common.entity.ChannelType
 import dev.kord.common.entity.Permission
 import dev.kord.common.entity.Permissions
 import dev.kord.common.entity.Snowflake
@@ -96,6 +97,15 @@ class AndroidStudioUpdateFeature(
                         description = "The channel to post update messages to",
                     ) {
                         required = true
+                        channelTypes = listOf(
+                            ChannelType.GuildForum,
+                            ChannelType.GuildNews,
+                            ChannelType.GuildText,
+                            ChannelType.PrivateThread,
+                            ChannelType.PublicGuildThread,
+                            ChannelType.PublicNewsThread,
+                            ChannelType.DM
+                        )
                     }
                 }
                 subCommand(
@@ -107,6 +117,15 @@ class AndroidStudioUpdateFeature(
                         description = "The channel to post update messages to",
                     ) {
                         required = true
+                        channelTypes = listOf(
+                            ChannelType.GuildForum,
+                            ChannelType.GuildNews,
+                            ChannelType.GuildText,
+                            ChannelType.PrivateThread,
+                            ChannelType.PublicGuildThread,
+                            ChannelType.PublicNewsThread,
+                            ChannelType.DM
+                        )
                     }
                 }
             }
