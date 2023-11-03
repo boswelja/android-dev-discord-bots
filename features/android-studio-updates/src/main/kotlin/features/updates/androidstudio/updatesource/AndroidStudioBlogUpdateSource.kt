@@ -44,7 +44,7 @@ internal class AndroidStudioBlogUpdateSource(
             latestReleaseCandidateUpdate.filterNotNull(),
             latestBetaUpdate.filterNotNull(),
             latestCanaryUpdate.filterNotNull(),
-        ).drop(4)
+        ).drop(AndroidStudioUpdate.UpdateChannel.entries.count())
 
     override suspend fun checkForUpdates() {
         val feed = source.obtainFeed("https://androidstudio.googleblog.com/feeds/posts/default")
