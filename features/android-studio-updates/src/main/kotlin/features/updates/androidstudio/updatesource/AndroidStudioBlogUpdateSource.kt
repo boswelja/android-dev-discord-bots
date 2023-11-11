@@ -24,6 +24,7 @@ import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.merge
 import kotlinx.datetime.toKotlinInstant
+import logging.logInfo
 
 internal class AndroidStudioBlogUpdateSource(
     private val source: Fetcher = FetcherFactory.create(),
@@ -68,6 +69,14 @@ internal class AndroidStudioBlogUpdateSource(
             .first { it.updateChannel == AndroidStudioUpdate.UpdateChannel.Beta }
         val lastCanaryInFeed = versionsInFeed
             .first { it.updateChannel == AndroidStudioUpdate.UpdateChannel.Canary }
+
+        logInfo {
+            "Current latest versions: " +
+                    "${lastStableInFeed.version}, " +
+                    "${lastRcInFeed.version}, " +
+                    "${lastBetaInFeed.version}, " +
+                    lastCanaryInFeed.version
+        }
 
         _latestStable.value = lastStableInFeed
         _latestRc.value = lastRcInFeed
