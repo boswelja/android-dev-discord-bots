@@ -15,6 +15,7 @@
  */
 package features.updates.androidstudio.updatesource
 
+import app.cash.turbine.test
 import features.updates.androidstudio.updatesource.rssfetcher.Author
 import features.updates.androidstudio.updatesource.rssfetcher.Entry
 import features.updates.androidstudio.updatesource.rssfetcher.Feed
@@ -24,8 +25,10 @@ import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
+import kotlinx.datetime.toKotlinInstant
 import org.junit.jupiter.api.Test
 import java.time.OffsetDateTime
+import java.time.ZoneOffset
 import kotlin.test.BeforeTest
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -133,6 +136,28 @@ class AndroidStudioBlogUpdateSourceTest {
         )
     }
 
+    @Test
+    fun when_checkForUpdates_finds_update_latestUpdate_emits() = runTest {
+        testSubject.latestUpdate.test {
+            coEvery { mockFetcher.obtainFeed(UPDATE_FEED_URL) } returns generateMockFeed()
+            testSubject.checkForUpdates()
+
+            coEvery { mockFetcher.obtainFeed(UPDATE_FEED_URL) } returns generateMockFeedWithUpdate()
+            testSubject.checkForUpdates()
+            assertEquals(
+                AndroidStudioUpdate(
+                    summary = "Android Studio Iguana | 2023.2.1 Canary 14 now available",
+                    version = "Iguana Canary 14",
+                    timestamp = OffsetDateTime.of(2023, 11, 12, 0, 0, 0, 0, ZoneOffset.UTC)
+                        .toInstant()
+                        .toKotlinInstant(),
+                    url = "https://google.com",
+                    AndroidStudioUpdate.UpdateChannel.Canary
+                ),
+                awaitItem()
+            )
+        }
+    }
     private fun generateMockFeed(): Feed {
         return Feed(
             id = "feed",
@@ -146,7 +171,7 @@ class AndroidStudioBlogUpdateSourceTest {
                     author = Author("Android Studio Releaser"),
                     content = "",
                     links = listOf(Link("https://google.com")),
-                    publishedOn = OffsetDateTime.now()
+                    publishedOn = OffsetDateTime.of(2023, 11, 12, 0, 0, 0, 0, ZoneOffset.UTC)
                 ),
                 Entry(
                     id = "id2",
@@ -154,7 +179,7 @@ class AndroidStudioBlogUpdateSourceTest {
                     author = Author("Android Studio Releaser"),
                     content = "",
                     links = listOf(Link("https://google.com")),
-                    publishedOn = OffsetDateTime.now()
+                    publishedOn = OffsetDateTime.of(2023, 11, 12, 0, 0, 0, 0, ZoneOffset.UTC)
                 ),
                 Entry(
                     id = "id3",
@@ -162,7 +187,7 @@ class AndroidStudioBlogUpdateSourceTest {
                     author = Author("Android Studio Releaser"),
                     content = "",
                     links = listOf(Link("https://google.com")),
-                    publishedOn = OffsetDateTime.now()
+                    publishedOn = OffsetDateTime.of(2023, 11, 12, 0, 0, 0, 0, ZoneOffset.UTC)
                 ),
                 Entry(
                     id = "id4",
@@ -170,7 +195,52 @@ class AndroidStudioBlogUpdateSourceTest {
                     author = Author("Android Studio Releaser"),
                     content = "",
                     links = listOf(Link("https://google.com")),
-                    publishedOn = OffsetDateTime.now()
+                    publishedOn = OffsetDateTime.of(2023, 11, 12, 0, 0, 0, 0, ZoneOffset.UTC)
+                ),
+            ),
+            links = listOf(),
+            lastUpdatedOn = OffsetDateTime.now()
+        )
+    }
+
+    private fun generateMockFeedWithUpdate(): Feed {
+        return Feed(
+            id = "feed",
+            title = "Android Studio Release Updates",
+            subtitle = "Provides official announcements for new versions of Android Studio and other Android developer tools.",
+            author = Author("Feed Author"),
+            entries = listOf(
+                Entry(
+                    id = "id5",
+                    title = "Android Studio Iguana | 2023.2.1 Canary 14 now available",
+                    author = Author("Android Studio Releaser"),
+                    content = "",
+                    links = listOf(Link("https://google.com")),
+                    publishedOn = OffsetDateTime.of(2023, 11, 12, 0, 0, 0, 0, ZoneOffset.UTC)
+                ),
+                Entry(
+                    id = "id2",
+                    title = "Android Studio Hedgehog Beta 5 now available",
+                    author = Author("Android Studio Releaser"),
+                    content = "",
+                    links = listOf(Link("https://google.com")),
+                    publishedOn = OffsetDateTime.of(2023, 11, 12, 0, 0, 0, 0, ZoneOffset.UTC)
+                ),
+                Entry(
+                    id = "id3",
+                    title = "Android Studio Hedgehog | 2023.1.1 RC 3 now available",
+                    author = Author("Android Studio Releaser"),
+                    content = "",
+                    links = listOf(Link("https://google.com")),
+                    publishedOn = OffsetDateTime.of(2023, 11, 12, 0, 0, 0, 0, ZoneOffset.UTC)
+                ),
+                Entry(
+                    id = "id4",
+                    title = "Android Studio Giraffe | 2022.3.1 Patch 3 now available",
+                    author = Author("Android Studio Releaser"),
+                    content = "",
+                    links = listOf(Link("https://google.com")),
+                    publishedOn = OffsetDateTime.of(2023, 11, 12, 0, 0, 0, 0, ZoneOffset.UTC)
                 ),
             ),
             links = listOf(),
