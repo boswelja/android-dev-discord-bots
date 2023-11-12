@@ -26,6 +26,8 @@ import kotlinx.coroutines.flow.merge
 import kotlinx.datetime.toKotlinInstant
 import logging.logInfo
 
+internal const val UPDATE_FEED_URL = "https://androidstudio.googleblog.com/feeds/posts/default"
+
 internal class AndroidStudioBlogUpdateSource(
     private val source: Fetcher = FetcherFactory.create(),
 ) : AndroidStudioUpdateSource {
@@ -48,7 +50,7 @@ internal class AndroidStudioBlogUpdateSource(
         ).drop(AndroidStudioUpdate.UpdateChannel.entries.count())
 
     override suspend fun checkForUpdates() {
-        val feed = source.obtainFeed("https://androidstudio.googleblog.com/feeds/posts/default")
+        val feed = source.obtainFeed(UPDATE_FEED_URL)
         val versionsInFeed = feed.entries
             .map {
                 AndroidStudioUpdate(
@@ -62,20 +64,20 @@ internal class AndroidStudioBlogUpdateSource(
             .sortedByDescending { it.timestamp }
 
         val lastStableInFeed = versionsInFeed
-            .first { it.updateChannel == AndroidStudioUpdate.UpdateChannel.Stable }
+            .firstOrNull { it.updateChannel == AndroidStudioUpdate.UpdateChannel.Stable }
         val lastRcInFeed = versionsInFeed
-            .first { it.updateChannel == AndroidStudioUpdate.UpdateChannel.ReleaseCandidate }
+            .firstOrNull { it.updateChannel == AndroidStudioUpdate.UpdateChannel.ReleaseCandidate }
         val lastBetaInFeed = versionsInFeed
-            .first { it.updateChannel == AndroidStudioUpdate.UpdateChannel.Beta }
+            .firstOrNull { it.updateChannel == AndroidStudioUpdate.UpdateChannel.Beta }
         val lastCanaryInFeed = versionsInFeed
-            .first { it.updateChannel == AndroidStudioUpdate.UpdateChannel.Canary }
+            .firstOrNull { it.updateChannel == AndroidStudioUpdate.UpdateChannel.Canary }
 
         logInfo {
             "Current latest versions: " +
-                    "${lastStableInFeed.version}, " +
-                    "${lastRcInFeed.version}, " +
-                    "${lastBetaInFeed.version}, " +
-                    lastCanaryInFeed.version
+                    "${lastStableInFeed?.version}, " +
+                    "${lastRcInFeed?.version}, " +
+                    "${lastBetaInFeed?.version}, " +
+                    lastCanaryInFeed?.version
         }
 
         _latestStable.value = lastStableInFeed
