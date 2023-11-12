@@ -162,7 +162,7 @@ class AndroidStudioBlogUpdateSourceTest {
         return Feed(
             id = "feed",
             title = "Android Studio Release Updates",
-            subtitle = "Provides official announcements for new versions of Android Studio and other Android developer tools.",
+            subtitle = "Provides official announcements for new versions of Android Studio.",
             author = Author("Feed Author"),
             entries = listOf(
                 Entry(
@@ -207,7 +207,7 @@ class AndroidStudioBlogUpdateSourceTest {
         return Feed(
             id = "feed",
             title = "Android Studio Release Updates",
-            subtitle = "Provides official announcements for new versions of Android Studio and other Android developer tools.",
+            subtitle = "Provides official announcements for new versions of Android Studio.",
             author = Author("Feed Author"),
             entries = listOf(
                 Entry(
