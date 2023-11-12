@@ -15,15 +15,26 @@
  */
 package features.updates.androidstudio.updatesource
 
+import features.updates.androidstudio.updatesource.rssfetcher.Fetcher
+import io.mockk.mockk
 import org.junit.jupiter.api.Test
+import kotlin.test.BeforeTest
 import kotlin.test.assertEquals
 
 class AndroidStudioBlogUpdateSourceTest {
 
-    private val testSubject = AndroidStudioBlogUpdateSource()
+    private lateinit var mockFetcher: Fetcher
+
+    private lateinit var testSubject: AndroidStudioBlogUpdateSource
+
+    @BeforeTest
+    fun setUp() {
+        mockFetcher = mockk()
+        testSubject = AndroidStudioBlogUpdateSource(mockFetcher)
+    }
 
     @Test
-    fun text_extractVersionFromTitle() {
+    fun test_extractVersionFromTitle() {
         assertEquals(
             "Giraffe Canary 9",
             testSubject.extractVersionFromTitle("Android Studio Giraffe Canary 9 now available"),
@@ -47,6 +58,38 @@ class AndroidStudioBlogUpdateSourceTest {
         assertEquals(
             "Hedgehog RC 2",
             testSubject.extractVersionFromTitle("Android Studio Hedgehog | 2023.1.1 RC 2 now available")
+        )
+    }
+
+    @Test
+    fun test_extractChannelFromTitle() {
+        assertEquals(
+            AndroidStudioUpdate.UpdateChannel.Stable,
+            testSubject.extractChannelFromTitle("Android Studio Giraffe Patch 2 is now available")
+        )
+        assertEquals(
+            AndroidStudioUpdate.UpdateChannel.Stable,
+            testSubject.extractChannelFromTitle("Android Studio Giraffe now available in the stable channel")
+        )
+        assertEquals(
+            AndroidStudioUpdate.UpdateChannel.ReleaseCandidate,
+            testSubject.extractChannelFromTitle("Android Studio Hedgehog | 2023.1.1 RC 3 now available")
+        )
+        assertEquals(
+            AndroidStudioUpdate.UpdateChannel.Beta,
+            testSubject.extractChannelFromTitle("Android Studio Hedgehog Beta 5 now available")
+        )
+        assertEquals(
+            AndroidStudioUpdate.UpdateChannel.Beta,
+            testSubject.extractChannelFromTitle("Android Studio Giraffe Beta 5 now available")
+        )
+        assertEquals(
+            AndroidStudioUpdate.UpdateChannel.Canary,
+            testSubject.extractChannelFromTitle("Android Studio Hedgehog Canary 7 now available")
+        )
+        assertEquals(
+            AndroidStudioUpdate.UpdateChannel.Canary,
+            testSubject.extractChannelFromTitle("Android Studio Iguana | 2023.2.1 Canary 13 now available")
         )
     }
 }
