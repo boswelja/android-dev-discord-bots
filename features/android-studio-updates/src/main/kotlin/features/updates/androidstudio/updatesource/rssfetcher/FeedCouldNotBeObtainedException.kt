@@ -23,7 +23,7 @@ open class FeedCouldNotBeObtainedException(
     cause: Throwable? = null,
 ) : Exception(message) {
     init {
-        if (cause != null) initCause(cause)
+        if (cause != null) { initCause(cause) }
     }
 
     final override fun initCause(cause: Throwable?): Throwable = super.initCause(cause)
