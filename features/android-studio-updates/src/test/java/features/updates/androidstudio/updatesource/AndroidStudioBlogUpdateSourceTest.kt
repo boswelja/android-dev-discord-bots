@@ -15,15 +15,38 @@
  */
 package features.updates.androidstudio.updatesource
 
+import app.cash.turbine.test
+import features.updates.androidstudio.updatesource.rssfetcher.Author
+import features.updates.androidstudio.updatesource.rssfetcher.Entry
+import features.updates.androidstudio.updatesource.rssfetcher.Feed
+import features.updates.androidstudio.updatesource.rssfetcher.Fetcher
+import features.updates.androidstudio.updatesource.rssfetcher.Link
+import io.mockk.coEvery
+import io.mockk.mockk
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.test.runTest
+import kotlinx.datetime.toKotlinInstant
 import org.junit.jupiter.api.Test
+import java.time.OffsetDateTime
+import java.time.ZoneOffset
+import kotlin.test.BeforeTest
 import kotlin.test.assertEquals
+import kotlin.test.assertNull
 
 class AndroidStudioBlogUpdateSourceTest {
 
-    private val testSubject = AndroidStudioBlogUpdateSource()
+    private lateinit var mockFetcher: Fetcher
+
+    private lateinit var testSubject: AndroidStudioBlogUpdateSource
+
+    @BeforeTest
+    fun setUp() {
+        mockFetcher = mockk()
+        testSubject = AndroidStudioBlogUpdateSource(mockFetcher)
+    }
 
     @Test
-    fun text_extractVersionFromTitle() {
+    fun test_extractVersionFromTitle() {
         assertEquals(
             "Giraffe Canary 9",
             testSubject.extractVersionFromTitle("Android Studio Giraffe Canary 9 now available"),
@@ -47,6 +70,181 @@ class AndroidStudioBlogUpdateSourceTest {
         assertEquals(
             "Hedgehog RC 2",
             testSubject.extractVersionFromTitle("Android Studio Hedgehog | 2023.1.1 RC 2 now available")
+        )
+    }
+
+    @Test
+    fun test_extractChannelFromTitle() {
+        assertEquals(
+            AndroidStudioUpdate.UpdateChannel.Stable,
+            testSubject.extractChannelFromTitle("Android Studio Giraffe Patch 2 is now available")
+        )
+        assertEquals(
+            AndroidStudioUpdate.UpdateChannel.Stable,
+            testSubject.extractChannelFromTitle("Android Studio Giraffe now available in the stable channel")
+        )
+        assertEquals(
+            AndroidStudioUpdate.UpdateChannel.ReleaseCandidate,
+            testSubject.extractChannelFromTitle("Android Studio Hedgehog | 2023.1.1 RC 3 now available")
+        )
+        assertEquals(
+            AndroidStudioUpdate.UpdateChannel.Beta,
+            testSubject.extractChannelFromTitle("Android Studio Hedgehog Beta 5 now available")
+        )
+        assertEquals(
+            AndroidStudioUpdate.UpdateChannel.Beta,
+            testSubject.extractChannelFromTitle("Android Studio Giraffe Beta 5 now available")
+        )
+        assertEquals(
+            AndroidStudioUpdate.UpdateChannel.Canary,
+            testSubject.extractChannelFromTitle("Android Studio Hedgehog Canary 7 now available")
+        )
+        assertEquals(
+            AndroidStudioUpdate.UpdateChannel.Canary,
+            testSubject.extractChannelFromTitle("Android Studio Iguana | 2023.2.1 Canary 13 now available")
+        )
+    }
+
+    @Test
+    fun before_checkForUpdates_latest_releases_are_null() = runTest {
+        assertNull(testSubject.latestCanaryUpdate.first())
+        assertNull(testSubject.latestBetaUpdate.first())
+        assertNull(testSubject.latestReleaseCandidateUpdate.first())
+        assertNull(testSubject.latestStableUpdate.first())
+    }
+
+    @Test
+    fun after_checkForUpdates_latest_releases_retrieved() = runTest {
+        coEvery { mockFetcher.obtainFeed(UPDATE_FEED_URL) } returns generateMockFeed()
+        testSubject.checkForUpdates()
+
+        assertEquals(
+            AndroidStudioUpdate.UpdateChannel.Canary,
+            testSubject.latestCanaryUpdate.first()?.updateChannel
+        )
+        assertEquals(
+            AndroidStudioUpdate.UpdateChannel.Beta,
+            testSubject.latestBetaUpdate.first()?.updateChannel
+        )
+        assertEquals(
+            AndroidStudioUpdate.UpdateChannel.ReleaseCandidate,
+            testSubject.latestReleaseCandidateUpdate.first()?.updateChannel
+        )
+        assertEquals(
+            AndroidStudioUpdate.UpdateChannel.Stable,
+            testSubject.latestStableUpdate.first()?.updateChannel
+        )
+    }
+
+    @Test
+    fun when_checkForUpdates_finds_update_latestUpdate_emits() = runTest {
+        testSubject.latestUpdate.test {
+            coEvery { mockFetcher.obtainFeed(UPDATE_FEED_URL) } returns generateMockFeed()
+            testSubject.checkForUpdates()
+
+            coEvery { mockFetcher.obtainFeed(UPDATE_FEED_URL) } returns generateMockFeedWithUpdate()
+            testSubject.checkForUpdates()
+            assertEquals(
+                AndroidStudioUpdate(
+                    summary = "Android Studio Iguana | 2023.2.1 Canary 14 now available",
+                    version = "Iguana Canary 14",
+                    timestamp = OffsetDateTime.of(2023, 11, 12, 0, 0, 0, 0, ZoneOffset.UTC)
+                        .toInstant()
+                        .toKotlinInstant(),
+                    url = "https://google.com",
+                    AndroidStudioUpdate.UpdateChannel.Canary
+                ),
+                awaitItem()
+            )
+        }
+    }
+    private fun generateMockFeed(): Feed {
+        return Feed(
+            id = "feed",
+            title = "Android Studio Release Updates",
+            subtitle = "Provides official announcements for new versions of Android Studio.",
+            author = Author("Feed Author"),
+            entries = listOf(
+                Entry(
+                    id = "id1",
+                    title = "Android Studio Iguana | 2023.2.1 Canary 13 now available",
+                    author = Author("Android Studio Releaser"),
+                    content = "",
+                    links = listOf(Link("https://google.com")),
+                    publishedOn = OffsetDateTime.of(2023, 11, 12, 0, 0, 0, 0, ZoneOffset.UTC)
+                ),
+                Entry(
+                    id = "id2",
+                    title = "Android Studio Hedgehog Beta 5 now available",
+                    author = Author("Android Studio Releaser"),
+                    content = "",
+                    links = listOf(Link("https://google.com")),
+                    publishedOn = OffsetDateTime.of(2023, 11, 12, 0, 0, 0, 0, ZoneOffset.UTC)
+                ),
+                Entry(
+                    id = "id3",
+                    title = "Android Studio Hedgehog | 2023.1.1 RC 3 now available",
+                    author = Author("Android Studio Releaser"),
+                    content = "",
+                    links = listOf(Link("https://google.com")),
+                    publishedOn = OffsetDateTime.of(2023, 11, 12, 0, 0, 0, 0, ZoneOffset.UTC)
+                ),
+                Entry(
+                    id = "id4",
+                    title = "Android Studio Giraffe | 2022.3.1 Patch 3 now available",
+                    author = Author("Android Studio Releaser"),
+                    content = "",
+                    links = listOf(Link("https://google.com")),
+                    publishedOn = OffsetDateTime.of(2023, 11, 12, 0, 0, 0, 0, ZoneOffset.UTC)
+                ),
+            ),
+            links = listOf(),
+            lastUpdatedOn = OffsetDateTime.now()
+        )
+    }
+
+    private fun generateMockFeedWithUpdate(): Feed {
+        return Feed(
+            id = "feed",
+            title = "Android Studio Release Updates",
+            subtitle = "Provides official announcements for new versions of Android Studio.",
+            author = Author("Feed Author"),
+            entries = listOf(
+                Entry(
+                    id = "id5",
+                    title = "Android Studio Iguana | 2023.2.1 Canary 14 now available",
+                    author = Author("Android Studio Releaser"),
+                    content = "",
+                    links = listOf(Link("https://google.com")),
+                    publishedOn = OffsetDateTime.of(2023, 11, 12, 0, 0, 0, 0, ZoneOffset.UTC)
+                ),
+                Entry(
+                    id = "id2",
+                    title = "Android Studio Hedgehog Beta 5 now available",
+                    author = Author("Android Studio Releaser"),
+                    content = "",
+                    links = listOf(Link("https://google.com")),
+                    publishedOn = OffsetDateTime.of(2023, 11, 12, 0, 0, 0, 0, ZoneOffset.UTC)
+                ),
+                Entry(
+                    id = "id3",
+                    title = "Android Studio Hedgehog | 2023.1.1 RC 3 now available",
+                    author = Author("Android Studio Releaser"),
+                    content = "",
+                    links = listOf(Link("https://google.com")),
+                    publishedOn = OffsetDateTime.of(2023, 11, 12, 0, 0, 0, 0, ZoneOffset.UTC)
+                ),
+                Entry(
+                    id = "id4",
+                    title = "Android Studio Giraffe | 2022.3.1 Patch 3 now available",
+                    author = Author("Android Studio Releaser"),
+                    content = "",
+                    links = listOf(Link("https://google.com")),
+                    publishedOn = OffsetDateTime.of(2023, 11, 12, 0, 0, 0, 0, ZoneOffset.UTC)
+                ),
+            ),
+            links = listOf(),
+            lastUpdatedOn = OffsetDateTime.now()
         )
     }
 }
