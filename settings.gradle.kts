@@ -10,6 +10,7 @@ dependencyResolutionManagement {
 
 include(
     "core:configuration",
+    "core:feature",
     "core:logging",
     "core:network",
     "core:scheduler",
