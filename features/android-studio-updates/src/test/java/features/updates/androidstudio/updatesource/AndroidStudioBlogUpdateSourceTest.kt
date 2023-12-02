@@ -142,6 +142,9 @@ class AndroidStudioBlogUpdateSourceTest {
             coEvery { mockFetcher.obtainFeed(UPDATE_FEED_URL) } returns generateMockFeed()
             testSubject.checkForUpdates()
 
+            // Skip the first 4 items
+            skipItems(4)
+
             coEvery { mockFetcher.obtainFeed(UPDATE_FEED_URL) } returns generateMockFeedWithUpdate()
             testSubject.checkForUpdates()
             assertEquals(
