@@ -39,6 +39,7 @@ import features.updates.androidstudio.updatesource.AndroidStudioUpdate
 import features.updates.androidstudio.updatesource.AndroidStudioUpdateSource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.launch
 import logging.logDebug
 import logging.logError
@@ -62,7 +63,6 @@ class AndroidStudioUpdateFeature(
     override fun init() {
         coroutineScope.launch { registerCommands() }
 
-        // Start the update checker loop. Cleanup is handled automagically
         coroutineScope.launch {
             scheduleRepeating(interval = 1.hours) {
                 logInfo { "Checking for new Android Studio updates" }
@@ -71,10 +71,14 @@ class AndroidStudioUpdateFeature(
         }
 
         coroutineScope.launch {
-            updateSource.latestUpdate.collect {
-                logInfo { "Posting new update $it" }
-                postUpdate(it)
-            }
+            logInfo { "Starting update observer" }
+            updateSource.latestUpdate
+                .drop(SkipInitialUpdateCount)
+                .collect {
+                    logInfo { "Posting new update $it" }
+                    postUpdate(it)
+                }
+            logError { "Stopped responding to new updates" }
         }
     }
 
@@ -191,5 +195,9 @@ class AndroidStudioUpdateFeature(
             }
             else -> error("Unsupported channel $channel")
         }
+    }
+
+    companion object {
+        private val SkipInitialUpdateCount = AndroidStudioUpdate.UpdateChannel.entries.count()
     }
 }
