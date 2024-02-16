@@ -15,8 +15,8 @@
  */
 package logging
 
-import io.github.oshai.KLogger
-import io.github.oshai.KotlinLogging
+import io.github.oshai.kotlinlogging.KLogger
+import io.github.oshai.kotlinlogging.KotlinLogging
 
 private val loggers = mutableMapOf<String, KLogger>()
 

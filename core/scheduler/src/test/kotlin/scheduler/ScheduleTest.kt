@@ -100,8 +100,7 @@ class ScheduleTest {
             }
         }
 
-        // -1 here because scheduler executes block immediately
-        advanceTimeBy(interval.inWholeMilliseconds * (targetRuns - 1))
+        advanceTimeBy(interval.inWholeMilliseconds * targetRuns)
         assertEquals(targetRuns, executions)
         scheduleJob.cancel()
     }
