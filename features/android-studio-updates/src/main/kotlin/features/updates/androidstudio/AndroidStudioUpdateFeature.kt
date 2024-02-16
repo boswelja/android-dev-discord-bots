@@ -30,7 +30,7 @@ import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import dev.kord.core.on
 import dev.kord.rest.builder.interaction.channel
 import dev.kord.rest.builder.interaction.group
-import dev.kord.rest.builder.message.create.embed
+import dev.kord.rest.builder.message.embed
 import features.Feature
 import features.updates.androidstudio.configuration.AndroidStudioUpdateSettings
 import features.updates.androidstudio.configuration.AndroidStudioUpdateSettingsDatabase
