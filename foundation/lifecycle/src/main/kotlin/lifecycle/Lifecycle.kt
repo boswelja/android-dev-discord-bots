@@ -25,7 +25,7 @@ abstract class Lifecycle {
     public var lifecycleState: LifecycleState = LifecycleState.NOT_YET_CREATED
         private set
 
-    public val lifecycleScope: CoroutineScope = CoroutineScope(SupervisorJob())
+    protected val lifecycleScope: CoroutineScope = CoroutineScope(SupervisorJob())
 
     init {
         create()
