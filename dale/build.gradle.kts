@@ -9,7 +9,7 @@ version = "1.0"
 
 dependencies {
     implementation(projects.core.configuration)
-    implementation(projects.core.logging)
+    implementation(projects.foundation.logging)
 
     implementation(libs.kord.core)
     implementation(projects.features.androidStudioUpdates)

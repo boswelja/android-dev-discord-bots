@@ -9,7 +9,7 @@ version = "1.0"
 dependencies {
     implementation(projects.core.configuration)
     implementation(projects.core.scheduler)
-    implementation(projects.core.logging)
+    implementation(projects.foundation.logging)
 
     implementation(projects.core.network)
     implementation(libs.kotlinx.coroutines.core)
