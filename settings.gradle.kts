@@ -12,10 +12,10 @@ include(
     "core:configuration",
     "core:feature",
     "core:network",
-    "core:scheduler",
     "features:android-studio-updates",
     "foundation:lifecycle",
     "foundation:logging",
+    "foundation:scheduler",
     "dale",
 )
 
