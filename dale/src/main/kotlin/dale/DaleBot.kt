@@ -37,6 +37,7 @@ import feature.TextBasedInteraction
 import features.updates.androidstudio.AndroidStudioUpdateFeature
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import logging.logDebug
 import settings.SettingsDatabaseFactory
 
 /**
@@ -167,6 +168,17 @@ class DaleBot(
                 )
             }
         }
+    }
+
+    override fun onDestroy() {
+        runBlocking {
+            kord.getGlobalApplicationCommands()
+                .collect {
+                    logDebug { "Removing command $it" }
+                    it.delete()
+                }
+        }
+        super.onDestroy()
     }
 
     override fun onFeaturesRegistered() {

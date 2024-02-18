@@ -24,6 +24,11 @@ import kotlinx.coroutines.awaitCancellation
  */
 suspend fun startMainLifecycle(lifecycle: Lifecycle) {
     lifecycle.create()
+    Runtime.getRuntime().addShutdownHook(object : Thread() {
+        override fun run() {
+            lifecycle.destroy()
+        }
+    })
     try {
         awaitCancellation()
     } catch (_: CancellationException) {
