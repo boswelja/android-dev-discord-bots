@@ -9,6 +9,7 @@ version = "1.0"
 dependencies {
     api(libs.kotlinx.coroutines.core)
     api(projects.foundation.lifecycle)
+    implementation(projects.foundation.logging)
     testImplementation(kotlin("test"))
 }
 

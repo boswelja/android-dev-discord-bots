@@ -19,7 +19,9 @@ import dev.kord.common.entity.Permission
 import dev.kord.common.entity.Permissions
 import dev.kord.core.Kord
 import dev.kord.core.behavior.interaction.respondEphemeral
-import dev.kord.core.entity.interaction.GroupCommand
+import dev.kord.core.behavior.interaction.response.DeferredEphemeralMessageInteractionResponseBehavior
+import dev.kord.core.behavior.interaction.response.respond
+import dev.kord.core.entity.interaction.SubCommand
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import dev.kord.core.on
 import dev.kord.rest.builder.interaction.boolean
@@ -37,7 +39,8 @@ import feature.TextBasedInteraction
 import features.updates.androidstudio.AndroidStudioUpdateFeature
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import logging.logDebug
+import logging.logInfo
+import logging.logWarn
 import settings.SettingsDatabaseFactory
 
 /**
@@ -104,20 +107,34 @@ class DaleBot(
         }
         kord.on<ChatInputCommandInteractionCreateEvent> {
             val command = this.interaction.command
-            if (command is GroupCommand && command.rootName == chatInteractionGroup.name) {
+            if (command is SubCommand && command.rootName == chatInteractionGroup.name) {
                 val responseScope = object : ResponseScope {
+                    var deferredResponse: DeferredEphemeralMessageInteractionResponseBehavior? = null
                     override suspend fun acknowledge() {
-                        interaction.deferEphemeralResponse()
+                        deferredResponse = interaction.deferEphemeralResponse()
                     }
 
                     override suspend fun respond(text: String) {
-                        interaction.respondEphemeral { content = text }
+                        if (deferredResponse != null) {
+                            deferredResponse!!.respond { content = text }
+                        } else {
+                            interaction.respondEphemeral { content = text }
+                        }
                     }
                 }
                 val invokedCommand = chatInteractionGroup.subcommands.firstOrNull {
                     command.name == it.name
                 }
-                invokedCommand?.onInvoke?.invoke(responseScope, command.options.mapValues { it.value.value!! })
+                if (invokedCommand == null) {
+                    logWarn { "A command group was invoked, but a matching subcommand was not found!" }
+                } else {
+                    logInfo {
+                        "Responding to command ${command.name} " +
+                                "in ${interaction.channel.mention} " +
+                                "sent by ${interaction.user.mention}"
+                    }
+                    invokedCommand.onInvoke(responseScope, command.options.mapValues { it.value.value!! })
+                }
             }
         }
     }
@@ -162,23 +179,17 @@ class DaleBot(
                         interaction.respondEphemeral { content = text }
                     }
                 }
-                chatInteraction.onInvoke.invoke(
+                logInfo {
+                    "Responding to command ${command.rootName} " +
+                            "in ${interaction.channel.mention} " +
+                            "sent by ${interaction.user.mention}"
+                }
+                chatInteraction.onInvoke(
                     responseScope,
                     command.options.mapValues { it.value.value!! },
                 )
             }
         }
-    }
-
-    override fun onDestroy() {
-        runBlocking {
-            kord.getGlobalApplicationCommands()
-                .collect {
-                    logDebug { "Removing command $it" }
-                    it.delete()
-                }
-        }
-        super.onDestroy()
     }
 
     override fun onFeaturesRegistered() {
