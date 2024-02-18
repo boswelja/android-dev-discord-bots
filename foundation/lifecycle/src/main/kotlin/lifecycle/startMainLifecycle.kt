@@ -26,8 +26,7 @@ suspend fun startMainLifecycle(lifecycle: Lifecycle) {
     lifecycle.create()
     try {
         awaitCancellation()
-    } catch (e: CancellationException) {
-        e.printStackTrace()
+    } catch (_: CancellationException) {
         lifecycle.destroy()
     }
 }

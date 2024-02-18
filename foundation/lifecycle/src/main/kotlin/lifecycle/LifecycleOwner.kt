@@ -20,7 +20,7 @@ package lifecycle
  * lifecycle.
  */
 abstract class LifecycleOwner : Lifecycle() {
-    private val childLifecycles = mutableListOf<Lifecycle>()
+    private val childLifecycles = mutableSetOf<Lifecycle>()
 
     override fun onDestroy() {
         super.onDestroy()
@@ -31,20 +31,25 @@ abstract class LifecycleOwner : Lifecycle() {
     }
 
     /**
-     * Registers a new [Lifecycle] under this lifecycle owner. The given lifecycle will be created
+     * Registers a new [Lifecycle] under this lifecycle owner. The given lifecycle will be created if added
+     * successfully. This is a no-op if the lifecycle was already added.
      */
     fun registerLifecycle(lifecycle: Lifecycle) {
         check(lifecycleState == LifecycleState.CREATED) {
-            "Child lifecycles can only be registered under a created owner, but the state of this owner is $lifecycleState"
+            "Lifecycle state must be CREATED to manage children, but the state of this owner is $lifecycleState"
         }
         if (childLifecycles.add(lifecycle)) {
             lifecycle.create()
         }
     }
 
+    /**
+     * Unregisters an existing [Lifecycle] under this lifecycle owner. The given lifecycle will be destroyed if removed
+     * successfully. This is a no-op if the lifecycle was already removed.
+     */
     fun unregisterLifecycle(lifecycle: Lifecycle) {
         check(lifecycleState == LifecycleState.CREATED) {
-            "Child lifecycles can only be unregistered under a created owner, but the state of this owner is $lifecycleState"
+            "Lifecycle state must be CREATED to manage children, but the state of this owner is $lifecycleState"
         }
         if (childLifecycles.remove(lifecycle)) {
             lifecycle.destroy()

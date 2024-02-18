@@ -39,18 +39,20 @@ class LifecycleTest {
 
     @Test
     fun `onCreate called when created`() {
-        // Lifecycle is created when the object is created, so call count should already be 1
+        lifecycle.create()
         assertEquals(1, lifecycle.onCreateCallCount)
     }
 
     @Test
     fun `onDestroy called when destroyed`() {
+        lifecycle.create()
         lifecycle.destroy()
         assertEquals(1, lifecycle.onDestroyCallCount)
     }
 
     @Test
     fun `lifecycle cannot be created after being destroyed`() {
+        lifecycle.create()
         lifecycle.destroy()
         assertThrows<IllegalStateException> {
             lifecycle.create()
@@ -59,7 +61,7 @@ class LifecycleTest {
 
     @Test
     fun `lifecycle cannot be created repeatedly`() {
-        // Lifecycle is created when the object is created, so subsequent calls should fail
+        lifecycle.create()
         assertThrows<IllegalStateException> {
             lifecycle.create()
         }
@@ -67,6 +69,7 @@ class LifecycleTest {
 
     @Test
     fun `lifecycle cannot be destroyed repeatedly`() {
+        lifecycle.create()
         lifecycle.destroy()
         assertThrows<IllegalStateException> {
             lifecycle.destroy()
