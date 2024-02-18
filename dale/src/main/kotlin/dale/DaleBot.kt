@@ -38,6 +38,8 @@ import features.updates.androidstudio.AndroidStudioUpdateFeature
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import logging.logDebug
+import logging.logInfo
+import logging.logWarn
 import settings.SettingsDatabaseFactory
 
 /**
@@ -104,6 +106,7 @@ class DaleBot(
         }
         kord.on<ChatInputCommandInteractionCreateEvent> {
             val command = this.interaction.command
+            logDebug { "Received command $command" }
             if (command is GroupCommand && command.rootName == chatInteractionGroup.name) {
                 val responseScope = object : ResponseScope {
                     override suspend fun acknowledge() {
@@ -117,7 +120,12 @@ class DaleBot(
                 val invokedCommand = chatInteractionGroup.subcommands.firstOrNull {
                     command.name == it.name
                 }
-                invokedCommand?.onInvoke?.invoke(responseScope, command.options.mapValues { it.value.value!! })
+                if (invokedCommand == null) {
+                    logWarn { "A command group was invoked, but a matching subcommand was not found!" }
+                } else {
+                    logInfo { "Responding to command $command" }
+                    invokedCommand.onInvoke(responseScope, command.options.mapValues { it.value.value!! })
+                }
             }
         }
     }
@@ -162,7 +170,8 @@ class DaleBot(
                         interaction.respondEphemeral { content = text }
                     }
                 }
-                chatInteraction.onInvoke.invoke(
+                logInfo { "Responding to command $command" }
+                chatInteraction.onInvoke(
                     responseScope,
                     command.options.mapValues { it.value.value!! },
                 )

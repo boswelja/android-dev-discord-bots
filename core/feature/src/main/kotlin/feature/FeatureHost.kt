@@ -17,6 +17,7 @@ package feature
 
 import kotlinx.coroutines.launch
 import lifecycle.LifecycleOwner
+import logging.logInfo
 
 /**
  * An extension of [LifecycleOwner] that manages [Feature]s.
@@ -43,10 +44,12 @@ abstract class FeatureHost : LifecycleOwner() {
         lifecycleScope.launch {
             val features = getFeatures()
             features.forEach { feature ->
+                logInfo { "Initializing feature $feature" }
                 registerLifecycle(feature)
                 when (feature) {
                     is TextBasedFeature -> {
                         feature.interactions.forEach { interaction ->
+                            logInfo { "Registering interaction $interaction" }
                             registerInteraction(interaction)
                         }
                     }
