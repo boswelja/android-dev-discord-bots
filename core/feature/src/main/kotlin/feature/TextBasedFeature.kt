@@ -28,20 +28,43 @@ interface TextBasedFeature: Feature {
 }
 
 /**
+ * Allows the bot to respond to interactions.
+ */
+sealed interface ResponseScope {
+
+    /**
+     * Acknowledges the interaction. This provides an indicator to users that the bot has received their input.
+     */
+    suspend fun acknowledge()
+
+    /**
+     * Responds to the interaction with a plaintext message.
+     */
+    suspend fun respond(text: String)
+}
+
+/**
+ * An [Interaction] that is purely text-based, i.e. triggered via text input.
+ */
+sealed interface TextBasedInteraction : Interaction
+
+/**
  * Defines a group of [ChatInteractionGroupItem]s that the user can interact with. Users will need to invoke [groupName]
  * followed by the desired [ChatInteractionGroupItem.name] to invoke any interactions.
  *
- * @property groupName The name of the group of interactions. Users will need to enter this as a prefix for any
+ * @property name The name of the group of interactions. Users will need to enter this as a prefix for any
  * interactions contained in this group.
+ * @property description A short sentence explaining the purpose of interactions within this group.
  * @property subcommands A list of [ChatInteractionGroupItem] that users can invoke.
  * @property permissionLevel The [Interaction.PermissionLevel] that users must have to be able to invoke this
  * interaction.
  */
 data class ChatInteractionGroup(
-    val groupName: String,
+    val name: String,
+    val description: String,
     val subcommands: List<ChatInteractionGroupItem>,
     val permissionLevel: Interaction.PermissionLevel,
-) : Interaction
+) : TextBasedInteraction
 
 
 /**
@@ -49,11 +72,13 @@ data class ChatInteractionGroup(
  * interaction.
  *
  * @property name The name of the parameter. Users will typically need to type this before entering a value.
+ * @property description A short sentence to explain what the parameter is used for.
  * @property required Whether the parameter is required for the interaction.
  * @property type The type of value expected from the user. See [Type] for all possible values
  */
 data class Parameter(
     val name: String,
+    val description: String,
     val required: Boolean,
     val type: Type
 ) {
@@ -62,22 +87,25 @@ data class Parameter(
      */
     enum class Type {
         String,
-        Bool
+        Bool,
+        Channel
     }
 }
 /**
  * Describes an interaction contained within a [ChatInteractionGroup] that users can interact with.
  *
- * @property name The name of the interaction. Users will need to enter [ChatInteractionGroup.groupName] followed by
+ * @property name The name of the interaction. Users will need to enter [ChatInteractionGroup.name] followed by
  * this to invoke the interaction.
- * @property parameters A list of [Interaction.Parameter] that this interaction accepts.
+ * @property description A short sentence explaining what this interaction does.
+ * @property parameters A list of [Parameter]s that this interaction accepts.
  * @property onInvoke Called when a user successfully invokes this interaction. A Map of parameter names to their values
  * is provided.
  */
 data class ChatInteractionGroupItem(
     val name: String,
+    val description: String,
     val parameters: List<Parameter>,
-    val onInvoke: (parameters: Map<String, Any>) -> Unit,
+    val onInvoke: ResponseScope.(parameters: Map<String, Any>) -> Unit,
 )
 
 /**
@@ -85,6 +113,7 @@ data class ChatInteractionGroupItem(
  *
  * @property name The name of the interaction. Users will need to enter [ChatInteractionGroup.groupName] followed by
  * this to invoke the interaction.
+ * @property description A short sentence explaining what this interaction does.
  * @property parameters A list of [Interaction.Parameter] that this interaction accepts.
  * @property permissionLevel The [Interaction.PermissionLevel] that users must have to be able to invoke this
  * interaction.
@@ -93,7 +122,8 @@ data class ChatInteractionGroupItem(
  */
 data class ChatInteraction(
     val name: String,
+    val description: String,
     val parameters: List<Parameter>,
     val permissionLevel: Interaction.PermissionLevel,
-    val onInvoke: (parameters: Map<String, Any>) -> Unit,
-) : Interaction
+    val onInvoke: ResponseScope.(parameters: Map<String, Any>) -> Unit,
+) : TextBasedInteraction

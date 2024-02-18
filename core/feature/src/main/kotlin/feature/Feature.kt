@@ -16,13 +16,6 @@
 package feature
 
 /**
- * A basic interface for defining a "feature". Features must have an entrypoint [init] configured.
+ * A basic interface for defining a "feature".
  */
-interface Feature {
-
-    /**
-     * Initialises the feature. This is a good place to do things like register commands, initialise state based on
-     * settings etc.
-     */
-    fun init()
-}
+interface Feature
