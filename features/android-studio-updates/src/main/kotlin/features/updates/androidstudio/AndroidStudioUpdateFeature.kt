@@ -34,7 +34,6 @@ import features.updates.androidstudio.updatesource.AndroidStudioUpdate
 import features.updates.androidstudio.updatesource.AndroidStudioUpdateSource
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.launch
-import lifecycle.Lifecycle
 import logging.logDebug
 import logging.logError
 import logging.logInfo
@@ -50,7 +49,7 @@ class AndroidStudioUpdateFeature(
     channelSettings: ChannelSettings,
     private val settings: AndroidStudioUpdateSettings = AndroidStudioUpdateSettingsDatabase(channelSettings),
     private val updateSource: AndroidStudioUpdateSource = AndroidStudioBlogUpdateSource(),
-) : TextBasedFeature, Lifecycle() {
+) : TextBasedFeature() {
 
     override val interactions: List<Interaction> = listOf(
         ChatInteractionGroup(

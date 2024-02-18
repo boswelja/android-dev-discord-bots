@@ -18,12 +18,12 @@ package feature
 /**
  * A [Feature] that is driven by text-based interactions.
  */
-interface TextBasedFeature: Feature {
+abstract class TextBasedFeature: Feature() {
 
     /**
      * A list of interactions this feature provides. See [Interaction] for details.
      */
-    val interactions: List<Interaction>
+    abstract val interactions: List<Interaction>
 
 }
 

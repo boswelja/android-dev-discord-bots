@@ -15,7 +15,9 @@
  */
 package feature
 
+import lifecycle.Lifecycle
+
 /**
  * A basic interface for defining a "feature".
  */
-interface Feature
+abstract class Feature : Lifecycle()

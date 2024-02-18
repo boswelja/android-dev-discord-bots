@@ -16,26 +16,34 @@
 package dale
 
 import dev.kord.core.Kord
+import feature.Feature
+import feature.FeatureHost
+import feature.Interaction
 import features.updates.androidstudio.AndroidStudioUpdateFeature
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import lifecycle.LifecycleOwner
 import settings.SettingsDatabaseFactory
 
 /**
  * A lifecycle-aware application that initializes and manages the Dale bot.
  */
 class DaleBot(
-    private val apiKey: String
-) : LifecycleOwner() {
+    apiKey: String
+) : FeatureHost() {
 
-    override fun onCreate() {
-        super.onCreate()
+    private val kord = runBlocking { Kord(apiKey) }
+    private val channelSettings = SettingsDatabaseFactory.channelSettingsInstance("dale")
+
+    override suspend fun getFeatures(): List<Feature> = listOf(
+        AndroidStudioUpdateFeature(kord, channelSettings)
+    )
+
+    override suspend fun registerInteraction(interaction: Interaction) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onFeaturesRegistered() {
         lifecycleScope.launch {
-            val kord = runBlocking { Kord(apiKey) }
-            val settingsRepository = SettingsDatabaseFactory.channelSettingsInstance("dale")
-            registerLifecycle(AndroidStudioUpdateFeature(kord, settingsRepository))
-
             kord.login()
         }
     }
