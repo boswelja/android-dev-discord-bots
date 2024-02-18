@@ -21,14 +21,8 @@ package feature
 interface Feature {
 
     /**
-     * A list of interactions this feature provides. See [Interaction] for details.
-     */
-    val interactions: List<Interaction>
-
-    /**
      * Initialises the feature. This is a good place to do things like register commands, initialise state based on
      * settings etc.
      */
     fun init()
-
 }

@@ -43,8 +43,12 @@ abstract class FeatureHost {
     protected fun initFeatures() {
         features.forEach { feature ->
             coroutineScope.launch {
-                feature.interactions.forEach {
-                    registerInteraction(it)
+                when (feature) {
+                    is TextBasedFeature -> {
+                        feature.interactions.forEach {
+                            registerInteraction(it)
+                        }
+                    }
                 }
                 feature.init()
             }
