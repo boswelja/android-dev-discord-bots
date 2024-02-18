@@ -20,9 +20,15 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.ensureActive
 
+/**
+ * An implementation of a "Lifecycle".
+ */
 abstract class Lifecycle {
 
-    public var lifecycleState: LifecycleState = LifecycleState.NOT_YET_CREATED
+    /**
+     * The current state of the Lifecycle. See [LifecycleState] for possible states.
+     */
+    var lifecycleState: LifecycleState = LifecycleState.NOT_YET_CREATED
         private set
 
     protected val lifecycleScope: CoroutineScope = CoroutineScope(SupervisorJob())
@@ -54,14 +60,30 @@ abstract class Lifecycle {
     protected open fun onDestroy() { }
 }
 
+/**
+ * Describes the state of a [Lifecycle].
+ */
 @JvmInline
 value class LifecycleState internal constructor(internal val value: Int) : Comparable<LifecycleState> {
 
     override fun compareTo(other: LifecycleState): Int = this.value.compareTo(other.value)
 
     companion object {
+        /**
+         * The lifecycle state is "not yet created", meaning it is not yet safe to use lifecycle-related functions
+         * within the object.
+         */
         val NOT_YET_CREATED = LifecycleState(0)
+
+        /**
+         * The lifecycle state is "created", meaning the lifecycle exists and can be fully utilised.
+         */
         val CREATED = LifecycleState(1)
+
+        /**
+         * The lifecycle state is "destroyed", which means any work has been cancelled and the object will be disposed
+         * of ASAP.
+         */
         val DESTROYED = LifecycleState(2)
     }
 }
