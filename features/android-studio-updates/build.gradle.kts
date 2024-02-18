@@ -8,6 +8,8 @@ version = "1.0"
 
 dependencies {
     implementation(projects.core.configuration)
+    implementation(projects.core.feature)
+    implementation(projects.foundation.lifecycle)
     implementation(projects.foundation.scheduler)
     implementation(projects.foundation.logging)
 

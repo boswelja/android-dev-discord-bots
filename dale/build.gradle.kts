@@ -10,6 +10,8 @@ version = "1.0"
 dependencies {
     implementation(projects.core.configuration)
     implementation(projects.foundation.logging)
+    implementation(projects.core.feature)
+    implementation(projects.foundation.lifecycle)
 
     implementation(libs.kord.core)
     implementation(projects.features.androidStudioUpdates)

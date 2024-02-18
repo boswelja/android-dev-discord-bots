@@ -15,42 +15,43 @@
  */
 package feature
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import lifecycle.LifecycleOwner
 
 /**
- * A base class that orchestrates a list of [Feature]s.
+ * An extension of [LifecycleOwner] that manages [Feature]s.
  */
-abstract class FeatureHost {
-
-    protected val coroutineScope = CoroutineScope(SupervisorJob())
+abstract class FeatureHost : LifecycleOwner() {
 
     /**
-     * A list of [Feature]s that this host uses.
+     * Gets the list of features that this feature host will manage. This will only ever be called once.
      */
-    abstract val features: List<Feature>
-
-    init {
-        initFeatures()
-    }
+    abstract suspend fun getFeatures(): List<Feature>
 
     /**
-     * Called when an interaction should be registered.
+     * Called when the implementer should register an interaction for a feature.
      */
     abstract suspend fun registerInteraction(interaction: Interaction)
 
-    protected fun initFeatures() {
-        features.forEach { feature ->
-            coroutineScope.launch {
+    /**
+     * Called when all features have been registered.
+     */
+    open fun onFeaturesRegistered() {}
+
+    override fun onCreate() {
+        super.onCreate()
+        lifecycleScope.launch {
+            val features = getFeatures()
+            features.forEach { feature ->
+                registerLifecycle(feature)
                 when (feature) {
                     is TextBasedFeature -> {
-                        feature.interactions.forEach {
-                            registerInteraction(it)
+                        feature.interactions.forEach { interaction ->
+                            registerInteraction(interaction)
                         }
                     }
                 }
-                feature.init()
+                onFeaturesRegistered()
             }
         }
     }
