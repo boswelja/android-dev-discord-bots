@@ -30,7 +30,7 @@ abstract class TextBasedFeature: Feature() {
 /**
  * Allows the bot to respond to interactions.
  */
-sealed interface ResponseScope {
+interface ResponseScope {
 
     /**
      * Acknowledges the interaction. This provides an indicator to users that the bot has received their input.
