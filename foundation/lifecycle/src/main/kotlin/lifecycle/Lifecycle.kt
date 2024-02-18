@@ -33,10 +33,6 @@ abstract class Lifecycle {
 
     protected val lifecycleScope: CoroutineScope = CoroutineScope(SupervisorJob())
 
-    init {
-        create()
-    }
-
     internal fun create() {
         check(lifecycleState < LifecycleState.CREATED) {
             "Tried to create lifecycle, but lifecycle was in state $lifecycleState"
