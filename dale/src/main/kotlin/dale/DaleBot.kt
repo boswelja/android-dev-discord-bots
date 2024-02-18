@@ -43,14 +43,14 @@ import settings.SettingsDatabaseFactory
  * A lifecycle-aware application that initializes and manages the Dale bot.
  */
 class DaleBot(
-    apiKey: String
+    apiKey: String,
 ) : FeatureHost() {
 
     private val kord = runBlocking { Kord(apiKey) }
     private val channelSettings = SettingsDatabaseFactory.channelSettingsInstance("dale")
 
     override suspend fun getFeatures(): List<Feature> = listOf(
-        AndroidStudioUpdateFeature(kord, channelSettings)
+        AndroidStudioUpdateFeature(kord, channelSettings),
     )
 
     override suspend fun registerInteraction(interaction: Interaction) {
@@ -59,60 +59,112 @@ class DaleBot(
         }
     }
 
-    private suspend fun registerTextBasedInteraction(interaction: TextBasedInteraction) {
-        when (interaction) {
-            is ChatInteraction -> TODO()
-            is ChatInteractionGroup -> {
-                kord.createGlobalChatInputCommand(
-                    name = interaction.name,
-                    description = interaction.description
-                ) {
-                    defaultMemberPermissions = when (interaction.permissionLevel) {
-                        Interaction.PermissionLevel.Everyone -> null
-                        Interaction.PermissionLevel.Moderator -> Permissions(Permission.ManageGuild)
-                    }
-                    interaction.subcommands.forEach { subcommand ->
-                        subCommand(
-                            name = subcommand.name,
-                            description = subcommand.description
-                        ) {
-                            subcommand.parameters.forEach { parameter ->
-                                when (parameter.type) {
-                                    Parameter.Type.String -> string(
-                                        name = parameter.name,
-                                        description = parameter.description,
-                                    ) { required = parameter.required }
-                                    Parameter.Type.Bool -> boolean(
-                                        name = parameter.name,
-                                        description = parameter.description,
-                                    ) { required = parameter.required }
-                                    Parameter.Type.Channel -> channel(
-                                        name = parameter.name,
-                                        description = parameter.description,
-                                    ) { required = parameter.required }
-                                }
-                            }
-                        }
-                    }
-                }
-                kord.on<ChatInputCommandInteractionCreateEvent> {
-                    val command = this.interaction.command
-                    if (command is GroupCommand && command.rootName == interaction.name) {
-                        val responseScope = object : ResponseScope {
-                            override suspend fun acknowledge() {
-                                this@on.interaction.deferEphemeralResponse()
-                            }
+    private suspend fun registerTextBasedInteraction(textBasedInteraction: TextBasedInteraction) {
+        when (textBasedInteraction) {
+            is ChatInteraction -> registerChatInteraction(textBasedInteraction)
+            is ChatInteractionGroup -> registerChatInteractionGroup(textBasedInteraction)
+        }
+    }
 
-                            override suspend fun respond(text: String) {
-                                this@on.interaction.respondEphemeral { content = text }
-                            }
+    private suspend fun registerChatInteractionGroup(chatInteractionGroup: ChatInteractionGroup) {
+        kord.createGlobalChatInputCommand(
+            name = chatInteractionGroup.name,
+            description = chatInteractionGroup.description,
+        ) {
+            defaultMemberPermissions = when (chatInteractionGroup.permissionLevel) {
+                Interaction.PermissionLevel.Everyone -> null
+                Interaction.PermissionLevel.Moderator -> Permissions(Permission.ManageGuild)
+            }
+            chatInteractionGroup.subcommands.forEach { subcommand ->
+                subCommand(
+                    name = subcommand.name,
+                    description = subcommand.description,
+                ) {
+                    subcommand.parameters.forEach { parameter ->
+                        when (parameter.type) {
+                            Parameter.Type.String -> string(
+                                name = parameter.name,
+                                description = parameter.description,
+                            ) { required = parameter.required }
+
+                            Parameter.Type.Bool -> boolean(
+                                name = parameter.name,
+                                description = parameter.description,
+                            ) { required = parameter.required }
+
+                            Parameter.Type.Channel -> channel(
+                                name = parameter.name,
+                                description = parameter.description,
+                            ) { required = parameter.required }
                         }
-                        val invokedCommand = interaction.subcommands.firstOrNull {
-                            command.name == it.name
-                        }
-                        invokedCommand?.onInvoke?.invoke(responseScope, command.options.mapValues { it.value.value!! })
                     }
                 }
+            }
+        }
+        kord.on<ChatInputCommandInteractionCreateEvent> {
+            val command = this.interaction.command
+            if (command is GroupCommand && command.rootName == chatInteractionGroup.name) {
+                val responseScope = object : ResponseScope {
+                    override suspend fun acknowledge() {
+                        interaction.deferEphemeralResponse()
+                    }
+
+                    override suspend fun respond(text: String) {
+                        interaction.respondEphemeral { content = text }
+                    }
+                }
+                val invokedCommand = chatInteractionGroup.subcommands.firstOrNull {
+                    command.name == it.name
+                }
+                invokedCommand?.onInvoke?.invoke(responseScope, command.options.mapValues { it.value.value!! })
+            }
+        }
+    }
+
+    private suspend fun registerChatInteraction(chatInteraction: ChatInteraction) {
+        kord.createGlobalChatInputCommand(
+            name = chatInteraction.name,
+            description = chatInteraction.description,
+        ) {
+            defaultMemberPermissions = when (chatInteraction.permissionLevel) {
+                Interaction.PermissionLevel.Everyone -> null
+                Interaction.PermissionLevel.Moderator -> Permissions(Permission.ManageGuild)
+            }
+            chatInteraction.parameters.forEach { parameter ->
+                when (parameter.type) {
+                    Parameter.Type.String -> string(
+                        name = parameter.name,
+                        description = parameter.description,
+                    ) { required = parameter.required }
+
+                    Parameter.Type.Bool -> boolean(
+                        name = parameter.name,
+                        description = parameter.description,
+                    ) { required = parameter.required }
+
+                    Parameter.Type.Channel -> channel(
+                        name = parameter.name,
+                        description = parameter.description,
+                    ) { required = parameter.required }
+                }
+            }
+        }
+        kord.on<ChatInputCommandInteractionCreateEvent> {
+            val command = this.interaction.command
+            if (command.rootName == chatInteraction.name) {
+                val responseScope = object : ResponseScope {
+                    override suspend fun acknowledge() {
+                        interaction.deferEphemeralResponse()
+                    }
+
+                    override suspend fun respond(text: String) {
+                        interaction.respondEphemeral { content = text }
+                    }
+                }
+                chatInteraction.onInvoke.invoke(
+                    responseScope,
+                    command.options.mapValues { it.value.value!! },
+                )
             }
         }
     }
